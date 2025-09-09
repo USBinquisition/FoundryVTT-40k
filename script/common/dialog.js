@@ -14,6 +14,7 @@ export async function prepareCommonRoll(rollData) {
                 icon: '<i class="fas fa-check"></i>',
                 label: game.i18n.localize("BUTTON.ROLL"),
                 callback: async html => {
+                    html = $(html);
                     if (rollData.flags?.isEvasion) {
                         const skill = html.find("#selectedSkill")[0];
                         if (skill) {
@@ -41,6 +42,7 @@ export async function prepareCommonRoll(rollData) {
         default: "roll",
         close: () => {},
         render: html => {
+            html = $(html);
             const sel = html.find("select[name=characteristic");
             const target = html.find("#target");
             sel.change(() => {

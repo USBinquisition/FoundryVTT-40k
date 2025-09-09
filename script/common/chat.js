@@ -8,6 +8,7 @@ import DarkHeresyUtil from "./util.js";
  * @param {HTMLElement} html
  */
 export function chatListeners(html) {
+    html = $(html);
     html.on("click", ".invoke-test", onTestClick.bind(this));
     html.on("click", ".invoke-damage", onDamageClick.bind(this));
     html.on("click", ".reload-Weapon", onReloadClick.bind(this));
