@@ -34,10 +34,11 @@ export class AcolyteSheet extends DarkHeresySheet {
 
     activateListeners(html) {
         super.activateListeners(html);
-        html.find(".aptitude-create").click(async ev => { await this._onAptitudeCreate(ev); });
-        html.find(".aptitude-delete").click(async ev => { await this._onAptitudeDelete(ev); });
-        html.find(".item-cost").focusout(async ev => { await this._onItemCostFocusOut(ev); });
-        html.find(".item-starter").click(async ev => { await this._onItemStarterClick(ev); });
+        const element = html[0] ?? html;
+        element.querySelectorAll(".aptitude-create").forEach(el => el.addEventListener("click", async ev => { await this._onAptitudeCreate(ev); }));
+        element.querySelectorAll(".aptitude-delete").forEach(el => el.addEventListener("click", async ev => { await this._onAptitudeDelete(ev); }));
+        element.querySelectorAll(".item-cost").forEach(el => el.addEventListener("focusout", async ev => { await this._onItemCostFocusOut(ev); }));
+        element.querySelectorAll(".item-starter").forEach(el => el.addEventListener("click", async ev => { await this._onItemStarterClick(ev); }));
     }
 
     async _onAptitudeCreate(event) {
@@ -50,23 +51,23 @@ export class AcolyteSheet extends DarkHeresySheet {
 
     async _onAptitudeDelete(event) {
         event.preventDefault();
-        const div = $(event.currentTarget).parents(".item");
-        const aptitudeId = div.data("aptitudeId").toString();
+        const div = event.currentTarget.closest(".item");
+        const aptitudeId = div.dataset.aptitudeId.toString();
         await this.actor.update({[`system.aptitudes.-=${aptitudeId}`]: null});
         this._render(true);
     }
 
     async _onItemCostFocusOut(event) {
         event.preventDefault();
-        const div = $(event.currentTarget).parents(".item");
-        let item = this.actor.items.get(div.data("itemId"));
-        item.update({"system.cost": $(event.currentTarget)[0].value});
+        const div = event.currentTarget.closest(".item");
+        let item = this.actor.items.get(div.dataset.itemId);
+        item.update({"system.cost": event.currentTarget.value});
     }
 
     async _onItemStarterClick(event) {
         event.preventDefault();
-        const div = $(event.currentTarget).parents(".item");
-        let item = this.actor.items.get(div.data("itemId"));
-        item.update({"system.starter": $(event.currentTarget)[0].checked});
+        const div = event.currentTarget.closest(".item");
+        let item = this.actor.items.get(div.dataset.itemId);
+        item.update({"system.starter": event.currentTarget.checked});
     }
 }
