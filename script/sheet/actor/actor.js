@@ -4,18 +4,17 @@ import DarkHeresyUtil from "../../common/util.js";
 export class DarkHeresySheet extends ActorSheet {
     activateListeners(html) {
         super.activateListeners(html);
-        const element = html[0] ?? html;
-        element.querySelectorAll(".item-create").forEach(el => el.addEventListener("click", ev => this._onItemCreate(ev)));
-        element.querySelectorAll(".item-edit").forEach(el => el.addEventListener("click", ev => this._onItemEdit(ev)));
-        element.querySelectorAll(".item-delete").forEach(el => el.addEventListener("click", ev => this._onItemDelete(ev)));
-        element.querySelectorAll("input").forEach(el => el.addEventListener("focusin", ev => this._onFocusIn(ev)));
-        element.querySelectorAll(".roll-characteristic").forEach(el => el.addEventListener("click", async ev => await this._prepareRollCharacteristic(ev)));
-        element.querySelectorAll(".roll-skill").forEach(el => el.addEventListener("click", async ev => await this._prepareRollSkill(ev)));
-        element.querySelectorAll(".roll-speciality").forEach(el => el.addEventListener("click", async ev => await this._prepareRollSpeciality(ev)));
-        element.querySelectorAll(".roll-insanity").forEach(el => el.addEventListener("click", async ev => await this._prepareRollInsanity(ev)));
-        element.querySelectorAll(".roll-corruption").forEach(el => el.addEventListener("click", async ev => await this._prepareRollCorruption(ev)));
-        element.querySelectorAll(".roll-weapon").forEach(el => el.addEventListener("click", async ev => await this._prepareRollWeapon(ev)));
-        element.querySelectorAll(".roll-psychic-power").forEach(el => el.addEventListener("click", async ev => await this._prepareRollPsychicPower(ev)));
+        html.find(".item-create").click(ev => this._onItemCreate(ev));
+        html.find(".item-edit").click(ev => this._onItemEdit(ev));
+        html.find(".item-delete").click(ev => this._onItemDelete(ev));
+        html.find("input").focusin(ev => this._onFocusIn(ev));
+        html.find(".roll-characteristic").click(async ev => await this._prepareRollCharacteristic(ev));
+        html.find(".roll-skill").click(async ev => await this._prepareRollSkill(ev));
+        html.find(".roll-speciality").click(async ev => await this._prepareRollSpeciality(ev));
+        html.find(".roll-insanity").click(async ev => await this._prepareRollInsanity(ev));
+        html.find(".roll-corruption").click(async ev => await this._prepareRollCorruption(ev));
+        html.find(".roll-weapon").click(async ev => await this._prepareRollWeapon(ev));
+        html.find(".roll-psychic-power").click(async ev => await this._prepareRollPsychicPower(ev));
     }
 
     /** @override */
@@ -74,17 +73,16 @@ export class DarkHeresySheet extends ActorSheet {
 
     _onItemEdit(event) {
         event.preventDefault();
-        const div = event.currentTarget.closest(".item");
-        let item = this.actor.items.get(div.dataset.itemId);
+        const div = $(event.currentTarget).parents(".item");
+        let item = this.actor.items.get(div.data("itemId"));
         item.sheet.render(true);
     }
 
     _onItemDelete(event) {
         event.preventDefault();
-        const div = event.currentTarget.closest(".item");
-        this.actor.deleteEmbeddedDocuments("Item", [div.dataset.itemId]);
-        div.remove();
-        this.render(false);
+        const div = $(event.currentTarget).parents(".item");
+        this.actor.deleteEmbeddedDocuments("Item", [div.data("itemId")]);
+        div.slideUp(200, () => this.render(false));
     }
 
     async _prepareCustomRoll() {
@@ -99,7 +97,7 @@ export class DarkHeresySheet extends ActorSheet {
 
     async _prepareRollCharacteristic(event) {
         event.preventDefault();
-        const characteristicName = event.currentTarget.dataset.characteristic;
+        const characteristicName = $(event.currentTarget).data("characteristic");
         await prepareCommonRoll(
             DarkHeresyUtil.createCharacteristicRollData(this.actor, characteristicName)
         );
@@ -107,7 +105,7 @@ export class DarkHeresySheet extends ActorSheet {
 
     async _prepareRollSkill(event) {
         event.preventDefault();
-        const skillName = event.currentTarget.dataset.skill;
+        const skillName = $(event.currentTarget).data("skill");
         await prepareCommonRoll(
             DarkHeresyUtil.createSkillRollData(this.actor, skillName)
         );
@@ -115,8 +113,8 @@ export class DarkHeresySheet extends ActorSheet {
 
     async _prepareRollSpeciality(event) {
         event.preventDefault();
-        const skillName = event.currentTarget.closest(".item").dataset.skill;
-        const specialityName = event.currentTarget.dataset.speciality;
+        const skillName = $(event.currentTarget).parents(".item").data("skill");
+        const specialityName = $(event.currentTarget).data("speciality");
         await prepareCommonRoll(
             DarkHeresyUtil.createSpecialtyRollData(this.actor, skillName, specialityName)
         );
@@ -138,8 +136,8 @@ export class DarkHeresySheet extends ActorSheet {
 
     async _prepareRollWeapon(event) {
         event.preventDefault();
-        const div = event.currentTarget.closest(".item");
-        const weapon = this.actor.items.get(div.dataset.itemId);
+        const div = $(event.currentTarget).parents(".item");
+        const weapon = this.actor.items.get(div.data("itemId"));
         await prepareCombatRoll(
             DarkHeresyUtil.createWeaponRollData(this.actor, weapon),
             this.actor
@@ -148,15 +146,11 @@ export class DarkHeresySheet extends ActorSheet {
 
     async _prepareRollPsychicPower(event) {
         event.preventDefault();
-        const div = event.currentTarget.closest(".item");
-        const psychicPower = this.actor.items.get(div.dataset.itemId);
+        const div = $(event.currentTarget).parents(".item");
+        const psychicPower = this.actor.items.get(div.data("itemId"));
         await preparePsychicPowerRoll(
             DarkHeresyUtil.createPsychicRollData(this.actor, psychicPower)
         );
-    }
-
-    _onFocusIn(event) {
-        event.currentTarget.select();
     }
 
     constructItemLists() {
