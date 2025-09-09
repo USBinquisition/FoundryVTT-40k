@@ -54,7 +54,7 @@
     </div>
 </div>
 <script>
-    $(".wrapper input").focusin(function () {
-        $(this).select();
+    document.querySelectorAll(".wrapper input").forEach(el => {
+        el.addEventListener("focusin", () => el.select());
     });
 </script>

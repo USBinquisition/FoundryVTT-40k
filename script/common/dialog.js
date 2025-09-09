@@ -14,18 +14,20 @@ export async function prepareCommonRoll(rollData) {
                 icon: '<i class="fas fa-check"></i>',
                 label: game.i18n.localize("BUTTON.ROLL"),
                 callback: async html => {
+                    const element = html[0] ?? html;
                     if (rollData.flags?.isEvasion) {
-                        const skill = html.find("#selectedSkill")[0];
+                        const skill = element.querySelector("#selectedSkill");
                         if (skill) {
                             rollData.name = game.i18n.localize(skill.options[skill.selectedIndex].text);
                             rollData.evasions.selected = skill.value;
                         }
                     } else {
                         rollData.name = game.i18n.localize(rollData.name);
-                        rollData.target.base = parseInt(html.find("#target")[0].value, 10);
-                        rollData.rolledWith = html.find("[name=characteristic] :selected").text();
+                        rollData.target.base = parseInt(element.querySelector("#target").value, 10);
+                        const characteristic = element.querySelector("[name=characteristic]");
+                        rollData.rolledWith = characteristic.options[characteristic.selectedIndex].text;
                     }
-                    rollData.target.modifier = parseInt(html.find("#modifier")[0].value, 10);
+                    rollData.target.modifier = parseInt(element.querySelector("#modifier").value, 10);
                     rollData.flags.isDamageRoll = false;
                     rollData.flags.isCombatRoll = false;
                     await commonRoll(rollData);
@@ -41,10 +43,11 @@ export async function prepareCommonRoll(rollData) {
         default: "roll",
         close: () => {},
         render: html => {
-            const sel = html.find("select[name=characteristic");
-            const target = html.find("#target");
-            sel.change(() => {
-                target.val(sel.val());
+            const element = html[0] ?? html;
+            const sel = element.querySelector("select[name=characteristic]");
+            const target = element.querySelector("#target");
+            sel?.addEventListener("change", () => {
+                target.value = sel.value;
             });
         }
     }, {
@@ -71,23 +74,24 @@ export async function prepareCombatRoll(rollData, actorRef) {
                     icon: '<i class="fas fa-check"></i>',
                     label: game.i18n.localize("BUTTON.ROLL"),
                     callback: async html => {
+                        const element = html[0] ?? html;
                         rollData.name = game.i18n.localize(rollData.name);
-                        rollData.target.base = parseInt(html.find("#target")[0]?.value, 10);
-                        rollData.target.modifier = parseInt(html.find("#modifier")[0]?.value, 10);
-                        const range = html.find("#range")[0];
+                        rollData.target.base = parseInt(element.querySelector("#target")?.value, 10);
+                        rollData.target.modifier = parseInt(element.querySelector("#modifier")?.value, 10);
+                        const range = element.querySelector("#range");
                         if (range) {
                             rollData.rangeMod = parseInt(range.value, 10);
                             rollData.rangeModText = range.options[range.selectedIndex].text;
                         }
 
-                        const attackType = html.find("#attackType")[0];
+                        const attackType = element.querySelector("#attackType");
                         rollData.attackType = {
                             name: attackType?.value,
                             text: attackType?.options[attackType.selectedIndex].text,
                             modifier: 0
                         };
 
-                        const aim = html.find("#aim")[0];
+                        const aim = element.querySelector("#aim");
                         rollData.aim = {
                             val: parseInt(aim?.value, 10),
                             isAiming: aim?.value !== "0",
@@ -95,15 +99,15 @@ export async function prepareCombatRoll(rollData, actorRef) {
                         };
 
                         if (rollData.weapon.traits.inaccurate) {
-                            rollData.aim.val=0;
+                            rollData.aim.val = 0;
                         } else if (rollData.weapon.traits.accurate && rollData.aim.isAiming) {
                             rollData.aim.val += 10;
                         }
 
-                        rollData.weapon.damageFormula = html.find("#damageFormula")[0].value.replace(" ", "");
-                        rollData.weapon.damageType = html.find("#damageType")[0].value;
-                        rollData.weapon.damageBonus = parseInt(html.find("#damageBonus")[0].value, 10);
-                        rollData.weapon.penetrationFormula = html.find("#penetration")[0].value;
+                        rollData.weapon.damageFormula = element.querySelector("#damageFormula").value.replace(" ", "");
+                        rollData.weapon.damageType = element.querySelector("#damageType").value;
+                        rollData.weapon.damageBonus = parseInt(element.querySelector("#damageBonus").value, 10);
+                        rollData.weapon.penetrationFormula = element.querySelector("#penetration").value;
                         rollData.flags.isDamageRoll = false;
                         rollData.flags.isCombatRoll = true;
 
@@ -141,17 +145,18 @@ export async function preparePsychicPowerRoll(rollData) {
                 icon: '<i class="fas fa-check"></i>',
                 label: game.i18n.localize("BUTTON.ROLL"),
                 callback: async html => {
+                    const element = html[0] ?? html;
                     rollData.name = game.i18n.localize(rollData.name);
-                    rollData.target.base = parseInt(html.find("#target")[0]?.value, 10);
-                    rollData.target.modifier = parseInt(html.find("#modifier")[0]?.value, 10);
-                    rollData.psy.value = parseInt(html.find("#psy")[0].value, 10);
-                    rollData.psy.warpConduit = html.find("#warpConduit")[0].checked;
-                    rollData.weapon.damageFormula = html.find("#damageFormula")[0].value;
-                    rollData.weapon.damageType = html.find("#damageType")[0].value;
-                    rollData.weapon.damageBonus = parseInt(html.find("#damageBonus")[0].value, 10);
-                    rollData.weapon.penetrationFormula = html.find("#penetration")[0].value;
+                    rollData.target.base = parseInt(element.querySelector("#target")?.value, 10);
+                    rollData.target.modifier = parseInt(element.querySelector("#modifier")?.value, 10);
+                    rollData.psy.value = parseInt(element.querySelector("#psy").value, 10);
+                    rollData.psy.warpConduit = element.querySelector("#warpConduit").checked;
+                    rollData.weapon.damageFormula = element.querySelector("#damageFormula").value;
+                    rollData.weapon.damageType = element.querySelector("#damageType").value;
+                    rollData.weapon.damageBonus = parseInt(element.querySelector("#damageBonus").value, 10);
+                    rollData.weapon.penetrationFormula = element.querySelector("#penetration").value;
                     rollData.weapon.rateOfFire = { burst: rollData.psy.value, full: rollData.psy.value };
-                    const attackType = html.find("#attackType")[0];
+                    const attackType = element.querySelector("#attackType");
                     rollData.attackType.name = attackType.value;
                     rollData.attackType.text = attackType.options[attackType.selectedIndex].text;
                     rollData.psy.useModifier = true;

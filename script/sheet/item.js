@@ -1,7 +1,10 @@
 export class DarkHeresyItemSheet extends ItemSheet {
     activateListeners(html) {
         super.activateListeners(html);
-        html.find("input").focusin(ev => this._onFocusIn(ev));
+        const element = html[0] ?? html;
+        element.querySelectorAll("input").forEach(i => {
+            i.addEventListener("focusin", ev => this._onFocusIn(ev));
+        });
     }
 
     async getData() {
@@ -32,6 +35,6 @@ export class DarkHeresyItemSheet extends ItemSheet {
     }
 
     _onFocusIn(event) {
-        $(event.currentTarget).select();
+        event.currentTarget.select();
     }
 }
