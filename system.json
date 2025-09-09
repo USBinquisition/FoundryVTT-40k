@@ -1,17 +1,17 @@
 {
   "id": "dark-heresy",
   "title": "Dark Heresy 2E",
-  "description": "Unofficial Foundry VTT System for Dark Heresy 2nd Edition.",
-  "version": "4.3.2.1",
+  "description": "Unofficial Foundry VTT System for Dark Heresy 2nd Edition. Forked by Necaladun to address Foundry V13 jQuery changes; vibe-coded with limited skills.",
+  "version": "0.1",
   "minimumCoreVersion" : 11,
   "compatibility" : {
     "minimum" : 11,
-    "verified" : 12,
+    "verified" : 13,
     "maximum" : 13
   },
   "templateVersion": 2,
   "authors": [
-	{ "name":"JeansenVaars" }, 
+        { "name":"JeansenVaars" },
     { "name":"Moo Man",
       "email": "russellt@cubicle7games.com",
       "discord": "Moo Man#7518",
@@ -23,7 +23,8 @@
     { "name":"Silver292" },
     { "name":"Giddy" },
     { "name":"Dazzerix" },
-	{ "name":"FilippoPolo" }
+        { "name":"FilippoPolo" },
+    { "name":"Necaladun" }
   ],
   "scripts": [],
   "esmodules": [
@@ -67,9 +68,9 @@
   "gridUnits": "m",
   "primaryTokenAttribute": null,
   "secondaryTokenAttribute": null,
-  "url": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT",
+  "url": "https://github.com/USBinquisition/FoundryVTT-40k",
   "socket": true,
-  "manifest": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT/releases/download/4.3.2.1/system.json",
-  "download": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT/releases/download/4.3.2.1/dark-heresy.zip",
+  "manifest": "https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.1/system.json",
+  "download": "https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.1/0.1USB.zip",
   "license": "LICENSE.txt"
 }
