@@ -8,17 +8,10 @@ import DarkHeresyUtil from "./util.js";
  * @param {HTMLElement} html
  */
 export function chatListeners(html) {
-    const element = html[0] ?? html;
-
-    element.addEventListener("click", ev => {
-        if (ev.target.closest(".invoke-test")) onTestClick(ev);
-        else if (ev.target.closest(".invoke-damage")) onDamageClick(ev);
-        else if (ev.target.closest(".reload-Weapon")) onReloadClick(ev);
-    });
-
-    element.addEventListener("dblclick", ev => {
-        if (ev.target.closest(".dark-heresy.chat.roll>.background.border")) onChatRollClick(ev);
-    });
+    html.on("click", ".invoke-test", onTestClick.bind(this));
+    html.on("click", ".invoke-damage", onDamageClick.bind(this));
+    html.on("click", ".reload-Weapon", onReloadClick.bind(this));
+    html.on("dblclick", ".dark-heresy.chat.roll>.background.border", onChatRollClick.bind(this));
 }
 
 /**
@@ -32,8 +25,7 @@ export function chatListeners(html) {
  */
 export const addChatMessageContextOptions = function(html, options) {
     let canApply = li => {
-        const element = li[0] ?? li;
-        const message = game.messages.get(element.dataset.messageId);
+        const message = game.messages.get(li.data("messageId"));
         return message.getRollData()?.flags.isDamageRoll
             && message.isContentVisible
             && canvas.tokens.controlled.length;
@@ -48,8 +40,7 @@ export const addChatMessageContextOptions = function(html, options) {
     );
 
     let canReroll = li => {
-        const element = li[0] ?? li;
-        const message = game.messages.get(element.dataset.messageId);
+        const message = game.messages.get(li.data("messageId"));
         let actor = game.actors.get(message.getRollData()?.ownerId);
         return message.isRoll
             && !message.getRollData()?.flags.isDamageRoll
@@ -63,8 +54,7 @@ export const addChatMessageContextOptions = function(html, options) {
             icon: '<i class="fa-solid fa-repeat"></i>',
             condition: canReroll,
             callback: li => {
-                const element = li[0] ?? li;
-                const message = game.messages.get(element.dataset.messageId);
+                const message = game.messages.get(li.data("messageId"));
                 rerollTest(message.getRollData());
             }
         }
@@ -81,24 +71,26 @@ export const addChatMessageContextOptions = function(html, options) {
  * @returns {Promise}
  */
 function applyChatCardDamage(roll, multiplier) {
-    const element = roll[0] ?? roll;
-    const amount = element.querySelectorAll(".damage-total");
-    const location = element.querySelectorAll(".damage-location");
-    const penetration = element.querySelectorAll(".damage-penetration");
-    const type = element.querySelectorAll(".damage-type");
-    const righteousFury = element.querySelectorAll(".damage-righteous-fury");
+    // Get the damage data, get them as arrays in case of multiple hits
+    const amount = roll.find(".damage-total");
+    const location = roll.find(".damage-location");
+    const penetration = roll.find(".damage-penetration");
+    const type = roll.find(".damage-type");
+    const righteousFury = roll.find(".damage-righteous-fury");
 
+    // Put the data from different hits together
     const damages = [];
     for (let i = 0; i < amount.length; i++) {
         damages.push({
-            amount: amount[i].textContent,
-            location: location[i].dataset.location,
-            penetration: penetration[i].textContent,
-            type: type[i].textContent,
-            righteousFury: righteousFury[i].textContent
+            amount: $(amount[i]).text(),
+            location: $(location[i]).data("location"),
+            penetration: $(penetration[i]).text(),
+            type: $(type[i]).text(),
+            righteousFury: $(righteousFury[i]).text()
         });
     }
 
+    // Apply to any selected actors
     return Promise.all(canvas.tokens.controlled.map(t => {
         const a = t.actor;
         return a.applyDamage(damages);
@@ -132,7 +124,7 @@ function rerollTest(rollData) {
  */
 function onTestClick(ev) {
     let actor = game.macro.getActor();
-    let id = ev.currentTarget.closest(".message").dataset.messageId;
+    let id = $(ev.currentTarget).parents(".message").attr("data-message-id");
     let msg = game.messages.get(id);
     let rollData = msg.getRollData();
 
@@ -163,7 +155,7 @@ function onTestClick(ev) {
  * @returns {Promise}
  */
 function onDamageClick(ev) {
-    let id = ev.currentTarget.closest(".message").dataset.messageId;
+    let id = $(ev.currentTarget).parents(".message").attr("data-message-id");
     let msg = game.messages.get(id);
     let rollData = msg.getRollData();
     rollData.flags.isEvasion = false;
@@ -177,7 +169,7 @@ function onDamageClick(ev) {
  * @param {Event} ev
  */
 async function onReloadClick(ev) {
-    let id = ev.currentTarget.closest(".message").dataset.messageId;
+    let id = $(ev.currentTarget).parents(".message").attr("data-message-id");
     let msg = game.messages.get(id);
     let rollData = msg.getRollData();
     let weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
@@ -190,8 +182,8 @@ async function onReloadClick(ev) {
  */
 function onChatRollClick(event) {
     event.preventDefault();
-    const roll = event.currentTarget.parentElement;
-    const tip = roll.querySelector(".dice-rolls");
-    if (getComputedStyle(tip).display === "none") tip.style.display = "block";
-    else tip.style.display = "none";
+    let roll = $(event.currentTarget.parentElement);
+    let tip = roll.find(".dice-rolls");
+    if ( !tip.is(":visible") ) tip.slideDown(200);
+    else tip.slideUp(200);
 }

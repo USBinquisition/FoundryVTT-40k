@@ -115,7 +115,7 @@ Hooks.once("ready", function() {
 
 /** Add Event Listeners for Buttons on chat boxes */
 Hooks.once("renderChatLog", (chat, html) => {
-    chatListeners(html[0]);
+    chatListeners(html);
 });
 
 /** Add Options to context Menu of chatmessages */
@@ -134,11 +134,6 @@ Hooks.on("hotbarDrop", (bar, data, slot) => {
 });
 
 Hooks.on("renderDarkHeresySheet", (sheet, html, data) => {
-    const element = html[0] ?? html;
-    element.querySelectorAll("input.cost").forEach(input => {
-        input.disabled = game.settings.get("dark-heresy", "autoCalcXPCosts");
-    });
-    element.querySelectorAll(":not(.psychic-power) > input.item-cost").forEach(input => {
-        input.disabled = game.settings.get("dark-heresy", "autoCalcXPCosts");
-    });
+    html.find("input.cost").prop("disabled", game.settings.get("dark-heresy", "autoCalcXPCosts"));
+    html.find(":not(.psychic-power) > input.item-cost").prop("disabled", game.settings.get("dark-heresy", "autoCalcXPCosts"));
 });

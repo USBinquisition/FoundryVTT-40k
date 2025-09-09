@@ -34,22 +34,21 @@ export class NpcSheet extends DarkHeresySheet {
 
     activateListeners(html) {
         super.activateListeners(html);
-        const element = html[0] ?? html;
-        element.querySelectorAll(".item-cost").forEach(el => el.addEventListener("focusout", async ev => { await this._onItemCostFocusOut(ev); }));
-        element.querySelectorAll(".item-starter").forEach(el => el.addEventListener("click", async ev => { await this._onItemStarterClick(ev); }));
+        html.find(".item-cost").focusout(async ev => { await this._onItemCostFocusOut(ev); });
+        html.find(".item-starter").click(async ev => { await this._onItemStarterClick(ev); });
     }
 
     async _onItemCostFocusOut(event) {
         event.preventDefault();
-        const div = event.currentTarget.closest(".item");
-        let item = this.actor.items.get(div.dataset.itemId);
-        item.update({"system.cost": event.currentTarget.value});
+        const div = $(event.currentTarget).parents(".item");
+        let item = this.actor.items.get(div.data("itemId"));
+        item.update({"system.cost": $(event.currentTarget)[0].value});
     }
 
     async _onItemStarterClick(event) {
         event.preventDefault();
-        const div = event.currentTarget.closest(".item");
-        let item = this.actor.items.get(div.dataset.itemId);
-        item.update({"system.starter": event.currentTarget.checked});
+        const div = $(event.currentTarget).parents(".item");
+        let item = this.actor.items.get(div.data("itemId"));
+        item.update({"system.starter": $(event.currentTarget)[0].checked});
     }
 }
