@@ -4,7 +4,7 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "APTITUDE.NAME"}}</b>
-                <a class="button item-create" title="Add Aptitude" data-type="aptitude"><i class="fas fa-plus"></i></a>
+                <a class="button item-create" title="Add Aptitude" data-type="aptitude"><i class="fa-solid fa-plus"></i></a>
             </div>
             <div class="items">
                 {{#each items.aptitudes as |item|}}                    
@@ -16,7 +16,7 @@
                             <div class="name">{{item.name}}</div>
                         </div>
                         <div class="button">
-                            <a class="item-control item-delete" title="Delete Aptitude"><i class="fas fa-trash"></i></a>
+                            <a class="item-control item-delete" title="Delete Aptitude"><i class="fa-solid fa-trash"></i></a>
                         </div>
                     </div>                    
                 {{/each}}
@@ -30,7 +30,7 @@
                 <b class="name">{{localize "TALENT.NAME"}}</b>
                 <b class="cost">{{localize "TALENT.COST"}}</b>
                 <b class="starter">{{localize "TALENT.STARTER"}}</b>
-                <a class="button item-create" title="Add Talent" data-type="talent"><i class="fas fa-plus"></i></a>
+                <a class="button item-create" title="Add Talent" data-type="talent"><i class="fa-solid fa-plus"></i></a>
             </div>
             <div class="items">
                 {{#each items.talents as |item|}}                    
@@ -44,7 +44,7 @@
                         <input class="item-cost" type="number" value="{{item.cost}}" data-dtype="Number" />
                         <input class="item-starter" type="checkbox" {{#if item.starter}}checked{{/if}} data-dtype="Boolean"/>
                         <div class="button">
-                            <a class="item-control item-delete" title="Delete Talent"><i class="fas fa-trash"></i></a>
+                            <a class="item-control item-delete" title="Delete Talent"><i class="fa-solid fa-trash"></i></a>
                         </div>
                     </div>
                 {{/each}}
@@ -136,7 +136,7 @@
                 <div class="flex header">
                     <b class="name">{{localize "PSYCHIC_POWER.NAME"}}</b>
                     <b class="cost">{{localize "PSYCHIC_POWER.COST"}}</b>
-                    <a class="button item-create" title="Add Psychic Power" data-type="psychicPower"><i class="fas fa-plus"></i></a>
+                    <a class="button item-create" title="Add Psychic Power" data-type="psychicPower"><i class="fa-solid fa-plus"></i></a>
                 </div>
                 <div class="items">
                     {{#each items.psychicPowers as |item|}}                        
@@ -149,7 +149,7 @@
                             </div>
                             <input class="item-cost" type="number" value="{{item.cost}}" data-dtype="Number" />
                             <div class="button">
-                                <a class="item-control item-delete" title="Delete Psychic Power"><i class="fas fa-trash"></i></a>
+                                <a class="item-control item-delete" title="Delete Psychic Power"><i class="fa-solid fa-trash"></i></a>
                             </div>
                         </div>
                     {{/each}}
