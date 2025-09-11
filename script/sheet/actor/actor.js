@@ -52,7 +52,7 @@ export class DarkHeresySheet extends ActorSheet {
                 {
                     label: game.i18n.localize("BUTTON.ROLL"),
                     class: "custom-roll",
-                    icon: "fas fa-dice",
+                    icon: "fa-solid fa-dice",
                     onclick: async () => await this._prepareCustomRoll()
                 }
             ].concat(buttons);
