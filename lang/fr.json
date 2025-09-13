@@ -143,7 +143,9 @@
     "CYBERNETIC.CRAFTSMANSHIP": "Qualité",
     "CYBERNETIC.AVAILABILITY": "Disponibilité",
     "CYBERNETIC.WEIGHT": "Poids",
-  
+    "CYBERNETIC.MOD_NORMAL": "Modificateur",
+    "CYBERNETIC.MOD_UNNATURAL": "Modificateur Surnaturel",
+
     "DAMAGE_TYPE.ENERGY": "Energie",
     "DAMAGE_TYPE.IMPACT": "Impact",
     "DAMAGE_TYPE.RENDING": "Pénétrant",
