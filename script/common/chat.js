@@ -28,7 +28,8 @@ export const addChatMessageContextOptions = function(html, options) {
     try {
         let canApply = li => {
             try {
-                const message = game.messages.get(li.data("messageId"));
+                const messageId = li.attr("data-message-id");
+                const message = game.messages.get(messageId);
                 if (!message || typeof message.getRollData !== "function") return false;
                 return message.getRollData().flags.isDamageRoll
                     && message.isContentVisible
@@ -49,7 +50,8 @@ export const addChatMessageContextOptions = function(html, options) {
 
         let canReroll = li => {
             try {
-                const message = game.messages.get(li.data("messageId"));
+                const messageId = li.attr("data-message-id");
+                const message = game.messages.get(messageId);
                 if (!message || typeof message.getRollData !== "function") return false;
                 const actor = game.actors.get(message.getRollData()?.ownerId);
                 return message.isRoll
