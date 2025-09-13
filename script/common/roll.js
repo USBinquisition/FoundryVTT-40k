@@ -725,16 +725,6 @@ export async function sendDamageToChat(rollData) {
         rollData.tokenId = speaker.token;
     }
 
-    // Note penetration versus the first controlled token's armour if available
-    const target = canvas.tokens.controlled[0]?.actor;
-    if (target) {
-        rollData.damages.forEach(d => {
-            const armour = target._getArmour(d.location);
-            const remaining = Math.max(armour - d.penetration, 0);
-            d.penNote = `${armour} → ${remaining}`;
-        });
-    }
-
     chatData.rolls = rollData.damages.flatMap(r => r.damageRoll);
 
     const html = await renderTemplate("systems/dark-heresy/template/chat/damage.hbs", rollData);
