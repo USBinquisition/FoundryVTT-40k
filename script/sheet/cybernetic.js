@@ -6,7 +6,7 @@ export class CyberneticSheet extends DarkHeresyItemSheet {
             classes: ["dark-heresy", "sheet", "cybernetic"],
             template: "systems/dark-heresy/template/sheet/cybernetic.hbs",
             width: 500,
-            height: 369,
+            height: 475,
             resizable: false,
             tabs: [
                 {
