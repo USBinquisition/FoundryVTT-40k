@@ -25,41 +25,57 @@ export function chatListeners(html) {
  * @returns {Array}              The extended options Array including new context choices
  */
 export const addChatMessageContextOptions = function(html, options) {
-    let canApply = li => {
-        const message = game.messages.get(li.data("messageId"));
-        return message.getRollData()?.flags.isDamageRoll
-            && message.isContentVisible
-            && canvas.tokens.controlled.length;
-    };
-    options.push(
-        {
-            name: game.i18n.localize("CHAT.CONTEXT.APPLY_DAMAGE"),
-            icon: '<i class="fas fa-user-minus"></i>',
-            condition: canApply,
-            callback: li => applyChatCardDamage(li)
-        }
-    );
-
-    let canReroll = li => {
-        const message = game.messages.get(li.data("messageId"));
-        let actor = game.actors.get(message.getRollData()?.ownerId);
-        return message.isRoll
-            && !message.getRollData()?.flags.isDamageRoll
-            && message.isContentVisible
-            && actor?.fate.value > 0;
-    };
-
-    options.push(
-        {
-            name: game.i18n.localize("CHAT.CONTEXT.REROLL"),
-            icon: '<i class="fa-solid fa-repeat"></i>',
-            condition: canReroll,
-            callback: li => {
+    try {
+        let canApply = li => {
+            try {
                 const message = game.messages.get(li.data("messageId"));
-                rerollTest(message.getRollData());
+                if (!message || typeof message.getRollData !== "function") return false;
+                return message.getRollData().flags.isDamageRoll
+                    && message.isContentVisible
+                    && canvas.tokens.controlled.length;
+            } catch(error) {
+                console.error(error);
+                return false;
             }
-        }
-    );
+        };
+        options.push(
+            {
+                name: game.i18n.localize("CHAT.CONTEXT.APPLY_DAMAGE"),
+                icon: '<i class="fas fa-user-minus"></i>',
+                condition: canApply,
+                callback: li => applyChatCardDamage(li)
+            }
+        );
+
+        let canReroll = li => {
+            try {
+                const message = game.messages.get(li.data("messageId"));
+                if (!message || typeof message.getRollData !== "function") return false;
+                const actor = game.actors.get(message.getRollData()?.ownerId);
+                return message.isRoll
+                    && !message.getRollData().flags.isDamageRoll
+                    && message.isContentVisible
+                    && actor?.fate.value > 0;
+            } catch(error) {
+                console.error(error);
+                return false;
+            }
+        };
+
+        options.push(
+            {
+                name: game.i18n.localize("CHAT.CONTEXT.REROLL"),
+                icon: '<i class="fa-solid fa-repeat"></i>',
+                condition: canReroll,
+                callback: li => {
+                    const message = game.messages.get(li.data("messageId"));
+                    rerollTest(message.getRollData());
+                }
+            }
+        );
+    } catch(error) {
+        console.error(error);
+    }
     return options;
 };
 
