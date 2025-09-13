@@ -23,6 +23,12 @@ export async function commonRoll(rollData) {
  * @param {object} rollData
  */
 export async function combatRoll(rollData) {
+    let blastTemplate;
+    if (rollData.weapon.traits.blast && game.settings.get("dark-heresy", "useBlasttemplate")) {
+        const template = PlaceableTemplate.circle({ item: rollData.itemId, actor: rollData.ownerId },
+            rollData.weapon.traits.blast);
+        [blastTemplate] = await template.drawPreview();
+    }
     if (rollData.weapon.traits.spray && game.settings.get("dark-heresy", "useSpraytemplate")) {
         let template = PlaceableTemplate.cone({ item: rollData.itemId, actor: rollData.ownerId },
             30, rollData.weapon.range);
@@ -37,6 +43,9 @@ export async function combatRoll(rollData) {
     } else {
         await _computeCombatTarget(rollData);
         await _rollTarget(rollData);
+        if (blastTemplate && !rollData.flags.isSuccess) {
+            await _scatterTemplate(blastTemplate, rollData.dof, rollData.ownerId);
+        }
         rollData.attackDos = rollData.dos;
         rollData.attackResult = rollData.result;
         if (!rollData.isReRoll) {
@@ -157,6 +166,38 @@ async function _rollTarget(rollData) {
         rollData.dof = 1 + _getDegree(rollData.result, rollData.target.final);
     }
     if (rollData.psy) _computePsychicPhenomena(rollData);
+}
+
+/**
+ * Scatter a template in a random direction by a number of meters.
+ * @param {MeasuredTemplateDocument} templateDoc
+ * @param {number} meters
+ * @param {string} actorId
+ */
+async function _scatterTemplate(templateDoc, meters, actorId) {
+    const dirRoll = new Roll("1d8");
+    await dirRoll.evaluate({ async: false });
+    const directions = {
+        1: {dx: 0, dy: -1},
+        2: {dx: 1, dy: -1},
+        3: {dx: 1, dy: 0},
+        4: {dx: 1, dy: 1},
+        5: {dx: 0, dy: 1},
+        6: {dx: -1, dy: 1},
+        7: {dx: -1, dy: 0},
+        8: {dx: -1, dy: -1}
+    };
+    const {dx, dy} = directions[dirRoll.total];
+    const distance = meters * canvas.grid.size;
+    await templateDoc.update({
+        x: templateDoc.x + dx * distance,
+        y: templateDoc.y + dy * distance
+    });
+    const speaker = ChatMessage.getSpeaker({actor: game.actors.get(actorId)});
+    ChatMessage.create({
+        content: `Scatter ${meters}m (direction ${dirRoll.total})`,
+        speaker
+    });
 }
 /**
  * Handle rolling and collecting parts of a combat damage roll.
