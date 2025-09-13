@@ -16,12 +16,74 @@ export function chatListeners(html) {
         const roll = $(ev.currentTarget).closest(".message");
         applyChatCardDamage(roll);
     });
-    html.on("click", ".reroll-fp", ev => {
-        const messageId = $(ev.currentTarget).closest(".message").attr("data-message-id");
-        const message = game.messages.get(messageId);
-        rerollTest(message.getRollData());
-    });
+    html.on("dblclick", ".dark-heresy.chat.roll>.background.border", onChatRollClick.bind(this));
 }
+
+/**
+ * This function is used to hook into the Chat Log context menu to add additional options to each message
+ * These options make it easy to conveniently apply damage to controlled tokens based on the value of a Roll
+ *
+ * @param {HTMLElement} html    The Chat Message being rendered
+ * @param {Array} options       The Array of Context Menu options
+ *
+ * @returns {Array}              The extended options Array including new context choices
+ */
+export const addChatMessageContextOptions = function(html, options) {
+    try {
+        let canApply = li => {
+            try {
+                const messageId = li.attr("data-message-id");
+                const message = game.messages.get(messageId);
+                if (!message || typeof message.getRollData !== "function") return false;
+                return message.getRollData().flags.isDamageRoll
+                    && message.isContentVisible
+                    && canvas.tokens.controlled.length;
+            } catch(error) {
+                console.error(error);
+                return false;
+            }
+        };
+        options.push(
+            {
+                name: game.i18n.localize("CHAT.CONTEXT.APPLY_DAMAGE"),
+                icon: "<i class=\"fa-solid fa-user-minus\"></i>",
+                condition: canApply,
+                callback: li => applyChatCardDamage(li)
+            }
+        );
+
+        let canReroll = li => {
+            try {
+                const messageId = li.attr("data-message-id");
+                const message = game.messages.get(messageId);
+                if (!message || typeof message.getRollData !== "function") return false;
+                const actor = game.actors.get(message.getRollData()?.ownerId);
+                return message.isRoll
+                    && !message.getRollData().flags.isDamageRoll
+                    && message.isContentVisible
+                    && actor?.fate.value > 0;
+            } catch(error) {
+                console.error(error);
+                return false;
+            }
+        };
+
+        options.push(
+            {
+                name: game.i18n.localize("CHAT.CONTEXT.REROLL"),
+                icon: "<i class=\"fa-solid fa-repeat\"></i>",
+                condition: canReroll,
+                callback: li => {
+                    const message = game.messages.get(li.data("messageId"));
+                    rerollTest(message.getRollData());
+                }
+            }
+        );
+    } catch(error) {
+        console.error(error);
+    }
+    return options;
+};
 
 /**
  * Apply rolled dice damage to the token or tokens which are currently controlled.
@@ -137,3 +199,14 @@ async function onReloadClick(ev) {
     await weapon.update({"system.clip.value": rollData.weapon.clip.max});
 }
 
+/**
+ * Show/hide dice rolls when a chat message is clicked.
+ * @param {Event} event
+ */
+function onChatRollClick(event) {
+    event.preventDefault();
+    let roll = $(event.currentTarget.parentElement);
+    let tip = roll.find(".dice-rolls");
+    if ( !tip.is(":visible") ) tip.slideDown(200);
+    else tip.slideUp(200);
+}
