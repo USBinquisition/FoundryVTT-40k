@@ -6,7 +6,7 @@
                 <p><strong>{{localize "CHAT.DAMAGE_HEADER"}}</strong></p>
                 <ul class="dice-list">
                     {{#each damage.dice as |die|}}
-                        <li class="die {{#if die.max}}max{{/if}} {{#if die.righteous}}righteous{{/if}} {{#if die.replaced}}replaced-{{die.replaced}}{{/if}}">{{#if die.replaced}}{{die.original}}&rarr;{{/if}}{{die.value}}</li>
+                        <li class="die {{#if die.max}}max{{/if}} {{#if die.righteous}}righteous{{/if}} {{#if die.replaced}}replaced-{{die.replaced}}{{/if}} {{#if die.dropped}}dropped{{/if}}">{{die.value}}{{#if die.annotation}}<sup>{{die.annotation}}</sup>{{/if}}</li>
                     {{/each}}
                 </ul>
             {{/each}}

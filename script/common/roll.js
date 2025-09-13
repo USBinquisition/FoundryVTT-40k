@@ -219,6 +219,8 @@ async function _rollDamage(rollData) {
             die.replaced = "up";
             die.original = die.value;
             die.value = rollData.dos;
+            die.reason = "dos";
+            die.annotation = "↑DOS";
         }
         minDamage.total += (rollData.dos - minDamage.minDice);
         minDamage.minDice = rollData.dos;
@@ -276,6 +278,7 @@ function _computeNumberOfHits(attackDos, evasionDos, attackType, shotsFired, wea
 async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponTraits) {
     const r = new Roll(damageFormula);
     await r.evaluate();
+    const annotationMap = { dos: "↑DOS", proven: "↑Proven", primitive: "↓Primitive", tearing: "×Tearing" };
     const damage = {
         total: r.total,
         righteousFury: 0,
@@ -293,19 +296,30 @@ async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponT
         if (typeof term === "object" && term !== null) {
             const rfFace = weaponTraits.rfFace ? weaponTraits.rfFace : term.faces; // Without Vengeful rfFace is undefined
             term.results?.forEach(async result => {
-                if (!result.active) return;
                 const value = result.count ?? result.result;
                 const original = result.result;
-                if (value >= rfFace) damage.righteousFury = await _rollRighteousFury();
+                const dropped = !result.active;
+                let reason;
+                if (dropped) {
+                    reason = "tearing";
+                } else if (value !== original) {
+                    reason = value > original ? "proven" : "primitive";
+                }
+                if (value >= rfFace && !dropped) damage.righteousFury = await _rollRighteousFury();
                 const die = {
                     value,
                     original,
+                    dropped,
                     replaced: value !== original ? (value > original ? "up" : "down") : false,
-                    righteous: value >= rfFace,
+                    righteous: value >= rfFace && !dropped,
                     max: value === term.faces
                 };
+                if (reason) {
+                    die.reason = reason;
+                    die.annotation = annotationMap[reason];
+                }
                 damage.dice.push(die);
-                if (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value) {
+                if (!dropped && (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value)) {
                     damage.minIndex = damage.dice.length - 1;
                     damage.minDice = value;
                 }
@@ -323,17 +337,17 @@ async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponT
             damage.total += ar.total;
             ar.terms.forEach(term => {
                 term.results?.forEach(result => {
-                    if (!result.active) return;
                     const value = result.count ?? result.result;
                     const die = {
                         value,
                         original: value,
+                        dropped: !result.active,
                         replaced: false,
                         righteous: false,
                         max: value === term.faces
                     };
                     damage.dice.push(die);
-                    if (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value) {
+                    if (result.active && (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value)) {
                         damage.minIndex = damage.dice.length - 1;
                         damage.minDice = value;
                     }
