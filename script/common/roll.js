@@ -301,7 +301,8 @@ async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponT
                     value,
                     original,
                     replaced: value !== original ? (value > original ? "up" : "down") : false,
-                    righteous: value >= rfFace
+                    righteous: value >= rfFace,
+                    max: value === term.faces
                 };
                 damage.dice.push(die);
                 if (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value) {
@@ -320,15 +321,23 @@ async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponT
             const ar = new Roll(`${numDice}d10`);
             await ar.evaluate();
             damage.total += ar.total;
-            ar.terms.flatMap(term => term.results).forEach(result => {
-                if (!result.active) return;
-                const value = result.count ?? result.result;
-                const die = { value, original: value, replaced: false, righteous: false };
-                damage.dice.push(die);
-                if (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value) {
-                    damage.minIndex = damage.dice.length - 1;
-                    damage.minDice = value;
-                }
+            ar.terms.forEach(term => {
+                term.results?.forEach(result => {
+                    if (!result.active) return;
+                    const value = result.count ?? result.result;
+                    const die = {
+                        value,
+                        original: value,
+                        replaced: false,
+                        righteous: false,
+                        max: value === term.faces
+                    };
+                    damage.dice.push(die);
+                    if (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value) {
+                        damage.minIndex = damage.dice.length - 1;
+                        damage.minDice = value;
+                    }
+                });
             });
         }
     }
@@ -676,6 +685,9 @@ async function _sendRollToChat(rollData) {
         rollData.render = await rollData.rollObject.render();
         chatData.rolls = [rollData.rollObject];
     }
+
+    const actor = game.actors.get(rollData.ownerId);
+    rollData.canReroll = actor?.fate.value > 0 && !rollData.flags.isDamageRoll;
 
     let html;
     if (rollData.flags.isEvasion) {

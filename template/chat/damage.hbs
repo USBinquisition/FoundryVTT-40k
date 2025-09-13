@@ -2,37 +2,26 @@
     <div class="background border">
         <h1>{{itemName}}</h1>
         {{#each damages as |damage|}}
-            <h3 class="separator damage-location" data-location={{location}}>{{localize location}}</h3>
-            <div>
-                <p><strong>{{localize "CHAT.DAMAGE"}}:</strong> <span class="damage-total">{{damage.total}}</span>
-                <strong class="damage-type">{{damageTypeShort ../weapon.damageType}}</strong>
-                    </p>
-            </div>
-            <p><strong>{{localize "CHAT.PENETRATION"}}:</strong> <span class="damage-penetration">{{penetration}}</span></p>
-            {{#if damage.righteousFury}}
-            <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
-            {{/if}}
-        {{/each}}
-        {{#if canvas.tokens.controlled.length}}
-            <div class="wrapper flex-column">
-                <button class="apply-damage">{{localize "CHAT.CONTEXT.APPLY_DAMAGE"}}</button>
-            </div>
-        {{/if}}
-        <div class="dice-rolls" style="display:none">
-            <h1>{{localize "CHAT.ROLL_TITLE"}}</h1>
-            {{#each damages as |damage|}}
-                <p><strong>{{localize "CHAT.DAMAGE_HEADER"}}</strong></p>
+            <div class="dice-rolls">
                 <ul class="dice-list">
                     {{#each damage.dice as |die|}}
-                        <li class="die {{#if die.righteous}}righteous{{/if}} {{#if die.replaced}}replaced-{{die.replaced}}{{/if}}">
-                            {{#if die.replaced}}{{die.original}}&rarr;{{/if}}{{die.value}}
+                        <li class="die {{#if die.righteous}}righteous{{/if}} {{#if die.replaced}}replaced-{{die.replaced}}{{/if}} {{#if die.max}}max{{/if}}">
+                            {{#if die.replaced}}{{die.original}}&rarr;{{/if}}{{die.value}}{{#if die.max}}!{{/if}}
                         </li>
                     {{/each}}
                 </ul>
-            {{/each}}
-            {{#if weapon.special}}
-                <p><strong>{{localize "WEAPON.SPECIAL"}}:</strong> {{weapon.special}}</p>
+            </div>
+            <h3 class="separator damage-location" data-location={{location}}>{{localize location}}</h3>
+            <p><strong>{{localize "CHAT.DAMAGE"}}:</strong> <span class="damage-total">{{damage.total}}</span>
+                <strong class="damage-type">{{damageTypeShort ../weapon.damageType}}</strong>
+            </p>
+            <p><strong>{{localize "CHAT.PENETRATION"}}:</strong> <span class="damage-penetration">{{penetration}}</span></p>
+            {{#if damage.righteousFury}}
+                <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
             {{/if}}
+        {{/each}}
+        <div class="wrapper flex-column">
+            <button class="apply-damage">{{localize "CHAT.CONTEXT.APPLY_DAMAGE"}}</button>
         </div>
     </div>
 </div>
