@@ -5,9 +5,9 @@ export class CyberneticSheet extends DarkHeresyItemSheet {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["dark-heresy", "sheet", "cybernetic"],
             template: "systems/dark-heresy/template/sheet/cybernetic.hbs",
-            width: 500,
-            height: 475,
-            resizable: false,
+            width: Math.min(window.innerWidth * 0.4, 600),
+            height: Math.min(window.innerHeight * 0.6, 700),
+            resizable: true,
             tabs: [
                 {
                     navSelector: ".sheet-tabs",
