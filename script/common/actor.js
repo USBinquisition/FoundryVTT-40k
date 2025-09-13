@@ -31,6 +31,13 @@ export class DarkHeresyActor extends Actor {
         const cybernetics = this.items.filter(it => it.type === "cybernetic" && it.system.installed);
         let middle = Object.values(this.characteristics).length / 2;
         let i = 0;
+        const baseAdvances = {};
+        const baseUnnaturals = {};
+        for (let [stat, characteristic] of Object.entries(this.characteristics)) {
+            baseAdvances[stat] = characteristic.advance ?? 0;
+            baseUnnaturals[stat] = characteristic.unnatural ?? 0;
+        }
+        const normalBonuses = {};
         for (let [stat, characteristic] of Object.entries(this.characteristics)) {
             let normal = 0;
             let unnatural = 0;
@@ -41,17 +48,20 @@ export class DarkHeresyActor extends Actor {
                     unnatural += Number(charData.unnatural ?? 0);
                 }
             }
-            characteristic.advance += normal;
-            characteristic.unnatural += unnatural;
-            characteristic.total = characteristic.base + characteristic.advance;
-            characteristic.bonus = Math.floor(characteristic.total / 10) + characteristic.unnatural;
+            normalBonuses[stat] = normal;
+            const baseAdvance = baseAdvances[stat];
+            const baseUnnatural = baseUnnaturals[stat];
+            const totalAdvance = baseAdvance + normal;
+            const totalUnnatural = baseUnnatural + unnatural;
+            characteristic.total = characteristic.base + totalAdvance;
+            characteristic.bonus = Math.floor(characteristic.total / 10) + totalUnnatural;
             if (this.fatigue.value > characteristic.bonus) {
                 characteristic.total = Math.ceil(characteristic.total / 2);
-                characteristic.bonus = Math.floor(characteristic.total / 10) + characteristic.unnatural;
+                characteristic.bonus = Math.floor(characteristic.total / 10) + totalUnnatural;
             }
             characteristic.isLeft = i < middle;
             characteristic.isRight = i >= middle;
-            characteristic.advanceCharacteristic = this._getAdvanceCharacteristic(characteristic.advance);
+            characteristic.advanceCharacteristic = this._getAdvanceCharacteristic(totalAdvance);
             i++;
         }
         this.system.insanityBonus = Math.floor(this.insanity / 10);
@@ -61,11 +71,11 @@ export class DarkHeresyActor extends Actor {
         // Done as variables to make it easier to read & understand
         let tb = Math.floor(
             (this.characteristics.toughness.base
-        + this.characteristics.toughness.advance) / 10);
+        + baseAdvances.toughness + normalBonuses.toughness) / 10);
 
         let wb = Math.floor(
             (this.characteristics.willpower.base
-        + this.characteristics.willpower.advance) / 10);
+        + baseAdvances.willpower + normalBonuses.willpower) / 10);
 
         // The only thing not affected by itself
         this.fatigue.max = tb + wb;
