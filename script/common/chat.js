@@ -34,9 +34,9 @@ export const addChatMessageContextOptions = function(html, options) {
     options.push(
         {
             name: game.i18n.localize("CHAT.CONTEXT.APPLY_DAMAGE"),
-            icon: "fa-solid fa-user-minus",
-            check: canApply,
-            onClick: li => applyChatCardDamage(li)
+            icon: '<i class="fas fa-user-minus"></i>',
+            condition: canApply,
+            callback: li => applyChatCardDamage(li)
         }
     );
 
@@ -52,9 +52,9 @@ export const addChatMessageContextOptions = function(html, options) {
     options.push(
         {
             name: game.i18n.localize("CHAT.CONTEXT.REROLL"),
-            icon: "fa-solid fa-repeat",
-            check: canReroll,
-            onClick: li => {
+            icon: '<i class="fa-solid fa-repeat"></i>',
+            condition: canReroll,
+            callback: li => {
                 const message = game.messages.get(li.data("messageId"));
                 rerollTest(message.getRollData());
             }
