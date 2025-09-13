@@ -1,11 +1,13 @@
 .dark-heresy.cybernetic .notes-editor {
-    height: 165px;
-    max-height: 165px;
+    height: auto;
+    max-height: 30vh;
 }
 
 .dark-heresy.cybernetic .stats {
-    height: 165px;
+    height: auto;
+    max-height: 60vh;
     align-content: baseline;
+    overflow-y: auto;
 }
 
 .dark-heresy.cybernetic .stats .stats-row .stat.craftsmanship select {
@@ -21,14 +23,25 @@
     text-align: center;
 }
 
-.dark-heresy.cybernetic .stats .characteristics {
+.dark-heresy.cybernetic .stats .characteristics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5em;
+}
+
+.dark-heresy.cybernetic .stats .characteristics-grid .characteristics,
+.dark-heresy.cybernetic .stats .characteristics-grid .characteristic {
     display: grid;
     grid-template-columns: 1fr repeat(2, 3em);
     column-gap: 0.5em;
     align-items: center;
 }
 
-.dark-heresy.cybernetic .stats .characteristics input[type="number"] {
+.dark-heresy.cybernetic .stats .characteristics-grid .characteristics.header {
+    grid-column: span 2;
+}
+
+.dark-heresy.cybernetic .stats .characteristics-grid input[type="number"] {
     width: 3em;
     text-align: center;
 }
