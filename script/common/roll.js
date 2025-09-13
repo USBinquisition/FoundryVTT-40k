@@ -165,6 +165,7 @@ async function _rollTarget(rollData) {
 async function _rollDamage(rollData) {
     let formula = "0";
     rollData.damages = [];
+    let modifiers = [];
     if (rollData.weapon.damageFormula) {
         formula = rollData.weapon.damageFormula;
 
@@ -179,6 +180,7 @@ async function _rollDamage(rollData) {
         }
 
         formula = `${formula}+${rollData.weapon.damageBonus}`;
+        modifiers = _extractDamageModifiers(formula);
         formula = _replaceSymbols(formula, rollData);
     }
 
@@ -190,7 +192,8 @@ async function _rollDamage(rollData) {
         penetration,
         rollData.attackDos,
         rollData.aim?.isAiming,
-        rollData.weapon.traits
+        rollData.weapon.traits,
+        modifiers
     );
     const firstLocation = _getLocation(rollData.attackResult);
     firstHit.location = firstLocation;
@@ -204,7 +207,8 @@ async function _rollDamage(rollData) {
             penetration,
             rollData.attackDos,
             rollData.aim?.isAiming,
-            rollData.weapon.traits
+            rollData.weapon.traits,
+            modifiers
         );
         additionalHit.location = _getAdditionalLocation(firstLocation, i);
         rollData.damages.push(additionalHit);
@@ -273,9 +277,10 @@ function _computeNumberOfHits(attackDos, evasionDos, attackType, shotsFired, wea
  * @param {number} dos
  * @param {boolean} isAiming
  * @param {object} weaponTraits
+ * @param {Array<string>} modifiers
  * @returns {object}
  */
-async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponTraits) {
+async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponTraits, modifiers = []) {
     const r = new Roll(damageFormula);
     await r.evaluate();
     const annotationMap = { dos: "↑DOS", proven: "↑Proven", primitive: "↓Primitive", tearing: "×Tearing" };
@@ -288,7 +293,8 @@ async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponT
         formula: damageFormula,
         damageRoll: r,
         minDice: undefined,
-        minIndex: undefined
+        minIndex: undefined,
+        modifiers
     };
 
     // Base dice results
@@ -615,6 +621,24 @@ function _replaceSymbols(formula, rollData) {
         formula = formula.replaceAll(boni.regex, boni.value);
     }
     return formula;
+}
+
+/**
+ * Extract constant and attribute modifiers from a damage formula.
+ * @param {string} formula
+ * @returns {Array<string>}
+ */
+function _extractDamageModifiers(formula) {
+    const mods = [];
+    const regex = /([+-]\s*(?:\d+|[A-Za-z]+))/g;
+    const clean = formula.replace(/\s+/g, "");
+    let match;
+    while ((match = regex.exec(clean)) !== null) {
+        const mod = match[1];
+        if (mod === "+0" || mod === "-0") continue;
+        mods.push(mod);
+    }
+    return mods;
 }
 
 /**
