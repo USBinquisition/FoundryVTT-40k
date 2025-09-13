@@ -52,7 +52,7 @@ export const addChatMessageContextOptions = function(html, options) {
     options.push(
         {
             name: game.i18n.localize("CHAT.CONTEXT.REROLL"),
-            icon: '<i class="fa-solid fa-repeat"></i>',
+            icon: '<i class="fas fa-redo"></i>',
             condition: canReroll,
             callback: li => {
                 const message = game.messages.get(li.data("messageId"));
