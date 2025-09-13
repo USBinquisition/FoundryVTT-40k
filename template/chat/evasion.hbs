@@ -1,5 +1,8 @@
 <div class="dark-heresy chat roll">
     <div class="background border">
+        {{#if canReroll}}
+            <button class="fate-reroll"><i class="fa-solid fa-dice"></i> FP</button>
+        {{/if}}
         {{#if isReRoll}}
             <h1>{{localize "CHAT.REROLL"}}</h1>
         {{/if}}

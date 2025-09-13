@@ -29,7 +29,6 @@ import DhMacroUtil from "./common/macro.js";
 import Dh from "./common/config.js";
 
 // Import Helpers
-import * as chat from "./common/chat.js";
 
 Hooks.once("init", function() {
     CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
@@ -119,7 +118,6 @@ Hooks.once("renderChatLog", (chat, html) => {
 });
 
 /** Add Options to context Menu of chatmessages */
-Hooks.on("getChatLogEntryContext", chat.addChatMessageContextOptions);
 
 /**
  * Create a macro when dropping an entity on the hotbar
