@@ -211,10 +211,17 @@ async function _rollDamage(rollData) {
     }
 
     let minDamage = rollData.damages.reduce(
-        (min, damage) => min.minDice < damage.minDice ? min : damage, rollData.damages[0]);
+        (min, damage) => damage.minDice < min.minDice ? damage : min, rollData.damages[0]);
 
     if (minDamage.minDice < rollData.dos) {
+        const die = minDamage.dice[minDamage.minIndex];
+        if (die) {
+            die.replaced = "up";
+            die.original = die.value;
+            die.value = rollData.dos;
+        }
         minDamage.total += (rollData.dos - minDamage.minDice);
+        minDamage.minDice = rollData.dos;
     }
 }
 
@@ -267,46 +274,64 @@ function _computeNumberOfHits(attackDos, evasionDos, attackType, shotsFired, wea
  * @returns {object}
  */
 async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponTraits) {
-    let r = new Roll(damageFormula);
+    const r = new Roll(damageFormula);
     await r.evaluate();
-    let damage = {
+    const damage = {
         total: r.total,
         righteousFury: 0,
-        dices: [],
-        penetration: penetration,
-        dos: dos,
+        dice: [],
+        penetration,
+        dos,
         formula: damageFormula,
-        replaced: false,
-        damageRender: await r.render(),
-        damageRoll: r
+        damageRoll: r,
+        minDice: undefined,
+        minIndex: undefined
     };
 
+    // Base dice results
+    r.terms.forEach(term => {
+        if (typeof term === "object" && term !== null) {
+            const rfFace = weaponTraits.rfFace ? weaponTraits.rfFace : term.faces; // Without Vengeful rfFace is undefined
+            term.results?.forEach(async result => {
+                if (!result.active) return;
+                const value = result.count ?? result.result;
+                const original = result.result;
+                if (value >= rfFace) damage.righteousFury = await _rollRighteousFury();
+                const die = {
+                    value,
+                    original,
+                    replaced: value !== original ? (value > original ? "up" : "down") : false,
+                    righteous: value >= rfFace
+                };
+                damage.dice.push(die);
+                if (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value) {
+                    damage.minIndex = damage.dice.length - 1;
+                    damage.minDice = value;
+                }
+            });
+        }
+    });
+
+    // Accurate weapons add extra d10s when aiming
     if (weaponTraits.accurate && isAiming) {
         let numDice = ~~((dos - 1) / 2); // -1 because each degree after the first counts
         if (numDice >= 1) {
             if (numDice > 2) numDice = 2;
-            let ar = new Roll(`${numDice}d10`);
+            const ar = new Roll(`${numDice}d10`);
             await ar.evaluate();
             damage.total += ar.total;
-            ar.terms.flatMap(term => term.results).forEach(async die => {
-                if (die.active && die.result < dos) damage.dices.push(die.result);
-                if (die.active && (typeof damage.minDice === "undefined" || die.result < damage.minDice)) damage.minDice = die.result;
+            ar.terms.flatMap(term => term.results).forEach(result => {
+                if (!result.active) return;
+                const value = result.count ?? result.result;
+                const die = { value, original: value, replaced: false, righteous: false };
+                damage.dice.push(die);
+                if (damage.minIndex === undefined || value < damage.dice[damage.minIndex].value) {
+                    damage.minIndex = damage.dice.length - 1;
+                    damage.minDice = value;
+                }
             });
-            damage.accurateRender = await ar.render();
         }
     }
-
-    r.terms.forEach(term => {
-        if (typeof term === "object" && term !== null) {
-            let rfFace = weaponTraits.rfFace ? weaponTraits.rfFace : term.faces; // Without the Vengeful weapon trait rfFace is undefined
-            term.results?.forEach(async result => {
-                let dieResult = result.count ? result.count : result.result; // Result.count = actual value if modified by term
-                if (result.active && dieResult >= rfFace) damage.righteousFury = await _rollRighteousFury();
-                if (result.active && dieResult < dos) damage.dices.push(dieResult);
-                if (result.active && (typeof damage.minDice === "undefined" || dieResult < damage.minDice)) damage.minDice = dieResult;
-            });
-        }
-    });
     return damage;
 }
 
