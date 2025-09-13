@@ -540,6 +540,8 @@ export class DarkHeresyActor extends Actor {
         for (let characteristic of Object.values(this.characteristics)) {
             boni.push({ regex: new RegExp(`${characteristic.short}B`, "gi"), value: characteristic.bonus });
         }
+        boni.push({ regex: /IB/gi, value: this.system.insanityBonus });
+        boni.push({ regex: /CB/gi, value: this.system.corruptionBonus });
         return boni;
     }
 
