@@ -1144,7 +1144,19 @@
     },
     "cybernetic": {
       "templates": [ "equipment" ],
-      "installed": false
+      "installed": false,
+      "characteristics": {
+        "weaponSkill": { "normal": 0, "unnatural": 0 },
+        "ballisticSkill": { "normal": 0, "unnatural": 0 },
+        "strength": { "normal": 0, "unnatural": 0 },
+        "toughness": { "normal": 0, "unnatural": 0 },
+        "agility": { "normal": 0, "unnatural": 0 },
+        "intelligence": { "normal": 0, "unnatural": 0 },
+        "perception": { "normal": 0, "unnatural": 0 },
+        "willpower": { "normal": 0, "unnatural": 0 },
+        "fellowship": { "normal": 0, "unnatural": 0 },
+        "influence": { "normal": 0, "unnatural": 0 }
+      }
     },
     "drug": {
       "templates": [ "equipment" ],
