@@ -607,17 +607,39 @@ function _appendTearing(formula) {
 }
 
 /**
+ * Clone and sanitize roll data for chat flags.
+ * Removes Roll instances and pre-rendered HTML so the flags contain only
+ * serializable metadata.
+ * @param {object} rollData
+ * @returns {object}
+ */
+function _sanitizeRollData(rollData) {
+    const cleaned = foundry.utils.duplicate(rollData);
+    delete cleaned.rollObject;
+    delete cleaned.render;
+    if (Array.isArray(cleaned.damages)) {
+        cleaned.damages.forEach(d => {
+            delete d.damageRoll;
+            delete d.damageRender;
+            delete d.accurateRender;
+        });
+    }
+    return cleaned;
+}
+
+/**
  * Post a roll to chat.
  * @param {object} rollData
  */
 async function _sendRollToChat(rollData) {
     let speaker = ChatMessage.getSpeaker();
+    const cleaned = _sanitizeRollData(rollData);
     let chatData = {
         user: game.user.id,
         rollMode: game.settings.get("core", "rollMode"),
         speaker: speaker,
         flags: {
-            "dark-heresy": { rollData }
+            "dark-heresy": { rollData: cleaned }
         }
     };
 
@@ -652,12 +674,13 @@ async function _sendRollToChat(rollData) {
  */
 export async function sendDamageToChat(rollData) {
     let speaker = ChatMessage.getSpeaker();
+    const cleaned = _sanitizeRollData(rollData);
     let chatData = {
         user: game.user.id,
         rollMode: game.settings.get("core", "rollMode"),
         speaker: speaker,
         flags: {
-            "dark-heresy": { rollData }
+            "dark-heresy": { rollData: cleaned }
         }
     };
 
@@ -684,11 +707,12 @@ export async function sendDamageToChat(rollData) {
  * @param {object} rollData
  */
 async function _emptyClipToChat(rollData) {
+    const cleaned = _sanitizeRollData(rollData);
     let chatData = {
         user: game.user.id,
         content: await renderTemplate("systems/dark-heresy/template/chat/emptyMag.hbs", rollData),
         flags: {
-            "dark-heresy": { rollData }
+            "dark-heresy": { rollData: cleaned }
         }
     };
     ChatMessage.create(chatData);
