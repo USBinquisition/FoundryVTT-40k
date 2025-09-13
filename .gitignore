@@ -195,3 +195,5 @@ dark-heresy.zip
 css/
 release/
 packs/
+!src/packs/
+!src/packs/**
