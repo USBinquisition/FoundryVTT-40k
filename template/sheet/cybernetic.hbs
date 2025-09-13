@@ -47,60 +47,62 @@
                     </div>
                 </div>
                 <h2>{{localize "TITLE.CHARACTERISTICS"}}</h2>
-                <div class="characteristics">
-                    <label></label>
-                    <label>{{localize "CYBERNETIC.MOD_NORMAL"}}</label>
-                    <label>{{localize "CYBERNETIC.MOD_UNNATURAL"}}</label>
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.WEAPON_SKILL"}}</label>
-                    <input name="system.characteristics.weaponSkill.normal" type="number" value="{{system.characteristics.weaponSkill.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.weaponSkill.unnatural" type="number" value="{{system.characteristics.weaponSkill.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.BALLISTIC_SKILL"}}</label>
-                    <input name="system.characteristics.ballisticSkill.normal" type="number" value="{{system.characteristics.ballisticSkill.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.ballisticSkill.unnatural" type="number" value="{{system.characteristics.ballisticSkill.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.STRENGTH"}}</label>
-                    <input name="system.characteristics.strength.normal" type="number" value="{{system.characteristics.strength.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.strength.unnatural" type="number" value="{{system.characteristics.strength.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.TOUGHNESS"}}</label>
-                    <input name="system.characteristics.toughness.normal" type="number" value="{{system.characteristics.toughness.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.toughness.unnatural" type="number" value="{{system.characteristics.toughness.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.AGILITY"}}</label>
-                    <input name="system.characteristics.agility.normal" type="number" value="{{system.characteristics.agility.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.agility.unnatural" type="number" value="{{system.characteristics.agility.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.INTELLIGENCE"}}</label>
-                    <input name="system.characteristics.intelligence.normal" type="number" value="{{system.characteristics.intelligence.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.intelligence.unnatural" type="number" value="{{system.characteristics.intelligence.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.PERCEPTION"}}</label>
-                    <input name="system.characteristics.perception.normal" type="number" value="{{system.characteristics.perception.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.perception.unnatural" type="number" value="{{system.characteristics.perception.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.WILLPOWER"}}</label>
-                    <input name="system.characteristics.willpower.normal" type="number" value="{{system.characteristics.willpower.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.willpower.unnatural" type="number" value="{{system.characteristics.willpower.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.FELLOWSHIP"}}</label>
-                    <input name="system.characteristics.fellowship.normal" type="number" value="{{system.characteristics.fellowship.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.fellowship.unnatural" type="number" value="{{system.characteristics.fellowship.unnatural}}" data-dtype="Number" />
-                </div>
-                <div class="characteristics">
-                    <label>{{localize "CHARACTERISTIC.INFLUENCE"}}</label>
-                    <input name="system.characteristics.influence.normal" type="number" value="{{system.characteristics.influence.normal}}" data-dtype="Number" />
-                    <input name="system.characteristics.influence.unnatural" type="number" value="{{system.characteristics.influence.unnatural}}" data-dtype="Number" />
+                <div class="characteristics-grid">
+                    <div class="characteristics header">
+                        <label></label>
+                        <label>{{localize "CYBERNETIC.MOD_NORMAL"}}</label>
+                        <label>{{localize "CYBERNETIC.MOD_UNNATURAL"}}</label>
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.WEAPON_SKILL"}}</label>
+                        <input name="system.characteristics.weaponSkill.normal" type="number" value="{{system.characteristics.weaponSkill.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.weaponSkill.unnatural" type="number" value="{{system.characteristics.weaponSkill.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.BALLISTIC_SKILL"}}</label>
+                        <input name="system.characteristics.ballisticSkill.normal" type="number" value="{{system.characteristics.ballisticSkill.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.ballisticSkill.unnatural" type="number" value="{{system.characteristics.ballisticSkill.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.STRENGTH"}}</label>
+                        <input name="system.characteristics.strength.normal" type="number" value="{{system.characteristics.strength.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.strength.unnatural" type="number" value="{{system.characteristics.strength.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.TOUGHNESS"}}</label>
+                        <input name="system.characteristics.toughness.normal" type="number" value="{{system.characteristics.toughness.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.toughness.unnatural" type="number" value="{{system.characteristics.toughness.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.AGILITY"}}</label>
+                        <input name="system.characteristics.agility.normal" type="number" value="{{system.characteristics.agility.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.agility.unnatural" type="number" value="{{system.characteristics.agility.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.INTELLIGENCE"}}</label>
+                        <input name="system.characteristics.intelligence.normal" type="number" value="{{system.characteristics.intelligence.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.intelligence.unnatural" type="number" value="{{system.characteristics.intelligence.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.PERCEPTION"}}</label>
+                        <input name="system.characteristics.perception.normal" type="number" value="{{system.characteristics.perception.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.perception.unnatural" type="number" value="{{system.characteristics.perception.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.WILLPOWER"}}</label>
+                        <input name="system.characteristics.willpower.normal" type="number" value="{{system.characteristics.willpower.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.willpower.unnatural" type="number" value="{{system.characteristics.willpower.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.FELLOWSHIP"}}</label>
+                        <input name="system.characteristics.fellowship.normal" type="number" value="{{system.characteristics.fellowship.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.fellowship.unnatural" type="number" value="{{system.characteristics.fellowship.unnatural}}" data-dtype="Number" />
+                    </div>
+                    <div class="characteristic">
+                        <label>{{localize "CHARACTERISTIC.INFLUENCE"}}</label>
+                        <input name="system.characteristics.influence.normal" type="number" value="{{system.characteristics.influence.normal}}" data-dtype="Number" />
+                        <input name="system.characteristics.influence.unnatural" type="number" value="{{system.characteristics.influence.unnatural}}" data-dtype="Number" />
+                    </div>
                 </div>
             </div>
         </div>
