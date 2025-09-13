@@ -25,11 +25,7 @@
                 <div class="stats-row">
                     <div class="stat installed">
                         <label>{{localize "CYBERNETIC.INSTALLED"}}</label>
-                        {{#if system.installed}}
-                            <input name="system.installed" type="checkbox" value="installed" checked/>
-                        {{else}}
-                            <input name="system.installed" type="checkbox" value="installed"/>
-                        {{/if}}
+                        <input type="checkbox" name="system.installed" data-dtype="Boolean" {{checked system.installed}}/>
                     </div>
                 </div>
                 <div class="stats-row">
