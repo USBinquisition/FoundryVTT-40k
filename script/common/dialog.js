@@ -11,10 +11,10 @@ export async function prepareCommonRoll(rollData) {
         content: html,
         buttons: {
             roll: {
-                icon: "fa-solid fa-check",
+                icon: '<i class="fas fa-check"></i>',
                 label: game.i18n.localize("BUTTON.ROLL"),
-                onClick: async function(event) {
-                    const html = this.element;
+                callback: async html => {
+                    html = $(html);
                     if (rollData.flags?.isEvasion) {
                         const skill = html.find("#selectedSkill")[0];
                         if (skill) {
@@ -33,9 +33,9 @@ export async function prepareCommonRoll(rollData) {
                 }
             },
             cancel: {
-                icon: "fa-solid fa-times",
+                icon: '<i class="fas fa-times"></i>',
                 label: game.i18n.localize("BUTTON.CANCEL"),
-                onClick: () => {}
+                callback: () => {}
             }
 
         },
@@ -70,10 +70,9 @@ export async function prepareCombatRoll(rollData, actorRef) {
             content: html,
             buttons: {
                 roll: {
-                    icon: "fa-solid fa-check",
+                    icon: '<i class="fas fa-check"></i>',
                     label: game.i18n.localize("BUTTON.ROLL"),
-                    onClick: async function(event) {
-                        const html = this.element;
+                    callback: async html => {
                         rollData.name = game.i18n.localize(rollData.name);
                         rollData.target.base = parseInt(html.find("#target")[0]?.value, 10);
                         rollData.target.modifier = parseInt(html.find("#modifier")[0]?.value, 10);
@@ -118,9 +117,9 @@ export async function prepareCombatRoll(rollData, actorRef) {
                     }
                 },
                 cancel: {
-                    icon: "fa-solid fa-times",
+                    icon: '<i class="fas fa-times"></i>',
                     label: game.i18n.localize("BUTTON.CANCEL"),
-                    onClick: () => {}
+                    callback: () => {}
                 }
             },
             default: "roll",
@@ -141,10 +140,9 @@ export async function preparePsychicPowerRoll(rollData) {
         content: html,
         buttons: {
             roll: {
-                icon: "fa-solid fa-check",
+                icon: '<i class="fas fa-check"></i>',
                 label: game.i18n.localize("BUTTON.ROLL"),
-                onClick: async function(event) {
-                    const html = this.element;
+                callback: async html => {
                     rollData.name = game.i18n.localize(rollData.name);
                     rollData.target.base = parseInt(html.find("#target")[0]?.value, 10);
                     rollData.target.modifier = parseInt(html.find("#modifier")[0]?.value, 10);
@@ -165,9 +163,9 @@ export async function preparePsychicPowerRoll(rollData) {
                 }
             },
             cancel: {
-                icon: "fa-solid fa-times",
+                icon: '<i class="fas fa-times"></i>',
                 label: game.i18n.localize("BUTTON.CANCEL"),
-                onClick: () => {}
+                callback: () => {}
             }
         },
         default: "roll",
