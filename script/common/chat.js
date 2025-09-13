@@ -27,7 +27,7 @@ export function chatListeners(html) {
 export const addChatMessageContextOptions = function(html, options) {
     let canApply = li => {
         const message = game.messages.get(li.data("messageId"));
-        return message.getRollData()?.flags?.isDamageRoll
+        return message.getRollData()?.flags.isDamageRoll
             && message.isContentVisible
             && canvas.tokens.controlled.length;
     };
@@ -44,7 +44,7 @@ export const addChatMessageContextOptions = function(html, options) {
         const message = game.messages.get(li.data("messageId"));
         let actor = game.actors.get(message.getRollData()?.ownerId);
         return message.isRoll
-            && !message.getRollData()?.flags?.isDamageRoll
+            && !message.getRollData()?.flags.isDamageRoll
             && message.isContentVisible
             && actor?.fate.value > 0;
     };
