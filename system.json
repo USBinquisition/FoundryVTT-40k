@@ -50,6 +50,14 @@
       "path": "./packs/rules.db",
       "type": "JournalEntry"
     }
+    ,
+    {
+      "name": "melee-weapons",
+      "label": "Melee Weapons",
+      "system": "dark-heresy",
+      "path": "./packs/melee-weapons.db",
+      "type": "Item"
+    }
   ],
   "languages": [
     {

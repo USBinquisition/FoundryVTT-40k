@@ -1,0 +1,155 @@
+name: Melee Weapons
+_id: 7fe3c6b4a8570d98
+type: Item
+parent: null
+sorting: a
+color: null
+flags: {}
+---
+name: Low Tech
+_id: 622434e93ba55ed5
+type: Item
+parent: 7fe3c6b4a8570d98
+sorting: a
+color: null
+flags: {}
+---
+name: Chain
+_id: f7b4f71c5594cd5f
+type: Item
+parent: 7fe3c6b4a8570d98
+sorting: a
+color: null
+flags: {}
+---
+name: Shock
+_id: 06520b52e035967c
+type: Item
+parent: 7fe3c6b4a8570d98
+sorting: a
+color: null
+flags: {}
+---
+name: Power
+_id: 092bae0f7f4faad4
+type: Item
+parent: 7fe3c6b4a8570d98
+sorting: a
+color: null
+flags: {}
+---
+name: Knife
+type: weapon
+img: icons/svg/sword.svg
+system:
+  class: Low Tech
+  type: weapon
+  range: 0
+  rateOfFire:
+    single: 0
+    burst: 0
+    full: 0
+  damage: "1d5+SB R"
+  damageType: ""
+  penetration: 0
+  clip:
+    max: 0
+    value: 0
+  reload: "nan"
+  special: "Primitive, may be thrown"
+  attack: 0
+  ammo: ""
+_id: 3424e4322db4cc81
+folder: 622434e93ba55ed5
+permission:
+  default: 0
+  WoHjjfEv1aHAwWrZ: 3
+flags: {}
+effects: []
+---
+name: Chain Axe
+type: weapon
+img: icons/svg/sword.svg
+system:
+  class: Chain
+  type: weapon
+  range: 0
+  rateOfFire:
+    single: 0
+    burst: 0
+    full: 0
+  damage: "1d10+4+SB R"
+  damageType: ""
+  penetration: 2
+  clip:
+    max: 0
+    value: 0
+  reload: "nan"
+  special: "Tearing"
+  attack: 0
+  ammo: ""
+_id: 55f44eaebc2ba205
+folder: f7b4f71c5594cd5f
+permission:
+  default: 0
+  WoHjjfEv1aHAwWrZ: 3
+flags: {}
+effects: []
+---
+name: Shock Maul
+type: weapon
+img: icons/svg/sword.svg
+system:
+  class: Shock
+  type: weapon
+  range: 0
+  rateOfFire:
+    single: 0
+    burst: 0
+    full: 0
+  damage: "1d10+SB I"
+  damageType: ""
+  penetration: 0
+  clip:
+    max: 0
+    value: 0
+  reload: "nan"
+  special: "Shocking"
+  attack: 0
+  ammo: ""
+_id: 6d31dc68440f1559
+folder: 06520b52e035967c
+permission:
+  default: 0
+  WoHjjfEv1aHAwWrZ: 3
+flags: {}
+effects: []
+---
+name: Mordian Pattern Power Sword
+type: weapon
+img: icons/svg/sword.svg
+system:
+  class: Power
+  type: weapon
+  range: 0
+  rateOfFire:
+    single: 0
+    burst: 0
+    full: 0
+  damage: "1d10+5+SB R"
+  damageType: ""
+  penetration: 5
+  clip:
+    max: 0
+    value: 0
+  reload: "nan"
+  special: "Power Field, Balanced"
+  attack: 0
+  ammo: ""
+_id: f5e456960c03763f
+folder: 092bae0f7f4faad4
+permission:
+  default: 0
+  WoHjjfEv1aHAwWrZ: 3
+flags: {}
+effects: []
