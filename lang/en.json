@@ -183,6 +183,8 @@
   "CYBERNETIC.CRAFTSMANSHIP": "Craftsmanship",
   "CYBERNETIC.AVAILABILITY": "Availability",
   "CYBERNETIC.WEIGHT": "Weight",
+  "CYBERNETIC.MOD_NORMAL": "Modifier",
+  "CYBERNETIC.MOD_UNNATURAL": "Unnatural Modifier",
 
   "DAMAGE_TYPE.ENERGY": "Energy",
   "DAMAGE_TYPE.IMPACT": "Impact",
