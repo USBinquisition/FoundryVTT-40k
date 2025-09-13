@@ -25,20 +25,33 @@ export function chatListeners(html) {
  * @returns {Array}              The extended options Array including new context choices
  */
 export const addChatMessageContextOptions = function(html, options) {
+    const gen = game.release?.generation ?? 10;
+
     let canApply = li => {
         const message = game.messages.get(li.data("messageId"));
         return message.getRollData()?.flags.isDamageRoll
             && message.isContentVisible
             && canvas.tokens.controlled.length;
     };
-    options.push(
-        {
-            name: game.i18n.localize("CHAT.CONTEXT.APPLY_DAMAGE"),
-            icon: '<i class="fa-solid fa-user-minus"></i>',
-            check: canApply,
-            onClick: li => applyChatCardDamage(li)
-        }
-    );
+
+    const applyOption = {
+        name: game.i18n.localize("CHAT.CONTEXT.APPLY_DAMAGE"),
+        icon: "fa-solid fa-user-minus",
+        condition: canApply,
+        callback: li => applyChatCardDamage(li)
+    };
+
+    if (gen > 13) {
+        applyOption.check = applyOption.condition;
+        applyOption.onClick = applyOption.callback;
+    } else if (gen < 13) {
+        applyOption.check = canApply;
+        applyOption.onClick = li => applyChatCardDamage(li);
+        delete applyOption.condition;
+        delete applyOption.callback;
+    }
+
+    options.push(applyOption);
 
     let canReroll = li => {
         const message = game.messages.get(li.data("messageId"));
@@ -49,17 +62,30 @@ export const addChatMessageContextOptions = function(html, options) {
             && actor?.fate.value > 0;
     };
 
-    options.push(
-        {
-            name: game.i18n.localize("CHAT.CONTEXT.REROLL"),
-            icon: '<i class="fa-solid fa-repeat"></i>',
-            check: canReroll,
-            onClick: li => {
-                const message = game.messages.get(li.data("messageId"));
-                rerollTest(message.getRollData());
-            }
+    const rerollOption = {
+        name: game.i18n.localize("CHAT.CONTEXT.REROLL"),
+        icon: "fa-solid fa-repeat",
+        condition: canReroll,
+        callback: li => {
+            const message = game.messages.get(li.data("messageId"));
+            rerollTest(message.getRollData());
         }
-    );
+    };
+
+    if (gen > 13) {
+        rerollOption.check = rerollOption.condition;
+        rerollOption.onClick = rerollOption.callback;
+    } else if (gen < 13) {
+        rerollOption.check = canReroll;
+        rerollOption.onClick = li => {
+            const message = game.messages.get(li.data("messageId"));
+            rerollTest(message.getRollData());
+        };
+        delete rerollOption.condition;
+        delete rerollOption.callback;
+    }
+
+    options.push(rerollOption);
     return options;
 };
 
