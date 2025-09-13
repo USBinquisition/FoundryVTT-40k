@@ -1,24 +1,25 @@
 <div class="dark-heresy chat roll">
     <div class="background border">
         <h1>{{itemName}}</h1>
-        <div class="dice-rolls">
-            {{#each damages as |damage|}}
+        {{#each damages as |damage|}}
+            <div class="dice-rolls">
                 <p><strong>{{localize "CHAT.DAMAGE_HEADER"}}</strong></p>
                 <ul class="dice-list">
                     {{#each damage.dice as |die|}}
                         <li class="die {{#if die.max}}max{{/if}} {{#if die.righteous}}righteous{{/if}} {{#if die.replaced}}replaced-{{die.replaced}}{{/if}}">{{#if die.replaced}}{{die.original}}&rarr;{{/if}}{{die.value}}</li>
                     {{/each}}
                 </ul>
-            {{/each}}
-        </div>
-        {{#each damages as |damage|}}
+                {{#each damage.modifiers as |mod|}}
+                    <p class="damage-modifier">{{mod}}</p>
+                {{/each}}
+            </div>
             <h3 class="separator damage-location" data-location={{location}}>{{localize location}}</h3>
             <div>
                 <p><strong>{{localize "CHAT.DAMAGE"}}:</strong> <span class="damage-total">{{damage.total}}</span> <strong class="damage-type">{{damageTypeShort ../weapon.damageType}}</strong></p>
             </div>
             <p><strong>{{localize "CHAT.PENETRATION"}}:</strong> <span class="damage-penetration">{{penetration}}</span></p>
             {{#if damage.righteousFury}}
-            <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
+                <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
             {{/if}}
         {{/each}}
         <div class="wrapper flex-column">
