@@ -51,6 +51,35 @@
                     </div>
                 </div>
             </div>
+            <div class="characteristics border">
+                <h1>{{localize "TITLE.CHARACTERISTICS"}}</h1>
+                <table class="characteristics-table">
+                    <thead>
+                        <tr>
+                            <th>{{localize "CHARACTERISTIC.NAME"}}</th>
+                            <th>{{localize "CHARACTERISTIC.NORMAL"}}</th>
+                            <th>{{localize "CHARACTERISTIC.UNNATURAL"}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each (config "characteristics") as |label key|}}
+                            {{#with (lookup ../system.characteristics key) as |char|}}
+                                <tr>
+                                    <td>{{localize label}}</td>
+                                    <td class="normal">
+                                        <span class="sign">{{#if (gte char.normal 0)}}+{{/if}}</span>
+                                        <input name="system.characteristics.{{key}}.normal" type="number" value="{{char.normal}}" data-dtype="Number" />
+                                    </td>
+                                    <td class="unnatural">
+                                        <span class="sign">{{#if (gte char.unnatural 0)}}+{{/if}}</span>
+                                        <input name="system.characteristics.{{key}}.unnatural" type="number" value="{{char.unnatural}}" data-dtype="Number" />
+                                    </td>
+                                </tr>
+                            {{/with}}
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="tab" data-group="primary" data-tab="notes">
             <div class="notes-editor border">
@@ -62,3 +91,4 @@
         </div>
     </div>
 </form>
+
