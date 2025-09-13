@@ -11,7 +11,7 @@ export async function prepareCommonRoll(rollData) {
         content: html,
         buttons: {
             roll: {
-                icon: "fa-solid fa-check",
+                icon: '<i class="fa-solid fa-check"></i>',
                 label: game.i18n.localize("BUTTON.ROLL"),
                 onClick: async function(event) {
                     const html = this.element;
@@ -33,7 +33,7 @@ export async function prepareCommonRoll(rollData) {
                 }
             },
             cancel: {
-                icon: "fa-solid fa-times",
+                icon: '<i class="fa-solid fa-times"></i>',
                 label: game.i18n.localize("BUTTON.CANCEL"),
                 onClick: () => {}
             }
@@ -70,7 +70,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
             content: html,
             buttons: {
                 roll: {
-                    icon: "fa-solid fa-check",
+                    icon: '<i class="fa-solid fa-check"></i>',
                     label: game.i18n.localize("BUTTON.ROLL"),
                     onClick: async function(event) {
                         const html = this.element;
@@ -118,7 +118,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
                     }
                 },
                 cancel: {
-                    icon: "fa-solid fa-times",
+                    icon: '<i class="fa-solid fa-times"></i>',
                     label: game.i18n.localize("BUTTON.CANCEL"),
                     onClick: () => {}
                 }
@@ -141,7 +141,7 @@ export async function preparePsychicPowerRoll(rollData) {
         content: html,
         buttons: {
             roll: {
-                icon: "fa-solid fa-check",
+                icon: '<i class="fa-solid fa-check"></i>',
                 label: game.i18n.localize("BUTTON.ROLL"),
                 onClick: async function(event) {
                     const html = this.element;
@@ -165,7 +165,7 @@ export async function preparePsychicPowerRoll(rollData) {
                 }
             },
             cancel: {
-                icon: "fa-solid fa-times",
+                icon: '<i class="fa-solid fa-times"></i>',
                 label: game.i18n.localize("BUTTON.CANCEL"),
                 onClick: () => {}
             }

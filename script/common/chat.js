@@ -34,7 +34,7 @@ export const addChatMessageContextOptions = function(html, options) {
     options.push(
         {
             name: game.i18n.localize("CHAT.CONTEXT.APPLY_DAMAGE"),
-            icon: "fa-solid fa-user-minus",
+            icon: '<i class="fa-solid fa-user-minus"></i>',
             check: canApply,
             onClick: li => applyChatCardDamage(li)
         }
@@ -52,7 +52,7 @@ export const addChatMessageContextOptions = function(html, options) {
     options.push(
         {
             name: game.i18n.localize("CHAT.CONTEXT.REROLL"),
-            icon: "fa-solid fa-repeat",
+            icon: '<i class="fa-solid fa-repeat"></i>',
             check: canReroll,
             onClick: li => {
                 const message = game.messages.get(li.data("messageId"));
@@ -72,26 +72,17 @@ export const addChatMessageContextOptions = function(html, options) {
  * @returns {Promise}
  */
 function applyChatCardDamage(roll, multiplier) {
-    // Get the damage data, get them as arrays in case of multiple hits
-    const amount = roll.find(".damage-total");
-    const location = roll.find(".damage-location");
-    const penetration = roll.find(".damage-penetration");
-    const type = roll.find(".damage-type");
-    const righteousFury = roll.find(".damage-righteous-fury");
+    const messageId = roll.data("messageId");
+    const message = game.messages.get(messageId);
+    const rollData = message.getRollData();
+    const damages = rollData.damages.map(d => ({
+        amount: Number(d.total) * (multiplier ?? 1),
+        location: d.location,
+        penetration: Number(d.penetration),
+        type: rollData.weapon.damageType,
+        righteousFury: Number(d.righteousFury) || 0
+    }));
 
-    // Put the data from different hits together
-    const damages = [];
-    for (let i = 0; i < amount.length; i++) {
-        damages.push({
-            amount: $(amount[i]).text(),
-            location: $(location[i]).data("location"),
-            penetration: $(penetration[i]).text(),
-            type: $(type[i]).text(),
-            righteousFury: $(righteousFury[i]).text()
-        });
-    }
-
-    // Apply to any selected actors
     return Promise.all(canvas.tokens.controlled.map(t => {
         const a = t.actor;
         return a.applyDamage(damages);
