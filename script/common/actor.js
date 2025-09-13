@@ -28,9 +28,21 @@ export class DarkHeresyActor extends Actor {
     }
 
     _computeCharacteristics() {
+        const cybernetics = this.items.filter(it => it.type === "cybernetic" && it.system.installed);
         let middle = Object.values(this.characteristics).length / 2;
         let i = 0;
-        for (let characteristic of Object.values(this.characteristics)) {
+        for (let [stat, characteristic] of Object.entries(this.characteristics)) {
+            let normal = 0;
+            let unnatural = 0;
+            for (let cyber of cybernetics) {
+                const charData = cyber.system.characteristics?.[stat];
+                if (charData) {
+                    normal += Number(charData.normal ?? 0);
+                    unnatural += Number(charData.unnatural ?? 0);
+                }
+            }
+            characteristic.advance += normal;
+            characteristic.unnatural += unnatural;
             characteristic.total = characteristic.base + characteristic.advance;
             characteristic.bonus = Math.floor(characteristic.total / 10) + characteristic.unnatural;
             if (this.fatigue.value > characteristic.bonus) {
