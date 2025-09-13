@@ -21,12 +21,13 @@
             <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
             {{/if}}
         {{/each}}
+        {{#if weapon.special}}
+            <h3 class="separator">{{localize "WEAPON.SPECIAL"}}</h3>
+            <p class="weapon-special">{{weapon.special}}</p>
+        {{/if}}
         <div class="wrapper flex-column">
             <button class="apply-damage">{{localize "CHAT.CONTEXT.APPLY_DAMAGE"}}</button>
         </div>
-        {{#if weapon.special}}
-            <p><strong>{{localize "WEAPON.SPECIAL"}}:</strong> {{weapon.special}}</p>
-        {{/if}}
     </div>
 </div>
 
