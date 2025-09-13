@@ -4,29 +4,38 @@
         {{#each damages as |damage|}}
             <h3 class="separator damage-location" data-location={{location}}>{{localize location}}</h3>
             <div>
-                <p><strong>{{localize "CHAT.DAMAGE"}}:</strong> <span class="damage-total">{{damage.total}}</span> 
+                <p><strong>{{localize "CHAT.DAMAGE"}}:</strong> <span class="damage-total">{{damage.total}}</span>
                 <strong class="damage-type">{{damageTypeShort ../weapon.damageType}}</strong>
-	            </p>
-	        </div>
-	        <p><strong>{{localize "CHAT.PENETRATION"}}:</strong> <span class="damage-penetration">{{penetration}}</span></p>
-	        {{#if damage.righteousFury}}
-	        <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
-	        {{/if}}
-	    {{/each}}
-	    <div class="dice-rolls" style="display:none">
-	        <h1>{{localize "CHAT.ROLL_TITLE"}}</h1>
-		    {{#each damages as |damage|}}
-		        <p><strong>{{localize "CHAT.DAMAGE_HEADER"}}</strong></p>
-		        <div class="dice-roll-render">
-		            {{{damage.damageRender}}}
-		        </div>
-		        {{#if damage.accurateRender}}
-		            <p><strong>{{localize "CHAT.ACCURATE_HEADER"}}</strong></p>
-		            <div class="dice-roll-render">
-		                {{{damage.accurateRender}}}
-		            </div>
-		        {{/if}}
-		    {{/each}}
-	   </div>
+                </p>
+            </div>
+            <p><strong>{{localize "CHAT.PENETRATION"}}:</strong> <span class="damage-penetration">{{penetration}}</span></p>
+            {{#if damage.righteousFury}}
+            <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
+            {{/if}}
+        {{/each}}
+        {{#if weapon.special}}
+            <p class="weapon-special"><strong>{{localize "WEAPON.SPECIAL"}}:</strong> {{weapon.special}}</p>
+        {{/if}}
+        <div class="dice-rolls">
+            <h1>{{localize "CHAT.ROLL_TITLE"}}</h1>
+            {{#each damages as |damage|}}
+                {{#if damage.dice.length}}
+                    <p><strong>{{localize "CHAT.DAMAGE_HEADER"}}</strong></p>
+                    <ul class="dice-list">
+                    {{#each damage.dice as |die|}}
+                        <li class="die{{#if die.upgraded}} upgraded{{/if}}{{#if die.downgraded}} downgraded{{/if}}{{#if die.righteousFury}} righteous-fury{{/if}}" title="{{die.original}}">{{die.value}}</li>
+                    {{/each}}
+                    </ul>
+                {{/if}}
+                {{#if damage.accurateDice.length}}
+                    <p><strong>{{localize "CHAT.ACCURATE_HEADER"}}</strong></p>
+                    <ul class="dice-list accurate">
+                    {{#each damage.accurateDice as |die|}}
+                        <li class="die{{#if die.upgraded}} upgraded{{/if}}{{#if die.downgraded}} downgraded{{/if}}{{#if die.righteousFury}} righteous-fury{{/if}}" title="{{die.original}}">{{die.value}}</li>
+                    {{/each}}
+                    </ul>
+                {{/if}}
+            {{/each}}
+        </div>
     </div> 
 </div>
