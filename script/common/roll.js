@@ -617,7 +617,7 @@ async function _sendRollToChat(rollData) {
         rollMode: game.settings.get("core", "rollMode"),
         speaker: speaker,
         flags: {
-            "dark-heresy.rollData": rollData
+            "dark-heresy": { rollData }
         }
     };
 
@@ -657,7 +657,7 @@ export async function sendDamageToChat(rollData) {
         rollMode: game.settings.get("core", "rollMode"),
         speaker: speaker,
         flags: {
-            "dark-heresy.rollData": rollData
+            "dark-heresy": { rollData }
         }
     };
 
@@ -688,7 +688,7 @@ async function _emptyClipToChat(rollData) {
         user: game.user.id,
         content: await renderTemplate("systems/dark-heresy/template/chat/emptyMag.hbs", rollData),
         flags: {
-            "dark-heresy.rollData": rollData
+            "dark-heresy": { rollData }
         }
     };
     ChatMessage.create(chatData);
