@@ -173,6 +173,8 @@
   "CYBERNETIC.CRAFTSMANSHIP": "Rzemiosło",
   "CYBERNETIC.AVAILABILITY": "Dostępność",
   "CYBERNETIC.WEIGHT": "Waga",
+  "CYBERNETIC.MOD_NORMAL": "Modyfikator",
+  "CYBERNETIC.MOD_UNNATURAL": "Nienaturalny Modyfikator",
 
   "DAMAGE_TYPE.ENERGY": "Energetyczne",
   "DAMAGE_TYPE.IMPACT": "Uderzeniowe",
