@@ -24,7 +24,7 @@ export class DarkHeresyItemSheet extends ItemSheet {
             {
                 label: game.i18n.localize("BUTTON.POST_ITEM"),
                 class: "item-post",
-                icon: "fa-solid fa-comment",
+                icon: "fas fa-comment",
                 onclick: ev => this.item.sendToChat()
             }
         ].concat(buttons);
