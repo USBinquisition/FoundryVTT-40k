@@ -12,11 +12,14 @@
 	        {{#if damage.righteousFury}}
 	        <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
 	        {{/if}}
-	    {{/each}}
-	    <div class="dice-rolls" style="display:none">
-	        <h1>{{localize "CHAT.ROLL_TITLE"}}</h1>
-		    {{#each damages as |damage|}}
-		        <p><strong>{{localize "CHAT.DAMAGE_HEADER"}}</strong></p>
+            {{/each}}
+            {{#if canvas.tokens.controlled.length}}
+                <button class="apply-damage">{{localize "CHAT.CONTEXT.APPLY_DAMAGE"}}</button>
+            {{/if}}
+            <div class="dice-rolls" style="display:none">
+                <h1>{{localize "CHAT.ROLL_TITLE"}}</h1>
+                    {{#each damages as |damage|}}
+                        <p><strong>{{localize "CHAT.DAMAGE_HEADER"}}</strong></p>
 		        <div class="dice-roll-render">
 		            {{{damage.damageRender}}}
 		        </div>
