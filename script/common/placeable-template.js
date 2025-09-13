@@ -56,6 +56,32 @@ export class PlaceableTemplate extends MeasuredTemplate {
     /* -------------------------------------------- */
 
     /**
+     * A factory method to create a circle PlaceableTemplate instance
+     * @param {string} origin  The id of the item originating the blast.
+     * @param {number} radius  The radius of the blast.
+     * @returns {PlaceableTemplate}    The template.
+     */
+    static circle(origin, radius) {
+        const templateData = {
+            t: "circle",
+            user: game.user.id,
+            distance: radius,
+            direction: 0,
+            x: 0,
+            y: 0,
+            fillColor: game.user.color,
+            flags: { "dark-heresy": { origin: origin } }
+        };
+        const cls = CONFIG.MeasuredTemplate.documentClass;
+        const template = new cls(templateData, {parent: canvas.scene});
+        const object = new this(template);
+        object.actorSheet = game.actors.get(origin.actor).sheet || null;
+        return object;
+    }
+
+    /* -------------------------------------------- */
+
+    /**
      * Creates a preview of the ability template.
      * @returns {Promise}  A promise that resolves with the final measured template if created.
      */
