@@ -42,6 +42,13 @@
       "system": "dark-heresy",
       "path": "./packs/aptitudes.db",
       "type": "Item"
+    },
+    {
+      "name": "system-rules",
+      "label": "System Rules",
+      "system": "dark-heresy",
+      "path": "./packs/rules.db",
+      "type": "JournalEntry"
     }
   ],
   "languages": [

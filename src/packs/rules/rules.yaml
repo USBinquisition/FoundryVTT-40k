@@ -1,0 +1,22 @@
+name: Weapon Traits
+permission:
+  default: 0
+  WoHjjfEv1aHAwWrZ: 3
+flags: {}
+img: icons/svg/book.svg
+content: |
+  <h1>Weapon Traits</h1>
+  <p><strong>Tearing:</strong> When rolling damage, roll one additional die and drop the lowest result.</p>
+  <p><strong>Accurate:</strong> If the attacker takes a Full Action to Aim, gain +10 to the attack roll and add an extra 1d10 to damage on a successful hit.</p>
+---
+name: Core Mechanics
+permission:
+  default: 0
+  WoHjjfEv1aHAwWrZ: 3
+flags: {}
+img: icons/svg/book.svg
+content: |
+  <h1>Core Mechanics</h1>
+  <p><strong>Degrees of Success:</strong> For every full 10 points by which a test is passed, gain one additional degree of success.</p>
+  <p><strong>Evasions:</strong> A character may attempt to Dodge or Parry to avoid incoming attacks.</p>
+  <p><strong>Attack Types:</strong> Standard, Swift, and Lightning attacks offer increasing numbers of strikes at escalating penalties.</p>
