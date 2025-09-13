@@ -107,6 +107,7 @@
   
     "CHARACTERISTIC.NAME": "Nom",
     "CHARACTERISTIC.ADVANCE": "Progression",
+    "CHARACTERISTIC.NORMAL": "Normal",
     "CHARACTERISTIC.UNNATURAL": "Surnaturel",
     "CHARACTERISTIC.BASE": "Base",
     "CHARACTERISTIC.COST": "Coût",
