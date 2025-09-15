@@ -97,14 +97,6 @@ Hooks.once("init", function() {
         default: true,
         type: Boolean
     });
-    game.settings.register("dark-heresy", "useBlasttemplate", {
-        name: "Use Template with Blast Weapons",
-        hint: "If enabled, Blast Weapons will require the user to put down a template before the roll is made. Templates are NOT removed automatically",
-        scope: "client",
-        config: true,
-        default: true,
-        type: Boolean
-    });
 
 });
 
