@@ -4,10 +4,7 @@
         <h3>{{target}}</h3>
         <ul style="text-align: left; display: inline-block;">
             {{#each rolls}}
-            <li>{{damage}} {{damageTypeLong type}} as {{source}} ({{localize location}})
-                {{#if armour}} - {{armour}} {{localize "TITLE.ARMOUR"}}{{/if}}
-                {{#if penetration}} - {{localize "CHAT.PENETRATION"}} {{penetration}}{{/if}}
-                {{#if toughness}} - {{toughness}} {{localize "CHARACTERISTIC.TOUGHNESS"}}{{/if}}</li>
+            <li>{{damage}} {{damageTypeLong type}} as {{source}} ({{localize location}})</li>
             {{/each}}
         </ul>
         <br>
