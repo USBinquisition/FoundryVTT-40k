@@ -169,8 +169,7 @@ export default class DarkHeresyUtil {
             storm: this.hasNamedTrait(/Storm/gi, traits),
             twinLinked: this.hasNamedTrait(/Twin.?-? *Linked/gi, traits),
             force: this.hasNamedTrait(/Force/gi, traits),
-            inaccurate: this.hasNamedTrait(/Inaccurate/gi, traits),
-            blast: this.extractNumberedTrait(/Blast.*\(\d+\)/gi, traits)
+            inaccurate: this.hasNamedTrait(/Inaccurate/gi, traits)
         };
     }
 
