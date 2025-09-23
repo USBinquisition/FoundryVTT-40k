@@ -113,10 +113,6 @@
   
     "CHAT.SUCCESS": "Réussite !",
     "CHAT.FAILURE": "Echec !",
-    "CHAT.JAM": "Enrayement !",
-    "CHAT.JAM_AVOIDED": "Enrayement évité.",
-    "CHAT.OVERHEAT": "Surchauffe !",
-    "CHAT.OVERHEAT_NOTE": "L'arme surchauffe ! Appliquez les dégâts au bras du porteur à moins qu'il ne l'ait lâchée.",
     "CHAT.ROLLED_WITH": "Lancé avec",
     "CHAT.DOS": "Degrés de réussite",
     "CHAT.DOF": "Degrés d'echec",
