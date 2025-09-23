@@ -138,6 +138,10 @@
 
   "CHAT.SUCCESS": "Sukces!",
   "CHAT.FAILURE": "Porażka!",
+  "CHAT.JAM": "Zacięcie!",
+  "CHAT.JAM_AVOIDED": "Zacięcie uniknięte.",
+  "CHAT.OVERHEAT": "Przegrzanie!",
+  "CHAT.OVERHEAT_NOTE": "Broń przegrzewa się! Zastosuj obrażenia wobec ramienia władającego, chyba że ją upuścił.",
   "CHAT.TEST_MODIFIER": "Modyfikator",
   "CHAT.ATTACK_RANGE": "Zasięg",
   "CHAT.ATTACK_TYPE": "Typ",

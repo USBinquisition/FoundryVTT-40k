@@ -39,6 +39,7 @@ export async function combatRoll(rollData) {
         await _rollTarget(rollData);
         rollData.attackDos = rollData.dos;
         rollData.attackResult = rollData.result;
+        await _computeJamState(rollData);
         if (!rollData.isReRoll) {
             await _updateRangedAmmo(rollData);
         }
@@ -163,27 +164,10 @@ async function _rollTarget(rollData) {
  * @param {object} rollData
  */
 async function _rollDamage(rollData) {
-    let formula = "0";
+    const damageComponents = _prepareDamageComponents(rollData);
+    const formula = damageComponents.formula;
+    const modifiers = damageComponents.modifiers;
     rollData.damages = [];
-    let modifiers = [];
-    if (rollData.weapon.damageFormula) {
-        formula = rollData.weapon.damageFormula;
-
-        if (rollData.weapon.traits.tearing) {
-            formula = _appendTearing(formula);
-        }
-        if (rollData.weapon.traits.proven) {
-            formula = _appendNumberedDiceModifier(formula, "min", rollData.weapon.traits.proven);
-        }
-        if (rollData.weapon.traits.primitive) {
-            formula = _appendNumberedDiceModifier(formula, "max", rollData.weapon.traits.primitive);
-        }
-
-        formula = `${formula}+${rollData.weapon.damageBonus}`;
-        modifiers = _extractDamageModifiers(formula);
-        formula = _replaceSymbols(formula, rollData);
-    }
-
 
     let penetration = await _rollPenetration(rollData);
 
@@ -232,6 +216,35 @@ async function _rollDamage(rollData) {
 }
 
 /**
+ * Prepare the resolved damage formula and modifiers for a roll.
+ * @param {object} rollData
+ * @returns {{formula: string, modifiers: Array<string>}}
+ */
+function _prepareDamageComponents(rollData) {
+    let formula = "0";
+    let modifiers = [];
+    if (rollData.weapon.damageFormula) {
+        formula = rollData.weapon.damageFormula;
+
+        if (rollData.weapon.traits.tearing) {
+            formula = _appendTearing(formula);
+        }
+        if (rollData.weapon.traits.proven) {
+            formula = _appendNumberedDiceModifier(formula, "min", rollData.weapon.traits.proven);
+        }
+        if (rollData.weapon.traits.primitive) {
+            formula = _appendNumberedDiceModifier(formula, "max", rollData.weapon.traits.primitive);
+        }
+
+        formula = `${formula}+${rollData.weapon.damageBonus}`;
+        modifiers = _extractDamageModifiers(formula);
+        formula = _replaceSymbols(formula, rollData);
+    }
+
+    return { formula, modifiers };
+}
+
+/**
  * Calculates the amount of hits of a successful attack
  * @param {int} attackDos Degrees of success on the Attack
  * @param {int} evasionDos Degrees of success on the Evasion
@@ -268,6 +281,106 @@ function _computeNumberOfHits(attackDos, evasionDos, attackType, shotsFired, wea
     } else {
         return hits;
     }
+}
+
+/**
+ * Determine whether a ranged attack jams or overheats and update roll data.
+ * @param {object} rollData
+ */
+async function _computeJamState(rollData) {
+    if (!rollData.weapon?.isRange) {
+        return;
+    }
+
+    rollData.flags = rollData.flags ?? {};
+    rollData.flags.jam = false;
+    rollData.flags.overheat = false;
+    rollData.flags.jamAvoided = false;
+    delete rollData.overheat;
+
+    const threshold = _getJamThreshold(rollData);
+    if (threshold === null) {
+        return;
+    }
+
+    const result = rollData.result ?? 0;
+    const traits = rollData.weapon.traits ?? {};
+
+    // Reliable weapons may still display that a jam was avoided even on a success.
+    if (traits.reliable && result >= threshold && result !== 100) {
+        rollData.flags.jamAvoided = true;
+        if (rollData.flags.isSuccess) {
+            return;
+        }
+    }
+
+    if (rollData.flags.isSuccess || result < threshold) {
+        return;
+    }
+
+    if (traits.reliable && result !== 100) {
+        // Reliable weapons avoid the jam unless the roll is 100.
+        return;
+    }
+
+    if (traits.overheat) {
+        rollData.flags.overheat = true;
+        rollData.overheat = await _computeOverheatDamage(rollData);
+    } else {
+        rollData.flags.jam = true;
+    }
+}
+
+/**
+ * Get the threshold at which a ranged attack jams.
+ * @param {object} rollData
+ * @returns {number|null}
+ */
+function _getJamThreshold(rollData) {
+    if (!rollData.weapon?.isRange) {
+        return null;
+    }
+
+    const traits = rollData.weapon.traits ?? {};
+    if (traits.unreliable) {
+        return 91;
+    }
+
+    let threshold = traits.primitive ? 94 : 96;
+    const attackType = rollData.attackType?.name;
+    if (attackType === "semi_auto" || attackType === "full_auto") {
+        threshold = Math.min(threshold, 94);
+    }
+
+    return threshold;
+}
+
+/**
+ * Compute the damage dealt to the wielder by an overheating weapon.
+ * @param {object} rollData
+ * @returns {Promise<object>}
+ */
+async function _computeOverheatDamage(rollData) {
+    const damageComponents = _prepareDamageComponents(rollData);
+    const penetration = await _rollPenetration(rollData);
+    const damage = await _computeDamage(
+        damageComponents.formula,
+        penetration,
+        0,
+        false,
+        rollData.weapon.traits,
+        damageComponents.modifiers
+    );
+    damage.location = "ARMOUR.RIGHT_ARM";
+
+    return {
+        itemName: rollData.itemName,
+        weapon: {
+            damageType: rollData.weapon.damageType,
+            special: rollData.weapon.special
+        },
+        damages: [damage]
+    };
 }
 
 /**
@@ -691,6 +804,13 @@ function _sanitizeRollData(rollData) {
     delete cleaned.render;
     if (Array.isArray(cleaned.damages)) {
         cleaned.damages.forEach(d => {
+            delete d.damageRoll;
+            delete d.damageRender;
+            delete d.accurateRender;
+        });
+    }
+    if (Array.isArray(cleaned.overheat?.damages)) {
+        cleaned.overheat.damages.forEach(d => {
             delete d.damageRoll;
             delete d.damageRender;
             delete d.accurateRender;

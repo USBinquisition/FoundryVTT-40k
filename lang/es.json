@@ -105,6 +105,10 @@
 
   "CHAT.SUCCESS": "Exito !",
   "CHAT.FAILURE": "Fallo !",
+  "CHAT.JAM": "¡Se encasquilla!",
+  "CHAT.JAM_AVOIDED": "Encasquillamiento evitado.",
+  "CHAT.OVERHEAT": "¡Se sobrecalienta!",
+  "CHAT.OVERHEAT_NOTE": "¡El arma se recalienta! Aplica el daño al brazo del portador a menos que la haya soltado.",
   "CHAT.TEST_MODIFIER": "Modificador",
   "CHAT.ATTACK_RANGE": "Rango",
   "CHAT.ATTACK_TYPE": "Tipo",
