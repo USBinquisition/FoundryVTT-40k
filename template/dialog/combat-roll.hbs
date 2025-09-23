@@ -27,7 +27,7 @@
             {{#if weapon.isRange}}
             <div class="wrapper">
                 <label>{{localize "DIALOG.RANGE"}}</label>
-                <select id="range" {{#if flags.autoSelectedRange}}class="auto-range-selected"{{/if}}>
+                <select id="range">
                     {{selectOptions (config "ranges") selected=rangeMod localize=true}}
                 </select>
             </div>
@@ -75,8 +75,5 @@
 <script>
     $(".wrapper input").focusin(function () {
         $(this).select();
-    });
-    $("#range").on("change", function () {
-        $(this).removeClass("auto-range-selected");
     });
 </script>
