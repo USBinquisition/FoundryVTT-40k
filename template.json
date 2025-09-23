@@ -1070,6 +1070,7 @@
       "subfaction": "",
       "type": "troop",
       "threatLevel": 0,
+      "personality": "balanced",
       "size": 4,
       "notes": ""
     }

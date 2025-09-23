@@ -21,6 +21,16 @@
                                 {{/select}}
                             </select>
                         </div>
+                        <div class="personality">
+                            <label>{{localize "NPC.PERSONALITY"}}</label>
+                            <select name="system.personality" style="margin-left: 14px" title="{{#with (lookup (config \"npcPersonalities\") system.personality)}}{{localize tooltip}}{{/with}}">
+                                {{#select system.personality}}
+                                    {{#each (config "npcPersonalities") as |personality key|}}
+                                        <option value="{{key}}" title="{{localize personality.tooltip}}">{{localize personality.label}}</option>
+                                    {{/each}}
+                                {{/select}}
+                            </select>
+                        </div>
                         <div class="threat-level">
                             <label>{{localize "BIO.THREAT_LEVEL"}}</label>
                             <input style="margin-left: 8px" name="system.threatLevel" type="number" value="{{system.threatLevel}}" data-dtype="Number" />

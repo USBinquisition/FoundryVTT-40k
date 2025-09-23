@@ -27,6 +27,7 @@ import { commonRoll, combatRoll } from "./common/roll.js";
 import { chatListeners } from "./common/chat.js";
 import DhMacroUtil from "./common/macro.js";
 import Dh from "./common/config.js";
+import AutoNpcMacro from "./macro/auto-npc.js";
 
 // Import Helpers
 
@@ -45,8 +46,12 @@ Hooks.once("init", function() {
         tests: {
             commonRoll,
             combatRoll
+        },
+        automation: {
+            autoNpc: AutoNpcMacro
         }
     };
+    game.darkHeresy.autoNpc = AutoNpcMacro;
     game.macro = DhMacroUtil;
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("dark-heresy", AcolyteSheet, { types: ["acolyte"], makeDefault: true });

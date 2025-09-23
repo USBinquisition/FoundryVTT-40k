@@ -19,6 +19,9 @@ export class DarkHeresyActor extends Actor {
 
     prepareData() {
         super.prepareData();
+        if (this.type === "npc" && !this.system.personality) {
+            this.system.personality = "balanced";
+        }
         this._computeCharacteristics();
         this._computeSkills();
         this._computeItems();

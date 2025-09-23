@@ -55,6 +55,59 @@ Dh.evasions = {
     deny: "DIALOG.DENY_THE_WITCH"
 };
 
+Dh.npcPersonalities = {
+    balanced: {
+        label: "NPC.PERSONALITY.BALANCED",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.BALANCED",
+        behavior: "balanced"
+    },
+    berserker: {
+        label: "NPC.PERSONALITY.BERSERKER",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.BERSERKER",
+        behavior: "berserker"
+    },
+    marksman: {
+        label: "NPC.PERSONALITY.MARKSMAN",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.MARKSMAN",
+        behavior: "marksman"
+    },
+    skirmisher: {
+        label: "NPC.PERSONALITY.SKIRMISHER",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.SKIRMISHER",
+        behavior: "skirmisher"
+    },
+    hunter: {
+        label: "NPC.PERSONALITY.HUNTER",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.HUNTER",
+        behavior: "hunter"
+    },
+    bulwark: {
+        label: "NPC.PERSONALITY.BULWARK",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.BULWARK",
+        behavior: "bulwark"
+    },
+    commander: {
+        label: "NPC.PERSONALITY.COMMANDER",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.COMMANDER",
+        behavior: "commander"
+    },
+    zealot: {
+        label: "NPC.PERSONALITY.ZEALOT",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.ZEALOT",
+        behavior: "zealot"
+    },
+    psyker: {
+        label: "NPC.PERSONALITY.PSYKER",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.PSYKER",
+        behavior: "psyker"
+    },
+    survivor: {
+        label: "NPC.PERSONALITY.SURVIVOR",
+        tooltip: "NPC.PERSONALITY_TOOLTIP.SURVIVOR",
+        behavior: "survivor"
+    }
+};
+
 Dh.craftmanship = {
     poor: "CRAFTSMANSHIP.POOR",
     common: "CRAFTSMANSHIP.COMMON",
