@@ -62,6 +62,51 @@ export async function damageRoll(rollData) {
 }
 
 /**
+ * Roll and apply damage to provided token targets, falling back to
+ * the user's targeted tokens or controlled tokens if none are supplied.
+ *
+ * @param {object} rollData
+ * @param {Token[]} [tokenTargets]
+ * @returns {Promise<Actor[]>}
+ */
+export async function applyDamage(rollData, tokenTargets = []) {
+    if (!rollData) return [];
+
+    const preparedTargets = Array.isArray(tokenTargets) ? tokenTargets.filter(t => t?.actor) : [];
+    let targets = preparedTargets;
+
+    if (!targets.length) {
+        const userTargets = Array.from(game.user?.targets ?? []).filter(t => t?.actor);
+        targets = userTargets;
+    }
+
+    if (!targets.length) {
+        const controlled = (canvas.tokens?.controlled ?? []).filter(t => t?.actor);
+        targets = controlled;
+    }
+
+    if (!targets.length) return [];
+
+    if (!rollData.flags) rollData.flags = {};
+    if (rollData.flags.isCombatRoll && rollData.flags.isSuccess === false) return [];
+
+    const needsDamageRoll = !rollData.flags.isDamageRoll || !Array.isArray(rollData.damages) || !rollData.damages.length;
+    if (needsDamageRoll) {
+        rollData.flags.isDamageRoll = true;
+        await _rollDamage(rollData);
+        await sendDamageToChat(rollData);
+    }
+
+    const damages = Array.isArray(rollData.damages) ? rollData.damages : [];
+    const applications = targets
+        .map(token => token.actor)
+        .filter(actor => !!actor)
+        .map(actor => actor.applyDamage(damages));
+
+    return Promise.all(applications);
+}
+
+/**
  * Post an "empty clip, need to reload" message to chat.
  * @param {object} rollData
  */

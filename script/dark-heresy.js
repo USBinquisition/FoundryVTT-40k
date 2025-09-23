@@ -27,6 +27,7 @@ import { commonRoll, combatRoll } from "./common/roll.js";
 import { chatListeners } from "./common/chat.js";
 import DhMacroUtil from "./common/macro.js";
 import Dh from "./common/config.js";
+import "./macro/auto-npc.js";
 
 // Import Helpers
 
