@@ -12,44 +12,6 @@
         {{else}}
         <h3 style="color: var(--color-failure)">{{localize "CHAT.FAILURE"}} <span>({{result}})</span></h3>
         {{/if}}
-        {{#if flags.jam}}
-            <p class="jam-message" style="color: var(--color-failure); font-weight: bold;">{{localize "CHAT.JAM"}}</p>
-        {{/if}}
-        {{#if flags.overheat}}
-            <p class="jam-message" style="color: var(--color-failure); font-weight: bold;">{{localize "CHAT.OVERHEAT"}}</p>
-            <p>{{localize "CHAT.OVERHEAT_NOTE"}}</p>
-            {{#each overheat.damages as |damage|}}
-                <div class="dice-rolls">
-                    <p><strong>{{localize "CHAT.DAMAGE_HEADER"}}</strong></p>
-                    <ul class="dice-list">
-                        {{#each damage.dice as |die|}}
-                            <li class="die {{#if die.max}}max{{/if}} {{#if die.righteous}}righteous{{/if}} {{#if die.replaced}}replaced-{{die.replaced}}{{/if}} {{#if die.dropped}}dropped{{/if}}">{{die.value}}{{#if die.annotation}}<sup>{{die.annotation}}</sup>{{/if}}</li>
-                        {{/each}}
-                    </ul>
-                    {{#each damage.modifiers as |mod|}}
-                        <p class="damage-modifier">{{mod}}</p>
-                    {{/each}}
-                </div>
-                <h3 class="separator damage-location" data-location={{damage.location}}>{{localize damage.location}}</h3>
-                <div>
-                    <p><strong>{{localize "CHAT.DAMAGE"}}:</strong> <span class="damage-total">{{damage.total}}</span> <strong class="damage-type">{{damageTypeShort ../overheat.weapon.damageType}}</strong></p>
-                </div>
-                <p><strong>{{localize "CHAT.PENETRATION"}}:</strong> <span class="damage-penetration">{{damage.penetration}}</span></p>
-                {{#if damage.righteousFury}}
-                    <p><strong>{{localize "CHAT.RIGHTEOUS_FURY"}}:</strong> <span class="damage-righteous-fury">{{damage.righteousFury}}</span></p>
-                {{/if}}
-            {{/each}}
-            {{#if overheat.weapon.special}}
-                <h3 class="separator">{{localize "WEAPON.SPECIAL"}}</h3>
-                <p class="weapon-special">{{overheat.weapon.special}}</p>
-            {{/if}}
-            <div class="wrapper flex-column">
-                <button class="apply-damage">{{localize "CHAT.CONTEXT.APPLY_DAMAGE"}}</button>
-            </div>
-        {{/if}}
-        {{#if flags.jamAvoided}}
-            <p class="jam-message" style="color: var(--color-success); font-weight: bold;">{{localize "CHAT.JAM_AVOIDED"}}</p>
-        {{/if}}
 
         <p><strong>{{localize "CHAT.TEST_MODIFIER"}}:</strong> {{target.modifier}}</p>
 
