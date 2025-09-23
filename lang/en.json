@@ -125,6 +125,10 @@
 
   "CHAT.SUCCESS": "Success!",
   "CHAT.FAILURE": "Failure!",
+  "CHAT.JAM": "Jam!",
+  "CHAT.JAM_AVOIDED": "Jam avoided.",
+  "CHAT.OVERHEAT": "Overheat!",
+  "CHAT.OVERHEAT_NOTE": "The weapon overheats! Apply the damage to the wielder's arm unless they drop it.",
   "CHAT.TEST_MODIFIER": "Modifier",
   "CHAT.ATTACK_RANGE": "Range",
   "CHAT.ATTACK_TYPE": "Type",

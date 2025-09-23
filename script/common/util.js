@@ -162,12 +162,15 @@ export default class DarkHeresyUtil {
             rfFace: this.extractNumberedTrait(/Vengeful.*\(\d\)/gi, traits), // The alternativ die face Righteous Fury is triggered on
             proven: this.extractNumberedTrait(/Proven.*\(\d\)/gi, traits),
             primitive: this.extractNumberedTrait(/Primitive.*\(\d\)/gi, traits),
+            reliable: this.hasNamedTrait(/Reliable/gi, traits),
             razorSharp: this.hasNamedTrait(/Razor.?-? *Sharp/gi, traits),
+            overheat: this.hasNamedTrait(/Overheat/gi, traits),
             spray: this.hasNamedTrait(/Spray/gi, traits),
             skipAttackRoll: this.hasNamedTrait(/Spray/gi, traits), // Currently, spray will always be the same as skipAttackRoll. However, in the future, there may be other skipAttackRoll weapons that are not Spray.
             tearing: this.hasNamedTrait(/Tearing/gi, traits),
             storm: this.hasNamedTrait(/Storm/gi, traits),
             twinLinked: this.hasNamedTrait(/Twin.?-? *Linked/gi, traits),
+            unreliable: this.hasNamedTrait(/Unreliable/gi, traits),
             force: this.hasNamedTrait(/Force/gi, traits),
             inaccurate: this.hasNamedTrait(/Inaccurate/gi, traits)
         };
