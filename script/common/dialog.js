@@ -67,22 +67,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
         rollData.flags = rollData.flags ?? {};
         if (rollData.weapon.isRange) {
             const autoRangeSelection = _determineAutomaticRange(rollData, actorRef);
-            const weaponRange = Number.isFinite(autoRangeSelection?.weaponRange)
-                ? autoRangeSelection.weaponRange
-                : _normalizeWeaponRange(rollData.weapon.range);
-            const distance = Number.isFinite(autoRangeSelection?.distance) ? autoRangeSelection.distance : null;
-            const targetName = autoRangeSelection?.targetName ?? null;
-
-            rollData.rangeInfo = {
-                targetName,
-                targetNameDisplay: targetName ?? "-",
-                distance,
-                distanceDisplay: _formatMeters(distance),
-                weaponRange: Number.isFinite(weaponRange) ? weaponRange : null,
-                weaponRangeDisplay: _formatMeters(weaponRange)
-            };
-
-            if (autoRangeSelection && autoRangeSelection.modifier !== null) {
+            if (autoRangeSelection) {
                 rollData.rangeMod = autoRangeSelection.modifier;
                 rollData.flags.autoSelectedRange = true;
             } else {
@@ -91,7 +76,6 @@ export async function prepareCombatRoll(rollData, actorRef) {
             }
         } else {
             rollData.flags.autoSelectedRange = false;
-            rollData.rangeInfo = null;
         }
         const html = await renderTemplate("systems/dark-heresy/template/dialog/combat-roll.hbs", rollData);
         let dialog = new Dialog({
@@ -158,15 +142,6 @@ export async function prepareCombatRoll(rollData, actorRef) {
     }
 }
 
-function _formatMeters(value) {
-    if (!Number.isFinite(value)) return "-";
-    const rounded = Math.round(value * 10) / 10;
-    if (Number.isInteger(rounded)) {
-        return `${rounded} m`;
-    }
-    return `${rounded.toFixed(1)} m`;
-}
-
 function _determineAutomaticRange(rollData, actorRef) {
     if (!rollData.weapon?.isRange || !actorRef) return null;
     if (!game?.user) return null;
@@ -184,23 +159,16 @@ function _determineAutomaticRange(rollData, actorRef) {
     const destination = _getTokenCenter(targetToken);
     if (!origin || !destination) return null;
 
-    const weaponRangeRaw = _normalizeWeaponRange(rollData.weapon.range);
-    const weaponRange = Number.isFinite(weaponRangeRaw) && weaponRangeRaw > 0 ? weaponRangeRaw : null;
+    const weaponRange = _normalizeWeaponRange(rollData.weapon.range);
+    if (!Number.isFinite(weaponRange) || weaponRange <= 0) return null;
 
-    const measuredDistance = canvasInstance.grid.measureDistance(origin, destination);
-    const distance = Number.isFinite(measuredDistance) ? measuredDistance : null;
+    const distance = canvasInstance.grid.measureDistance(origin, destination);
+    if (!Number.isFinite(distance)) return null;
 
-    let modifier = null;
-    if (distance !== null && weaponRange !== null) {
-        modifier = _computeRangeModifier(distance, weaponRange);
-    }
+    const modifier = _computeRangeModifier(distance, weaponRange);
+    if (modifier === null) return null;
 
-    return {
-        modifier,
-        distance,
-        targetName: targetToken?.document?.name ?? targetToken?.name ?? null,
-        weaponRange
-    };
+    return { modifier };
 }
 
 function _findActorToken(actorRef, targetToken) {
