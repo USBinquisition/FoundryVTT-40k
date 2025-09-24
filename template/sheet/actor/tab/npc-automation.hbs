@@ -1,0 +1,20 @@
+<div class="npc-automation border">
+    <h1>{{localize "PERSONALITY.HEADER"}}</h1>
+    <div class="information">
+        <label for="npc-personality-select">{{localize "PERSONALITY.SELECT"}}</label>
+        <select id="npc-personality-select" name="system.personality" title="{{localize \"PERSONALITY.TOOLTIP\"}}">
+            <option value="">{{localize "PERSONALITY.NONE"}}</option>
+            {{#each personalityOptions as |option|}}
+                <option value="{{option.id}}" {{#if option.isSelected}}selected{{/if}}>{{option.label}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="information personality-description">
+        <label>{{localize "PERSONALITY.DESCRIPTION"}}</label>
+        <p>{{#if personalityDescription}}{{personalityDescription}}{{else}}{{localize "PERSONALITY.DESCRIPTION_NONE"}}{{/if}}</p>
+    </div>
+    <div class="information targeting-help">
+        <label>{{localize "PERSONALITY.TARGETING_HELP"}}</label>
+        <pre>{{autoNpcTargetingDocs}}</pre>
+    </div>
+</div>

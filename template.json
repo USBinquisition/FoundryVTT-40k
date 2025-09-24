@@ -1017,6 +1017,13 @@
           "class": "bound",
           "cost": 0
         }
+      },
+      "automation": {
+        "reactions": {
+          "max": 1,
+          "current": 1
+        },
+        "personality": ""
       }
     },
     "acolyte": {
@@ -1027,7 +1034,8 @@
         "wounds",
         "fatigue",
         "fate",
-        "psy"
+        "psy",
+        "automation"
       ],
       "bio": {
         "homeWorld": "",
@@ -1061,7 +1069,8 @@
         "wounds",
         "fatigue",
         "fate",
-        "psy"
+        "psy",
+        "automation"
       ],
       "experience": {
         "value": 0
