@@ -1,0 +1,120 @@
+<section class="horde-fight-overlay">
+    <div class="horde-banner">HORDE INCOMING!</div>
+
+    {{#if isConfirmed}}
+        <div class="horde-panel confirmation">
+            <header>
+                <h2>{{localize "HORDE_FIGHT.CONFIRMATION_TITLE"}}</h2>
+                {{#if hordeTemplate}}
+                    <div class="horde-template">
+                        <span>{{localize "HORDE_FIGHT.HORDE_TEMPLATE"}}</span>
+                        <strong>{{hordeTemplate.name}}</strong>
+                    </div>
+                {{/if}}
+            </header>
+            <div class="horde-confirmation-list">
+                {{#each participants as |participant|}}
+                    <div class="participant">
+                        <h3>{{participant.name}}</h3>
+                        {{#if participant.actors.length}}
+                            <div class="actor-list">
+                                {{#each participant.actors as |actor|}}
+                                    <button class="actor-card horde-open-actor" data-actor-id="{{actor.id}}" type="button">
+                                        <img src="{{actor.img}}" alt="{{actor.name}}" />
+                                        <span>{{actor.name}}</span>
+                                    </button>
+                                {{/each}}
+                            </div>
+                        {{else}}
+                            <div class="empty">{{localize "HORDE_FIGHT.NO_SELECTION"}}</div>
+                        {{/if}}
+                    </div>
+                {{/each}}
+            </div>
+            <p class="hint">{{localize "HORDE_FIGHT.CONFIRMATION_HINT"}}</p>
+            {{#if isGM}}
+                <button class="horde-dismiss" type="button">{{localize "HORDE_FIGHT.DISMISS"}}</button>
+            {{/if}}
+        </div>
+    {{else}}
+        <div class="horde-panel setup">
+            <header>
+                <h2>{{localize "HORDE_FIGHT.SETUP_TITLE"}}</h2>
+                <div class="actions">
+                    <button class="horde-refresh" type="button">{{localize "HORDE_FIGHT.REFRESH"}}</button>
+                    {{#if isGM}}
+                        <button class="horde-dismiss" type="button">{{localize "HORDE_FIGHT.DISMISS"}}</button>
+                    {{/if}}
+                </div>
+            </header>
+
+            {{#if isGM}}
+                <section class="gm-controls">
+                    <h3>{{localize "HORDE_FIGHT.GM_CONTROLS"}}</h3>
+                    <label class="horde-template">
+                        <span>{{localize "HORDE_FIGHT.HORDE_TEMPLATE"}}</span>
+                        <select class="horde-template-select">
+                            <option value="">{{localize "HORDE_FIGHT.SELECT_TEMPLATE"}}</option>
+                            {{#each hordeTemplates as |actor|}}
+                                <option value="{{actor.id}}" {{#if (eq ../state.hordeTemplateId actor.id)}}selected{{/if}}>{{actor.name}}</option>
+                            {{/each}}
+                        </select>
+                    </label>
+
+                    <div class="participants">
+                        <h4>{{localize "HORDE_FIGHT.PARTICIPANTS"}}</h4>
+                        {{#each participants as |participant|}}
+                            <div class="participant-row">
+                                <span class="name">{{participant.name}}</span>
+                                <span class="status {{#if participant.confirmed}}ready{{else}}pending{{/if}}">
+                                    {{#if participant.confirmed}}{{localize "HORDE_FIGHT.READY"}}{{else}}{{localize "HORDE_FIGHT.PENDING"}}{{/if}}
+                                </span>
+                                <span class="selection">
+                                    {{#if participant.actors.length}}
+                                        {{#each participant.actors as |actor|}}
+                                            <span class="actor-pill">{{actor.name}}</span>
+                                        {{/each}}
+                                    {{else}}
+                                        <span class="none">{{localize "HORDE_FIGHT.NO_SELECTION"}}</span>
+                                    {{/if}}
+                                </span>
+                            </div>
+                        {{/each}}
+                    </div>
+
+                    <button class="horde-initiate {{#if isReadyToStart}}ready{{/if}}" type="button">
+                        {{localize "HORDE_FIGHT.INITIATE"}}
+                    </button>
+                </section>
+            {{else}}
+                <section class="player-controls">
+                    <h3>{{localize "HORDE_FIGHT.PLAYER_SELECTION"}}</h3>
+                    <div class="actor-selection">
+                        {{#if ownedActors.length}}
+                            {{#each ownedActors as |actor|}}
+                                <label class="actor-choice">
+                                    <input class="horde-actor-choice" type="checkbox" value="{{actor.id}}" {{#if (contains ../selectedActorIds actor.id)}}checked{{/if}} />
+                                    <img src="{{actor.img}}" alt="{{actor.name}}" />
+                                    <span>{{actor.name}}</span>
+                                </label>
+                            {{/each}}
+                        {{else}}
+                            <div class="empty">{{localize "HORDE_FIGHT.NO_OWNED_ACTORS"}}</div>
+                        {{/if}}
+                    </div>
+                    <div class="player-actions">
+                        <button class="horde-actor-confirm" type="button">
+                            {{localize "HORDE_FIGHT.CONFIRM_SELECTION"}}
+                        </button>
+                        <button class="horde-actor-clear" type="button">
+                            {{localize "HORDE_FIGHT.CLEAR_READY"}}
+                        </button>
+                        {{#if selectionConfirmed}}
+                            <span class="ready-indicator">{{localize "HORDE_FIGHT.READY"}}</span>
+                        {{/if}}
+                    </div>
+                </section>
+            {{/if}}
+        </div>
+    {{/if}}
+</section>

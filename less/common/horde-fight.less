@@ -1,0 +1,171 @@
+.dark-heresy.horde-fight-app {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    pointer-events: none;
+}
+
+.dark-heresy.horde-fight-app .horde-fight-overlay {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px;
+    pointer-events: none;
+}
+
+.dark-heresy.horde-fight-app .horde-banner {
+    font-size: 48px;
+    font-weight: 700;
+    color: #ff3b30;
+    text-shadow: 0 0 10px rgba(255, 59, 48, 0.6);
+    text-align: center;
+    margin-top: 20px;
+}
+
+.dark-heresy.horde-fight-app .horde-panel {
+    width: min(900px, 92vw);
+    background: rgba(10, 10, 10, 0.92);
+    border: 2px solid #ff3b30;
+    border-radius: 12px;
+    padding: 20px;
+    color: #f5f5f5;
+    pointer-events: auto;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+}
+
+.dark-heresy.horde-fight-app .horde-panel header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.dark-heresy.horde-fight-app .horde-panel header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.dark-heresy.horde-fight-app .horde-panel .actions {
+    display: flex;
+    gap: 8px;
+}
+
+.dark-heresy.horde-fight-app .horde-template {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.dark-heresy.horde-fight-app .horde-template select {
+    background: #1e1e1e;
+    color: #f5f5f5;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 6px;
+}
+
+.dark-heresy.horde-fight-app .participants {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dark-heresy.horde-fight-app .participant-row {
+    display: grid;
+    grid-template-columns: 1fr auto 2fr;
+    gap: 12px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 10px;
+    border-radius: 6px;
+}
+
+.dark-heresy.horde-fight-app .participant-row .status.ready {
+    color: #53d769;
+    font-weight: 600;
+}
+
+.dark-heresy.horde-fight-app .participant-row .status.pending {
+    color: #ffcc00;
+    font-weight: 600;
+}
+
+.dark-heresy.horde-fight-app .actor-pill {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.dark-heresy.horde-fight-app .horde-initiate.ready {
+    background: #ff3b30;
+    color: #fff;
+    font-weight: 700;
+}
+
+.dark-heresy.horde-fight-app .player-controls .actor-selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.dark-heresy.horde-fight-app .player-controls .actor-choice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.dark-heresy.horde-fight-app .player-controls .actor-choice img {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+.dark-heresy.horde-fight-app .player-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.dark-heresy.horde-fight-app .ready-indicator {
+    color: #53d769;
+    font-weight: 600;
+}
+
+.dark-heresy.horde-fight-app .confirmation .actor-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.dark-heresy.horde-fight-app .confirmation .actor-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+    color: inherit;
+}
+
+.dark-heresy.horde-fight-app .confirmation .actor-card img {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+}
+
+.dark-heresy.horde-fight-app .hint {
+    font-size: 12px;
+    opacity: 0.8;
+}
