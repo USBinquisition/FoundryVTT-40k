@@ -1058,85 +1058,85 @@ export async function attackMenu() {
         targets: selectedTargets,
         defaultTargetId,
         chargeRange: getChargeRange(actor),
-        units: canvas?.scene?.gridUnits ?? "m"
+        units: canvas?.scene?.gridUnits ?? \"m\"
     };
 
-    const html = await renderTemplate("systems/dark-heresy/template/dialog/auto-npc-attack.hbs", dialogData);
+    const html = await renderTemplate(\"systems/dark-heresy/template/dialog/auto-npc-attack.hbs\", dialogData);
     let dialog;
     dialog = new Dialog({
         title: `Auto Attacks: ${actor.name}`,
         content: html,
         buttons: {
             aimShoot: {
-                icon: "<i class=\"fa-solid fa-bullseye\"></i>",
-                label: "Aim + Shoot",
+                icon: \"<i class=\\\"fa-solid fa-bullseye\\\"></i>\",
+                label: \"Aim + Shoot\",
                 callback: html => {
-                    const targetId = html.find("#auto-npc-target").val();
-                    const weaponId = html.find("#auto-npc-ranged-weapon").val();
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-ranged-weapon\").val();
                     return autoRangedAttack({
                         weaponId,
                         targetId,
-                        attackType: "standard",
+                        attackType: \"standard\",
                         aimValue: 10,
                         autoResolveDefense: true
                     });
                 }
             },
             semiAuto: {
-                icon: "<i class=\"fa-solid fa-crosshairs\"></i>",
-                label: "Semi-Auto",
+                icon: \"<i class=\\\"fa-solid fa-crosshairs\\\"></i>\",
+                label: \"Semi-Auto\",
                 callback: html => {
-                    const targetId = html.find("#auto-npc-target").val();
-                    const weaponId = html.find("#auto-npc-ranged-weapon").val();
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-ranged-weapon\").val();
                     return autoRangedAttack({
                         weaponId,
                         targetId,
-                        attackType: "semi_auto",
+                        attackType: \"semi_auto\",
                         aimValue: 0,
                         autoResolveDefense: true
                     });
                 }
             },
             fullAuto: {
-                icon: "<i class=\"fa-solid fa-gun\"></i>",
-                label: "Full Auto",
+                icon: \"<i class=\\\"fa-solid fa-gun\\\"></i>\",
+                label: \"Full Auto\",
                 callback: html => {
-                    const targetId = html.find("#auto-npc-target").val();
-                    const weaponId = html.find("#auto-npc-ranged-weapon").val();
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-ranged-weapon\").val();
                     return autoRangedAttack({
                         weaponId,
                         targetId,
-                        attackType: "full_auto",
+                        attackType: \"full_auto\",
                         aimValue: 0,
                         autoResolveDefense: true
                     });
                 }
             },
             melee: {
-                icon: "<i class=\"fa-solid fa-hand-fist\"></i>",
-                label: "Melee Attack",
+                icon: \"<i class=\\\"fa-solid fa-hand-fist\\\"></i>\",
+                label: \"Melee Attack\",
                 callback: html => {
-                    const targetId = html.find("#auto-npc-target").val();
-                    const weaponId = html.find("#auto-npc-melee-weapon").val();
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-melee-weapon\").val();
                     return autoMeleeAttack({ weaponId, targetId, autoResolveDefense: true });
                 }
             },
             charge: {
-                icon: "<i class=\"fa-solid fa-person-running\"></i>",
-                label: "Charge + Attack",
+                icon: \"<i class=\\\"fa-solid fa-person-running\\\"></i>\",
+                label: \"Charge + Attack\",
                 callback: html => {
-                    const targetId = html.find("#auto-npc-target").val();
-                    const weaponId = html.find("#auto-npc-melee-weapon").val();
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-melee-weapon\").val();
                     return autoMeleeAttack({ weaponId, targetId, charge: true, autoResolveDefense: true });
                 }
             },
             cancel: {
-                icon: "<i class=\"fa-solid fa-times\"></i>",
-                label: game.i18n.localize("BUTTON.CANCEL"),
+                icon: \"<i class=\\\"fa-solid fa-times\\\"></i>\",
+                label: game.i18n.localize(\"BUTTON.CANCEL\"),
                 callback: () => {}
             }
         },
-        default: "aimShoot",
+        default: \"aimShoot\",
         close: () => { dialog = null; }
     }, { width: 420 });
     dialog.render(true);
@@ -1146,7 +1146,7 @@ export async function aimedShot({ weaponId, targetId } = {}) {
     return autoRangedAttack({
         weaponId,
         targetId,
-        attackType: "standard",
+        attackType: \"standard\",
         aimValue: 10,
         autoResolveDefense: true
     });
@@ -1156,7 +1156,7 @@ export async function semiAutoShot({ weaponId, targetId } = {}) {
     return autoRangedAttack({
         weaponId,
         targetId,
-        attackType: "semi_auto",
+        attackType: \"semi_auto\",
         aimValue: 0,
         autoResolveDefense: true
     });
@@ -1166,7 +1166,7 @@ export async function fullAutoShot({ weaponId, targetId } = {}) {
     return autoRangedAttack({
         weaponId,
         targetId,
-        attackType: "full_auto",
+        attackType: \"full_auto\",
         aimValue: 0,
         autoResolveDefense: true
     });
