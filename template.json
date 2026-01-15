@@ -1051,7 +1051,6 @@
       "insanity": 0,
       "corruption": 0,
       "aptitudes": {},
-      "disposition": "neutral",
       "size": 4
     },
     "npc": {
@@ -1069,7 +1068,6 @@
       },
       "faction": "",
       "subfaction": "",
-      "disposition": "neutral",
       "type": "troop",
       "threatLevel": 0,
       "size": 4,
