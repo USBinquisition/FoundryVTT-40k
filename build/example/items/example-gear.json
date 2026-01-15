@@ -1,0 +1,12 @@
+{
+  "name": "Example Gear",
+  "type": "gear",
+  "img": "icons/svg/backpack.svg",
+  "system": {
+    "craftsmanship": "common",
+    "description": "",
+    "availability": "common",
+    "weight": 1,
+    "shortDescription": "Generic kit for examples."
+  }
+}

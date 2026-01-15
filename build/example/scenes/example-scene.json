@@ -1,0 +1,9 @@
+{
+  "name": "Example Scene",
+  "active": false,
+  "background": { "src": "", "offsetX": 0, "offsetY": 0 },
+  "grid": { "type": 1, "size": 100, "distance": 1, "units": "m" },
+  "dimensions": { "width": 2000, "height": 2000 },
+  "padding": 0.1,
+  "tokens": []
+}
