@@ -58,7 +58,8 @@ function preloadHandlebarsTemplates() {
 
         "systems/dark-heresy/template/dialog/common-roll.hbs",
         "systems/dark-heresy/template/dialog/combat-roll.hbs",
-        "systems/dark-heresy/template/dialog/psychic-power-roll.hbs"
+        "systems/dark-heresy/template/dialog/psychic-power-roll.hbs",
+        "systems/dark-heresy/template/dialog/horde-fight.hbs"
     ];
     return loadTemplates(templatePaths);
 }
@@ -112,5 +113,15 @@ function registerHandlebarsHelpers() {
         return game.darkHeresy.config[key];
     });
 
-}
+    Handlebars.registerHelper("eq", function(a, b) {
+        return a === b;
+    });
 
+    Handlebars.registerHelper("contains", function(list, item) {
+        if (!Array.isArray(list)) {
+            return false;
+        }
+        return list.includes(item);
+    });
+
+}

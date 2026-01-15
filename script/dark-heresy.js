@@ -28,6 +28,7 @@ import { chatListeners } from "./common/chat.js";
 import DhMacroUtil from "./common/macro.js";
 import Dh from "./common/config.js";
 import { registerFactionTokenHud } from "./common/token-hud.js";
+import { HordeFightManager } from "./common/horde-fight.js";
 import "./macro/auto-npc.js";
 
 // Import Helpers
@@ -101,6 +102,7 @@ Hooks.once("init", function() {
     });
 
     registerFactionTokenHud();
+    HordeFightManager.initialize();
 
 });
 
