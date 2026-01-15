@@ -1,5 +1,5 @@
 import DarkHeresyUtil from "../common/util.js";
-import { combatRoll, applyDamage, reportEmptyClip } from "../common/roll.js";
+import { combatRoll, applyDamage, commonRoll, reportEmptyClip } from "../common/roll.js";
 import { prepareCombatRoll } from "../common/dialog.js";
 
 export const TARGETING_MODES = Object.freeze({
@@ -192,6 +192,217 @@ function warnAutoNpc(message) {
     ui?.notifications?.warn?.(text);
     console.warn(text);
     return null;
+}
+
+function formatDistance(distance) {
+    if (!Number.isFinite(distance)) return "?";
+    const rounded = Math.round(distance * 10) / 10;
+    return rounded.toString();
+}
+
+function getWeaponLabel(weapon) {
+    const weaponClass = weapon?.class ?? weapon?.system?.class;
+    const clip = weapon?.system?.clip?.value ?? weapon?.clip?.value;
+    if (weaponClass && Number.isFinite(clip)) {
+        return `${weapon.name} (${weaponClass}, ${clip} ammo)`;
+    }
+    if (weaponClass) {
+        return `${weapon.name} (${weaponClass})`;
+    }
+    return weapon?.name ?? "Weapon";
+}
+
+function getTargetOptions(actingToken, targets, { chargeRange } = {}) {
+    const units = canvas?.scene?.gridUnits ?? "m";
+    return targets.map(token => {
+        const distance = measureDistance(actingToken, token);
+        const distanceText = `${formatDistance(distance)}${units ? ` ${units}` : ""}`;
+        const inCharge = Number.isFinite(chargeRange) && distance <= chargeRange;
+        return {
+            id: token.id,
+            name: token.name ?? token.actor?.name ?? "Target",
+            distance,
+            distanceText,
+            inCharge,
+            label: `${token.name ?? token.actor?.name ?? "Target"} (${distanceText}${inCharge ? ", charge" : ""})`
+        };
+    });
+}
+
+function getWeaponOptions(actor, { meleeOnly = false, rangedOnly = false } = {}) {
+    if (!actor) return [];
+    const weapons = actor.items?.filter(item => item.type === "weapon") ?? [];
+    const filtered = weapons.filter(item => {
+        const weaponClass = item.class ?? item.system?.class;
+        if (meleeOnly) return weaponClass === "melee";
+        if (rangedOnly) return weaponClass && weaponClass !== "melee";
+        return true;
+    });
+    const equipped = filtered.filter(item => item.system?.equipped || item.system?.isEquipped || item.system?.ready);
+    const active = equipped.length ? equipped : filtered;
+    return active
+        .map(item => ({ id: item.id, label: getWeaponLabel(item) }))
+        .sort((a, b) => a.label.localeCompare(b.label, game.i18n?.lang ?? "en"));
+}
+
+function getConfigLabel(configMap, key, fallback) {
+    const value = configMap?.[key] ?? fallback ?? key;
+    return game.i18n?.localize?.(value) ?? value;
+}
+
+function hasSkill(actor, skillKey) {
+    return !!actor?.skills?.[skillKey];
+}
+
+function hasMeleeWeapon(actor) {
+    return (actor?.items ?? []).some(item => item.type === "weapon" && (item.class ?? item.system?.class) === "melee");
+}
+
+function getActorFaction(actor) {
+    const rawFaction = actor?.system?.faction ?? "neutral";
+    return String(rawFaction).toLowerCase();
+}
+
+function getOpposingFaction(faction) {
+    switch (faction) {
+        case "friendly":
+            return "enemy";
+        case "enemy":
+            return "friendly";
+        default:
+            return "enemy";
+    }
+}
+
+function findNearestOpposingTarget(actingToken) {
+    if (!actingToken) return null;
+    const actorFaction = getActorFaction(actingToken.actor);
+    const opposingFaction = getOpposingFaction(actorFaction);
+    const tokens = canvas?.tokens?.placeables ?? [];
+    const sceneId = getTokenSceneId(actingToken);
+    const originId = actingToken.id ?? actingToken.document?.id;
+    let candidates = tokens.filter(token => {
+        if (!token?.actor) return false;
+        if (sceneId && getTokenSceneId(token) !== sceneId) return false;
+        const tokenId = token.id ?? token.document?.id;
+        if (originId && tokenId === originId) return false;
+        return getActorFaction(token.actor) === opposingFaction;
+    });
+
+    if (!candidates.length && actorFaction === "neutral") {
+        candidates = tokens.filter(token => {
+            if (!token?.actor) return false;
+            if (sceneId && getTokenSceneId(token) !== sceneId) return false;
+            const tokenId = token.id ?? token.document?.id;
+            if (originId && tokenId === originId) return false;
+            return getActorFaction(token.actor) !== "neutral";
+        });
+    }
+
+    if (!candidates.length) return null;
+
+    let closestToken = null;
+    let closestDistance = Number.POSITIVE_INFINITY;
+    for (const token of candidates) {
+        const distance = measureDistance(actingToken, token);
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestToken = token;
+        }
+    }
+    return closestToken ?? candidates[0] ?? null;
+}
+
+function buildEvasionRollData(defender, attackRollData, evasionType) {
+    const rollData = foundry.utils.duplicate(attackRollData);
+    rollData.ownerId = defender?.id ?? rollData.ownerId;
+    rollData.flags = rollData.flags ?? {};
+    rollData.flags.isEvasion = true;
+    rollData.flags.isAttack = false;
+    rollData.flags.isCombatRoll = false;
+    rollData.flags.isDamageRoll = false;
+    rollData.target.modifier = 0;
+    const evasions = { selected: evasionType };
+    if (evasionType === "dodge") {
+        evasions.dodge = DarkHeresyUtil.createSkillRollData(defender, "dodge");
+    }
+    if (evasionType === "parry") {
+        evasions.parry = DarkHeresyUtil.createSkillRollData(defender, "parry");
+    }
+    if (evasionType === "deny") {
+        evasions.deny = DarkHeresyUtil.createCharacteristicRollData(defender, "willpower");
+    }
+    rollData.evasions = evasions;
+    rollData.name = rollData.evasions?.[evasionType]?.name
+        ?? getConfigLabel(game.darkHeresy?.config?.evasions, evasionType, "DIALOG.EVASION");
+    return rollData;
+}
+
+async function attemptNpcDefense(attackRollData, targetToken, { mode }) {
+    const defender = targetToken?.actor;
+    if (!defender) return { handled: false };
+    const reactionState = getReactionState(defender);
+    if (!reactionState.current) return { handled: false, reason: "no-reactions" };
+
+    let evasionType = null;
+    if (mode === "melee") {
+        if (hasSkill(defender, "parry") && hasMeleeWeapon(defender)) {
+            evasionType = "parry";
+        } else if (hasSkill(defender, "dodge")) {
+            evasionType = "dodge";
+        }
+    } else if (hasSkill(defender, "dodge")) {
+        evasionType = "dodge";
+    }
+
+    if (!evasionType) return { handled: false, reason: "no-skill" };
+
+    await useReaction({ actor: defender, label: `attempt to ${evasionType}` });
+
+    const evasionRollData = buildEvasionRollData(defender, attackRollData, evasionType);
+    await commonRoll(evasionRollData);
+
+    if (Number.isFinite(evasionRollData.numberOfHits)) {
+        attackRollData.numberOfHits = evasionRollData.numberOfHits;
+    }
+
+    const evaded = evasionRollData.flags?.isSuccess
+        && (!Number.isFinite(evasionRollData.numberOfHits) || evasionRollData.numberOfHits <= 0);
+    return {
+        handled: true,
+        evaded,
+        remainingHits: evasionRollData.numberOfHits
+    };
+}
+
+async function applyAttackDamage(rollData, targetToken, { autoResolve } = {}) {
+    if (!rollData || !targetToken) return null;
+    const shouldApplyDamage = rollData.flags?.isDamageRoll || rollData.flags?.isSuccess;
+    if (!shouldApplyDamage) return null;
+    if (Number.isFinite(rollData.numberOfHits) && rollData.numberOfHits <= 0) return null;
+
+    if (autoResolve && targetToken.actor?.type === "npc" && rollData.flags?.isSuccess) {
+        const mode = rollData.weapon?.isMelee ? "melee" : "ranged";
+        const defense = await attemptNpcDefense(rollData, targetToken, { mode });
+        if (defense?.evaded) {
+            postAutoNpcSummary(
+                `${describeTarget(targetToken)} evades the incoming attack.`,
+                targetToken.actor,
+                targetToken
+            );
+            return null;
+        }
+        if (Number.isFinite(defense?.remainingHits) && defense.remainingHits <= 0) {
+            postAutoNpcSummary(
+                `${describeTarget(targetToken)} evades the incoming attack.`,
+                targetToken.actor,
+                targetToken
+            );
+            return null;
+        }
+    }
+
+    return applyDamage(rollData, [targetToken]);
 }
 
 /**
@@ -559,6 +770,39 @@ function resolveActingToken({ fallbackToCombatant = true } = {}) {
     return null;
 }
 
+function getChargeRange(actor) {
+    const movement = actor?.system?.movement ?? {};
+    const chargeRange = Number(movement.charge ?? movement.full ?? 0);
+    return Number.isFinite(chargeRange) ? chargeRange : 0;
+}
+
+function getHostileTargets(originToken, { includeFriendlies = false } = {}) {
+    const canvasTokens = canvas?.tokens?.placeables ?? [];
+    const sceneId = originToken ? getTokenSceneId(originToken) : null;
+    const hostileDisposition = CONST?.TOKEN_DISPOSITIONS?.HOSTILE ?? -1;
+    return canvasTokens.filter(token => {
+        if (!token?.actor) return false;
+        const tokenSceneId = getTokenSceneId(token);
+        if (sceneId && tokenSceneId !== sceneId) return false;
+        const tokenId = token.id ?? token.document?.id;
+        const originId = originToken ? originToken.id ?? originToken.document?.id : null;
+        if (originId && tokenId === originId) return false;
+        if (includeFriendlies) return true;
+        return token.document?.disposition === hostileDisposition;
+    });
+}
+
+function resolveTargetToken(actingToken, { targetId, includeFriendlies = false } = {}) {
+    if (targetId) {
+        const target = canvas.tokens?.get(targetId) ?? null;
+        if (target) return target;
+    }
+    const targets = Array.from(game.user?.targets ?? []);
+    if (targets.length) return targets[0];
+    const hostiles = getHostileTargets(actingToken, { includeFriendlies });
+    return hostiles[0] ?? null;
+}
+
 /**
  * Locate a weapon item on an actor using the provided predicate.
  * @param {Actor} actor
@@ -583,9 +827,11 @@ function findWeapon(actor, preferredName, predicate) {
  * @param {Item} weapon
  * @param {Token} targetToken
  * @param {Function} configureRoll
+ * @param {object} [options]
+ * @param {boolean} [options.autoResolveDefense]
  * @returns {Promise<object|null>}
  */
-async function executeCombatRoll(actor, weapon, targetToken, configureRoll) {
+async function executeCombatRoll(actor, weapon, targetToken, configureRoll, { autoResolveDefense = false } = {}) {
     if (!actor || !weapon || !targetToken) return null;
 
     const rollData = DarkHeresyUtil.createWeaponRollData(actor, weapon);
@@ -606,11 +852,8 @@ async function executeCombatRoll(actor, weapon, targetToken, configureRoll) {
 
     await combatRoll(rollData);
 
-    const shouldApplyDamage = rollData.flags?.isDamageRoll || rollData.flags?.isSuccess;
     let appliedActors = [];
-    if (shouldApplyDamage) {
-        appliedActors = await applyDamage(rollData, [targetToken]);
-    }
+    appliedActors = await applyAttackDamage(rollData, targetToken, { autoResolve: autoResolveDefense });
 
     const updatedActor = appliedActors?.[0] ?? targetToken.actor;
     const postWounds = Number(updatedActor?.system?.wounds?.value ?? targetToken.actor?.system?.wounds?.value);
@@ -629,6 +872,381 @@ async function executeCombatRoll(actor, weapon, targetToken, configureRoll) {
  */
 function describeTarget(token) {
     return token?.name ?? token?.actor?.name ?? token?.document?.name ?? game.i18n?.localize?.("CHAT.CONTEXT.APPLY_DAMAGE") ?? "target";
+}
+
+async function autoRangedAttack({
+    weaponId,
+    targetId,
+    attackType = "standard",
+    aimValue = 0,
+    includeFriendlies = false,
+    autoResolveDefense = false
+} = {}) {
+    const actingToken = resolveActingToken();
+    if (!actingToken) return warnAutoNpc("Select a token before running Auto Shoot.");
+
+    const actor = actingToken.actor;
+    if (!actor) return warnAutoNpc("The controlled token has no linked actor.");
+
+    const weapon = findWeapon(actor, weaponId, item => {
+        const weaponClass = item.class ?? item.system?.class;
+        return weaponClass && weaponClass !== "melee";
+    });
+    if (!weapon) return warnAutoNpc(`${actor.name} has no ranged weapon.`);
+
+    const targetToken = resolveTargetToken(actingToken, { targetId, includeFriendlies });
+    if (!targetToken) return warnAutoNpc("No valid targets found for shooting.");
+
+    try {
+        const result = await executeCombatRoll(
+            actor,
+            weapon,
+            targetToken,
+            async rollData => {
+                if (rollData.weapon?.isRange && rollData.weapon.clip?.value <= 0) {
+                    await reportEmptyClip(rollData);
+                    throw new Error("EMPTY_CLIP");
+                }
+
+                const rangeSelection = resolveRangeSelection(actingToken, targetToken, rollData.weapon?.range);
+                if (!rangeSelection) {
+                    throw new Error("OUT_OF_RANGE");
+                }
+
+                rollData.rangeMod = rangeSelection.modifier;
+                if (rangeSelection.label) rollData.rangeModText = rangeSelection.label;
+                rollData.attackType = {
+                    name: attackType,
+                    text: getConfigLabel(game.darkHeresy?.config?.attackTypeRanged, attackType, "ATTACK_TYPE.STANDARD")
+                };
+                let adjustedAim = aimValue;
+                if (rollData.weapon?.traits?.inaccurate) {
+                    adjustedAim = 0;
+                } else if (rollData.weapon?.traits?.accurate && aimValue > 0) {
+                    adjustedAim += 10;
+                }
+                rollData.aim = {
+                    val: adjustedAim,
+                    isAiming: adjustedAim > 0,
+                    text: getConfigLabel(game.darkHeresy?.config?.aimModes, adjustedAim, "AIMING.NONE")
+                };
+            },
+            { autoResolveDefense }
+        );
+
+        if (result?.aborted) return { outcome: "aborted" };
+
+        if (result) {
+            const damageText = Number.isFinite(result.inflictedDamage) ? result.inflictedDamage : 0;
+            const summary = `${actor.name} fires ${weapon.name} at ${describeTarget(targetToken)} for ${damageText} damage!`;
+            postAutoNpcSummary(summary, actor, actingToken);
+            return { outcome: "npc-fired", result };
+        }
+
+        return { outcome: "npc-fired" };
+    } catch(error) {
+        if (error?.message === "EMPTY_CLIP") {
+            warnAutoNpc(`${actor.name} attempted to fire ${weapon.name} but is out of ammo.`);
+            return { outcome: "no-ammo" };
+        }
+        if (error?.message === "OUT_OF_RANGE") {
+            return warnAutoNpc(`${weapon.name} is out of range for ${actor.name}.`);
+        }
+        throw error;
+    }
+}
+
+async function autoMeleeAttack({
+    weaponId,
+    targetId,
+    charge = false,
+    includeFriendlies = false,
+    autoResolveDefense = false
+} = {}) {
+    const actingToken = resolveActingToken();
+    if (!actingToken) return warnAutoNpc("Select a token before running Auto Melee.");
+
+    const actor = actingToken.actor;
+    if (!actor) return warnAutoNpc("The controlled token has no linked actor.");
+
+    const weapon = findWeapon(
+        actor,
+        weaponId,
+        item => (item.class ?? item.system?.class) === "melee"
+    );
+    if (!weapon) return warnAutoNpc(`${actor.name} has no melee weapon.`);
+
+    const targetToken = resolveTargetToken(actingToken, { targetId, includeFriendlies });
+    if (!targetToken) return warnAutoNpc("No valid targets found for melee.");
+
+    const chargeRange = getChargeRange(actor);
+    const meleeDistance = measureDistance(actingToken, targetToken);
+
+    if (charge) {
+        if (!Number.isFinite(meleeDistance)) return warnAutoNpc("Unable to measure distance to target for charge.");
+        if (!Number.isFinite(chargeRange) || chargeRange <= 0) {
+            return warnAutoNpc(`${actor.name} cannot determine a charge distance.`);
+        }
+        if (meleeDistance > chargeRange) {
+            return warnAutoNpc(`${describeTarget(targetToken)} is out of charge range (${chargeRange}).`);
+        }
+        const destination = computeMovementDestination(actingToken, targetToken, chargeRange, { stopAtContact: true });
+        if (destination) await moveTokenTo(actingToken, destination);
+    } else if (Number.isFinite(meleeDistance) && meleeDistance > 3) {
+        return warnAutoNpc(`${describeTarget(targetToken)} is too far away for a melee attack.`);
+    }
+
+    let result = null;
+    try {
+        result = await executeCombatRoll(
+            actor,
+            weapon,
+            targetToken,
+            rollData => {
+                rollData.attackType = {
+                    name: charge ? "charge" : "standard",
+                    text: getConfigLabel(
+                        game.darkHeresy?.config?.attackTypeMelee,
+                        charge ? "charge" : "standard",
+                        "ATTACK_TYPE.STANDARD"
+                    )
+                };
+                rollData.aim = { val: 0, isAiming: false };
+                rollData.rangeMod = 0;
+            },
+            { autoResolveDefense }
+        );
+    } catch(error) {
+        return warnAutoNpc(`Melee attack failed: ${error?.message ?? error}`);
+    }
+
+    const action = charge ? "charges" : "attacks";
+    const summary = `${actor.name} ${action} ${describeTarget(targetToken)} with ${weapon.name}!`;
+    postAutoNpcSummary(summary, actor, actingToken);
+    return result;
+}
+
+export async function attackMenu() {
+    const actingToken = resolveActingToken();
+    if (!actingToken) return warnAutoNpc("Select a token before running Auto Attack Menu.");
+
+    const actor = actingToken.actor;
+    if (!actor) return warnAutoNpc("The controlled token has no linked actor.");
+
+    const rangedOptions = getWeaponOptions(actor, { rangedOnly: true });
+    const meleeOptions = getWeaponOptions(actor, { meleeOnly: true });
+
+    if (!rangedOptions.length && !meleeOptions.length) {
+        return warnAutoNpc(`${actor.name} has no weapons to use.`);
+    }
+
+    const targets = getHostileTargets(actingToken);
+    if (!targets.length) {
+        return warnAutoNpc("No valid targets found for attacks.");
+    }
+    const targetOptions = getTargetOptions(actingToken, targets, { chargeRange: getChargeRange(actor) });
+    const defaultTargetId = Array.from(game.user?.targets ?? [])[0]?.id ?? targetOptions[0]?.id ?? "";
+    const selectedTargets = targetOptions.map(option => ({
+        ...option,
+        selected: option.id === defaultTargetId
+    }));
+
+    const dialogData = {
+        actorName: actor.name,
+        rangedWeapons: rangedOptions,
+        meleeWeapons: meleeOptions,
+        targets: selectedTargets,
+        defaultTargetId,
+        chargeRange: getChargeRange(actor),
+        units: canvas?.scene?.gridUnits ?? \"m\"
+    };
+
+    const html = await renderTemplate(\"systems/dark-heresy/template/dialog/auto-npc-attack.hbs\", dialogData);
+    let dialog;
+    dialog = new Dialog({
+        title: `Auto Attacks: ${actor.name}`,
+        content: html,
+        buttons: {
+            aimShoot: {
+                icon: \"<i class=\\\"fa-solid fa-bullseye\\\"></i>\",
+                label: \"Aim + Shoot\",
+                callback: html => {
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-ranged-weapon\").val();
+                    return autoRangedAttack({
+                        weaponId,
+                        targetId,
+                        attackType: \"standard\",
+                        aimValue: 10,
+                        autoResolveDefense: true
+                    });
+                }
+            },
+            semiAuto: {
+                icon: \"<i class=\\\"fa-solid fa-crosshairs\\\"></i>\",
+                label: \"Semi-Auto\",
+                callback: html => {
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-ranged-weapon\").val();
+                    return autoRangedAttack({
+                        weaponId,
+                        targetId,
+                        attackType: \"semi_auto\",
+                        aimValue: 0,
+                        autoResolveDefense: true
+                    });
+                }
+            },
+            fullAuto: {
+                icon: \"<i class=\\\"fa-solid fa-gun\\\"></i>\",
+                label: \"Full Auto\",
+                callback: html => {
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-ranged-weapon\").val();
+                    return autoRangedAttack({
+                        weaponId,
+                        targetId,
+                        attackType: \"full_auto\",
+                        aimValue: 0,
+                        autoResolveDefense: true
+                    });
+                }
+            },
+            melee: {
+                icon: \"<i class=\\\"fa-solid fa-hand-fist\\\"></i>\",
+                label: \"Melee Attack\",
+                callback: html => {
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-melee-weapon\").val();
+                    return autoMeleeAttack({ weaponId, targetId, autoResolveDefense: true });
+                }
+            },
+            charge: {
+                icon: \"<i class=\\\"fa-solid fa-person-running\\\"></i>\",
+                label: \"Charge + Attack\",
+                callback: html => {
+                    const targetId = html.find(\"#auto-npc-target\").val();
+                    const weaponId = html.find(\"#auto-npc-melee-weapon\").val();
+                    return autoMeleeAttack({ weaponId, targetId, charge: true, autoResolveDefense: true });
+                }
+            },
+            cancel: {
+                icon: \"<i class=\\\"fa-solid fa-times\\\"></i>\",
+                label: game.i18n.localize(\"BUTTON.CANCEL\"),
+                callback: () => {}
+            }
+        },
+        default: \"aimShoot\",
+        close: () => { dialog = null; }
+    }, { width: 420 });
+    dialog.render(true);
+}
+
+export async function aimedShot({ weaponId, targetId } = {}) {
+    return autoRangedAttack({
+        weaponId,
+        targetId,
+        attackType: \"standard\",
+        aimValue: 10,
+        autoResolveDefense: true
+    });
+}
+
+export async function semiAutoShot({ weaponId, targetId } = {}) {
+    return autoRangedAttack({
+        weaponId,
+        targetId,
+        attackType: \"semi_auto\",
+        aimValue: 0,
+        autoResolveDefense: true
+    });
+}
+
+export async function fullAutoShot({ weaponId, targetId } = {}) {
+    return autoRangedAttack({
+        weaponId,
+        targetId,
+        attackType: \"full_auto\",
+        aimValue: 0,
+        autoResolveDefense: true
+    });
+}
+
+export async function meleeEngage({ weaponId, targetId, charge = false } = {}) {
+    return autoMeleeAttack({
+        weaponId,
+        targetId,
+        charge,
+        autoResolveDefense: true
+    });
+}
+
+export async function opposingAimedShot({ weaponId } = {}) {
+    const actingToken = resolveActingToken();
+    if (!actingToken) return warnAutoNpc("Select a token before running Opposing Aim + Shoot.");
+    const targetToken = findNearestOpposingTarget(actingToken);
+    if (!targetToken) return warnAutoNpc("No opposing faction targets found.");
+    return autoRangedAttack({
+        weaponId,
+        targetId: targetToken.id ?? targetToken.document?.id,
+        attackType: "standard",
+        aimValue: 10,
+        autoResolveDefense: true
+    });
+}
+
+export async function opposingSemiAutoShot({ weaponId } = {}) {
+    const actingToken = resolveActingToken();
+    if (!actingToken) return warnAutoNpc("Select a token before running Opposing Semi-Auto.");
+    const targetToken = findNearestOpposingTarget(actingToken);
+    if (!targetToken) return warnAutoNpc("No opposing faction targets found.");
+    return autoRangedAttack({
+        weaponId,
+        targetId: targetToken.id ?? targetToken.document?.id,
+        attackType: "semi_auto",
+        aimValue: 0,
+        autoResolveDefense: true
+    });
+}
+
+export async function opposingFullAutoShot({ weaponId } = {}) {
+    const actingToken = resolveActingToken();
+    if (!actingToken) return warnAutoNpc("Select a token before running Opposing Full Auto.");
+    const targetToken = findNearestOpposingTarget(actingToken);
+    if (!targetToken) return warnAutoNpc("No opposing faction targets found.");
+    return autoRangedAttack({
+        weaponId,
+        targetId: targetToken.id ?? targetToken.document?.id,
+        attackType: "full_auto",
+        aimValue: 0,
+        autoResolveDefense: true
+    });
+}
+
+export async function opposingMeleeAttack({ weaponId } = {}) {
+    const actingToken = resolveActingToken();
+    if (!actingToken) return warnAutoNpc("Select a token before running Opposing Melee Attack.");
+    const targetToken = findNearestOpposingTarget(actingToken);
+    if (!targetToken) return warnAutoNpc("No opposing faction targets found.");
+    return autoMeleeAttack({
+        weaponId,
+        targetId: targetToken.id ?? targetToken.document?.id,
+        charge: false,
+        autoResolveDefense: true
+    });
+}
+
+export async function opposingChargeAttack({ weaponId } = {}) {
+    const actingToken = resolveActingToken();
+    if (!actingToken) return warnAutoNpc("Select a token before running Opposing Charge + Attack.");
+    const targetToken = findNearestOpposingTarget(actingToken);
+    if (!targetToken) return warnAutoNpc("No opposing faction targets found.");
+    return autoMeleeAttack({
+        weaponId,
+        targetId: targetToken.id ?? targetToken.document?.id,
+        charge: true,
+        autoResolveDefense: true
+    });
 }
 
 /**
@@ -904,6 +1522,100 @@ function describeCombatantResetFailure(error) {
     warnAutoNpc(`Failed to reset reactions: ${error?.message ?? error}`);
 }
 
+async function ensureAutoNpcMacro({ name, command, img, folderId }) {
+    const existing = game.macros?.contents?.find(m => m.name === name);
+    if (existing) {
+        const updates = {};
+        if (existing.command !== command) updates.command = command;
+        if (img && existing.img !== img) updates.img = img;
+        if (folderId && existing.folder?.id !== folderId) updates.folder = folderId;
+        if (Object.keys(updates).length) {
+            await existing.update(updates);
+        }
+        return existing;
+    }
+
+    return Macro.create({
+        name,
+        type: "script",
+        img,
+        command,
+        folder: folderId
+    }, { displaySheet: false });
+}
+
+async function createAutoAttackMacros() {
+    if (!game.user?.isGM) return;
+    const folderName = "AutoNPC v0.4";
+    let folder = game.folders?.find(entry => entry.name === folderName && entry.type === "Macro") ?? null;
+    if (!folder) {
+        folder = await Folder.create({ name: folderName, type: "Macro" });
+    }
+    const folderId = folder?.id ?? null;
+
+    const macros = [
+        {
+            name: "AutoNPC: Attack Menu",
+            command: "game.darkHeresy.macros.autoNpc.attackMenu();",
+            img: "icons/svg/target.svg"
+        },
+        {
+            name: "AutoNPC: Opposing Aim + Shoot",
+            command: "game.darkHeresy.macros.autoNpc.opposingAimedShot();",
+            img: "icons/svg/bullseye.svg"
+        },
+        {
+            name: "AutoNPC: Opposing Semi-Auto",
+            command: "game.darkHeresy.macros.autoNpc.opposingSemiAutoShot();",
+            img: "icons/svg/arrow-right.svg"
+        },
+        {
+            name: "AutoNPC: Opposing Full Auto",
+            command: "game.darkHeresy.macros.autoNpc.opposingFullAutoShot();",
+            img: "icons/svg/rays.svg"
+        },
+        {
+            name: "AutoNPC: Opposing Melee Attack",
+            command: "game.darkHeresy.macros.autoNpc.opposingMeleeAttack();",
+            img: "icons/svg/sword.svg"
+        },
+        {
+            name: "AutoNPC: Opposing Charge + Attack",
+            command: "game.darkHeresy.macros.autoNpc.opposingChargeAttack();",
+            img: "icons/svg/daze.svg"
+        },
+        {
+            name: "AutoNPC: Aim + Shoot",
+            command: "game.darkHeresy.macros.autoNpc.aimedShot();",
+            img: "icons/svg/bullseye.svg"
+        },
+        {
+            name: "AutoNPC: Semi-Auto Burst",
+            command: "game.darkHeresy.macros.autoNpc.semiAutoShot();",
+            img: "icons/svg/arrow-right.svg"
+        },
+        {
+            name: "AutoNPC: Full-Auto Burst",
+            command: "game.darkHeresy.macros.autoNpc.fullAutoShot();",
+            img: "icons/svg/rays.svg"
+        },
+        {
+            name: "AutoNPC: Melee Attack",
+            command: "game.darkHeresy.macros.autoNpc.meleeEngage();",
+            img: "icons/svg/sword.svg"
+        },
+        {
+            name: "AutoNPC: Charge + Attack",
+            command: "game.darkHeresy.macros.autoNpc.meleeEngage({ charge: true });",
+            img: "icons/svg/daze.svg"
+        }
+    ];
+
+    for (const macro of macros) {
+        await ensureAutoNpcMacro({ ...macro, folderId });
+    }
+}
+
 /**
  * Reset the reaction counter for the active combatant, if allowed.
  * @param {Combatant} combatant
@@ -926,8 +1638,24 @@ Hooks.on("updateCombat", (combat, changed) => {
     }
 });
 
+Hooks.once("ready", () => {
+    createAutoAttackMacros().catch(error => {
+        warnAutoNpc(`Failed to create AutoNPC macros: ${error?.message ?? error}`);
+    });
+});
+
 Hooks.once("init", () => {
     const macroApi = {
+        attackMenu,
+        aimedShot,
+        semiAutoShot,
+        fullAutoShot,
+        meleeEngage,
+        opposingAimedShot,
+        opposingSemiAutoShot,
+        opposingFullAutoShot,
+        opposingMeleeAttack,
+        opposingChargeAttack,
         autoChargeMelee,
         autoShoot,
         autoTurn,
