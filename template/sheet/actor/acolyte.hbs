@@ -32,14 +32,8 @@
                             <input style="margin-left: 18px" name="system.bio.background" type="text" value="{{system.bio.background}}" />
                         </div>
                         <div class="elite">
-                            <label>{{localize "BIO.FACTION"}}</label>
-                            <select name="system.faction" style="margin-left: 8px">
-                                {{#select system.faction}}
-                                    <option value="friendly">{{localize "FACTION.FRIENDLY"}}</option>
-                                    <option value="neutral">{{localize "FACTION.NEUTRAL"}}</option>
-                                    <option value="enemy">{{localize "FACTION.ENEMY"}}</option>
-                                {{/select}}
-                            </select>
+                            <label>{{localize "BIO.ELITE"}}</label>
+                            <input name="system.bio.elite" type="text" value="{{system.bio.elite}}" />
                         </div>
                         <div class="fatigue">
                             <label>{{localize "FATIGUE"}}</label>
