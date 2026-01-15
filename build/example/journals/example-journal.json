@@ -1,0 +1,10 @@
+{
+  "name": "Example Journal Entry",
+  "pages": [
+    {
+      "name": "Overview",
+      "type": "text",
+      "text": { "content": "<p>Generic journal entry for testing and reference.</p>" }
+    }
+  ]
+}

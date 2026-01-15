@@ -48,7 +48,7 @@ function bundleJavascript() {
 		})
 		.then(bundle => {
 			return bundle.write({
-				file: './release/script/dark-heresy.js'
+				file: './build/release/script/dark-heresy.js'
 			});
 		});
 }

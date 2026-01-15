@@ -10,7 +10,7 @@ The project is being continued under the GPL-3.0 License after the original auth
 
 ## Install
 1. Go to the setup page and choose **Game Systems**.
-2. Click the **Install System** button, and paste in this [manifest link](https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.1/system.json).
+2. Click the **Install System** button, and paste in this [manifest link](https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.5/system.json).
 3. Create a Game World using the Dark Heresy system.
 
 ## Preview

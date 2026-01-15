@@ -1,0 +1,9 @@
+{
+  "name": "Example Roll Table",
+  "formula": "1d6",
+  "results": [
+    { "type": 0, "text": "Result 1", "range": [1, 1], "weight": 1 },
+    { "type": 0, "text": "Result 2", "range": [2, 3], "weight": 2 },
+    { "type": 0, "text": "Result 3", "range": [4, 6], "weight": 3 }
+  ]
+}
