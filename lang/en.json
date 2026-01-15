@@ -96,6 +96,9 @@
   "BIO.FACTION": "Faction",
   "BIO.SUBFACTION": "Subfaction",
   "BIO.THREAT_LEVEL": "Threat Level",
+  "FACTION.FRIENDLY": "Friendly",
+  "FACTION.ENEMY": "Enemy",
+  "FACTION.NEUTRAL": "Neutral",
 
   "BUTTON.POST_ITEM": "Post Item",
   "BUTTON.ROLL": "Roll",
