@@ -1,15 +1,12 @@
 import DarkHeresyUtil from "../common/util.js";
 import { combatRoll, applyDamage, reportEmptyClip } from "../common/roll.js";
-import { prepareCombatRoll } from "../common/dialog.js";
 
 export const TARGETING_MODES = Object.freeze({
     CLOSEST: "closest",
     TARGETED: "targeted",
     RANDOM: "random",
     WEAKEST: "weakest",
-    STRONGEST: "strongest",
-    NPC_ONLY: "npc-only",
-    ACOLYTE_ONLY: "acolyte-only"
+    STRONGEST: "strongest"
 });
 
 export const TARGET_FILTERS = Object.freeze({
@@ -18,169 +15,18 @@ export const TARGET_FILTERS = Object.freeze({
     ACOLYTE_ONLY: "acolyte"
 });
 
-export const PERSONALITY_ARCHETYPES = Object.freeze({
-    BERSERKER_OF_KHORNE: "berserker-of-khorne",
-    LASGUN_LINE_TROOPER: "lasgun-line-trooper",
-    ORK_SHOOTA_BOY: "ork-shoota-boy",
-    CHAOS_SORCERER: "chaos-sorcerer",
-    HIVE_SCUM_COWARD: "hive-scum-coward",
-    COMMISSAR: "commissar",
-    TYRANID_GAUNT: "tyranid-gaunt",
-    ELDAR_RANGER: "eldar-ranger",
-    TECH_PRIEST_GONE_ROGUE: "tech-priest-gone-rogue",
-    DAEMONHOST: "daemonhost"
-});
-
 export const TARGETING_DOCUMENTATION = `Targeting Modes:
-- closest      - hostile nearest to the acting token.
-- targeted     - currently targeted hostile (first entry if multiple).
-- random       - random hostile within the scene.
-- weakest      - hostile with the lowest wounds percentage.
-- strongest    - hostile with the highest wounds percentage.
-- npc-only     - restrict to hostile NPCs, chooses closest among them.
-- acolyte-only - restrict to hostile Acolytes, chooses closest among them.
+- closest  - hostile nearest to the acting token.
+- targeted - currently targeted hostile (first entry if multiple).
+- random   - random hostile within the scene.
+- weakest  - hostile with the lowest wounds percentage.
+- strongest - hostile with the highest wounds percentage.
 
 Filters:
 - any      - allow any hostile disposition.
 - npc      - hostile tokens with NPC actors only.
 - acolyte  - hostile tokens with Acolyte actors only.
 `;
-
-const PERSONALITY_DEFINITIONS = Object.freeze({
-    [PERSONALITY_ARCHETYPES.BERSERKER_OF_KHORNE]: {
-        label: "Berserker of Khorne",
-        description: "Charges the closest foe, sprinting forward if a charge is impossible.",
-        execute: async () => {
-            await autoChargeMelee({ targetMode: TARGETING_MODES.CLOSEST });
-        }
-    },
-    [PERSONALITY_ARCHETYPES.LASGUN_LINE_TROOPER]: {
-        label: "Lasgun Line Trooper",
-        description: "Holds position to fire at the nearest target; if locked in melee it switches to close combat.",
-        execute: async ({ token }) => {
-            const target = selectHostileTarget(token, { mode: TARGETING_MODES.CLOSEST });
-            if (!target) return warnAutoNpc("No valid targets found for line trooper actions.");
-            const distance = measureDistance(token, target);
-            if (Number.isFinite(distance) && distance <= 3) {
-                await autoChargeMelee({ targetMode: TARGETING_MODES.CLOSEST });
-            } else {
-                await autoShoot({ targetMode: TARGETING_MODES.CLOSEST });
-            }
-        }
-    },
-    [PERSONALITY_ARCHETYPES.ORK_SHOOTA_BOY]: {
-        label: "Ork Shoota Boy",
-        description: "Randomly sprays bullets at enemies; if the gun goes click it bellows into a charge.",
-        execute: async () => {
-            const result = await autoShoot({ targetMode: TARGETING_MODES.RANDOM });
-            if (result?.outcome === "no-ammo") {
-                await autoChargeMelee({ targetMode: TARGETING_MODES.RANDOM });
-            }
-        }
-    },
-    [PERSONALITY_ARCHETYPES.CHAOS_SORCERER]: {
-        label: "Chaos Sorcerer",
-        description: "Prefers ranged witchfire; when pressed it tries to dodge before striking back in melee.",
-        execute: async ({ actor, token }) => {
-            const target = selectHostileTarget(token, { mode: TARGETING_MODES.CLOSEST });
-            if (!target) return warnAutoNpc("No valid targets found for sorcerer actions.");
-            const distance = measureDistance(token, target);
-            if (Number.isFinite(distance) && distance <= 3) {
-                await useReaction({ actor, label: "Dodge" });
-                await autoChargeMelee({ targetMode: TARGETING_MODES.CLOSEST });
-            } else {
-                await autoShoot({ targetMode: TARGETING_MODES.CLOSEST });
-            }
-        }
-    },
-    [PERSONALITY_ARCHETYPES.HIVE_SCUM_COWARD]: {
-        label: "Hive Scum Coward",
-        description: "Scatters when wounded, otherwise takes pot-shots at any Acolyte in sight.",
-        execute: async ({ actor, token }) => {
-            const wounds = Number(actor.system?.wounds?.value ?? 0);
-            const max = Number(actor.system?.wounds?.max ?? 1);
-            const ratio = max > 0 ? wounds / max : 1;
-            const closest = selectHostileTarget(token, { mode: TARGETING_MODES.CLOSEST });
-            if (!closest) return warnAutoNpc("No valid targets found for coward actions.");
-            if (ratio < 0.5) {
-                const retreatDistance = Number(actor.system?.movement?.run ?? actor.system?.movement?.full ?? 0);
-                await retreatFromTarget(token, closest, retreatDistance);
-            } else {
-                await autoShoot({
-                    targetMode: TARGETING_MODES.RANDOM,
-                    targetFilter: TARGET_FILTERS.ACOLYTE_ONLY
-                });
-            }
-        }
-    },
-    [PERSONALITY_ARCHETYPES.COMMISSAR]: {
-        label: "Commissar",
-        description: "Executes the strongest Acolyte first and foremost.",
-        execute: async () => {
-            await autoShoot({
-                targetMode: TARGETING_MODES.STRONGEST,
-                targetFilter: TARGET_FILTERS.ACOLYTE_ONLY
-            });
-        }
-    },
-    [PERSONALITY_ARCHETYPES.TYRANID_GAUNT]: {
-        label: "Tyranid Gaunt",
-        description: "Swarms toward the nearest Acolyte and launches a frenzied charge.",
-        execute: async () => {
-            await autoChargeMelee({ targetMode: TARGETING_MODES.ACOLYTE_ONLY });
-        }
-    },
-    [PERSONALITY_ARCHETYPES.ELDAR_RANGER]: {
-        label: "Eldar Ranger",
-        description: "Picks off the weakest foe from afar and slips out of melee when threatened.",
-        execute: async ({ token, actor }) => {
-            const target = selectHostileTarget(token, { mode: TARGETING_MODES.WEAKEST });
-            if (!target) return warnAutoNpc("No valid targets found for ranger actions.");
-            const distance = measureDistance(token, target);
-            if (Number.isFinite(distance) && distance <= 3) {
-                await retreatFromTarget(token, target, actor.system?.movement?.full ?? 0);
-            }
-            await autoShoot({ targetMode: TARGETING_MODES.WEAKEST });
-        }
-    },
-    [PERSONALITY_ARCHETYPES.TECH_PRIEST_GONE_ROGUE]: {
-        label: "Tech-Priest Gone Rogue",
-        description: "Focuses Acolytes with ranged fire; if the weapon fails it resorts to blasphemous melee strikes.",
-        execute: async () => {
-            const result = await autoShoot({
-                targetMode: TARGETING_MODES.CLOSEST,
-                targetFilter: TARGET_FILTERS.ACOLYTE_ONLY
-            });
-            if (result?.outcome === "no-ammo") {
-                await autoChargeMelee({ targetMode: TARGETING_MODES.ACOLYTE_ONLY });
-            }
-        }
-    },
-    [PERSONALITY_ARCHETYPES.DAEMONHOST]: {
-        label: "Daemonhost",
-        description: "Unleashes random carnage, choosing targets and attack styles on a whim (friendly fire included).",
-        execute: async () => {
-            const useMelee = Math.random() < 0.5;
-            if (useMelee) {
-                await autoChargeMelee({
-                    targetMode: TARGETING_MODES.RANDOM,
-                    includeFriendlies: true
-                });
-            } else {
-                await autoShoot({
-                    targetMode: TARGETING_MODES.RANDOM,
-                    includeFriendlies: true
-                });
-            }
-        }
-    }
-});
-
-const PERSONALITY_OPTIONS = Object.freeze(
-    Object.entries(PERSONALITY_DEFINITIONS)
-        .map(([id, value]) => ({ id, label: value.label, description: value.description }))
-        .sort((a, b) => a.label.localeCompare(b.label, game.i18n?.lang ?? "en"))
-);
 
 /**
  * Emit an AutoNPC warning message for the user.
@@ -192,20 +38,6 @@ function warnAutoNpc(message) {
     ui?.notifications?.warn?.(text);
     console.warn(text);
     return null;
-}
-
-/**
- * Emit an informational chat message summarising an automated step.
- * @param {string} content
- * @param {Actor} actor
- * @param {Token} token
- */
-function postAutoNpcSummary(content, actor, token) {
-    if (!content) return;
-    const speaker = ChatMessage.getSpeaker({ actor, token: token?.document ?? token });
-    ChatMessage.create({ content, speaker }).catch(error => {
-        console.warn(`[AutoNPC] Failed to post chat summary: ${error?.message ?? error}`);
-    });
 }
 
 /**
@@ -232,6 +64,7 @@ function getTokenCenter(token) {
     }
     return null;
 }
+
 /**
  * Measure the grid distance between two tokens.
  * @param {Token} origin
@@ -349,213 +182,77 @@ function passesFilter(token, filter) {
 }
 
 /**
- * Convert grid units into pixel distance.
- * @param {number} units
- * @returns {number|null}
- */
-function unitsToPixels(units) {
-    if (!Number.isFinite(units)) return null;
-    const gridSize = canvas?.grid?.size;
-    const gridDistance = canvas?.scene?.gridDistance;
-    if (!gridSize || !gridDistance) return null;
-    return (units / gridDistance) * gridSize;
-}
-
-/**
- * Compute a movement destination towards or away from a target.
- * @param {Token} originToken
- * @param {Token} targetToken
- * @param {number} maxUnits
- * @param {object} [options]
- * @param {boolean} [options.stopAtContact]
- * @param {boolean} [options.retreat]
- * @returns {{x:number,y:number}|null}
- */
-function computeMovementDestination(
-    originToken,
-    targetToken,
-    maxUnits,
-    { stopAtContact = false, retreat = false } = {}
-) {
-    const originCenter = getTokenCenter(originToken);
-    const targetCenter = getTokenCenter(targetToken);
-    if (!originCenter || !targetCenter) return null;
-
-    const vectorX = targetCenter.x - originCenter.x;
-    const vectorY = targetCenter.y - originCenter.y;
-    const vectorLength = Math.hypot(vectorX, vectorY);
-    if (!Number.isFinite(vectorLength) || vectorLength === 0) return null;
-
-    const maxPixels = unitsToPixels(maxUnits);
-    if (!Number.isFinite(maxPixels) || maxPixels <= 0) return null;
-
-    const gridSize = canvas?.grid?.size ?? 1;
-    const originRadius = ((originToken?.document?.width ?? 1) * gridSize) / 2;
-    const targetRadius = ((targetToken?.document?.width ?? 1) * gridSize) / 2;
-    const desiredPixels = retreat ? maxPixels : Math.min(maxPixels, vectorLength);
-
-    let travelPixels = desiredPixels;
-    if (!retreat && stopAtContact) {
-        const contactDistance = Math.max(originRadius + targetRadius, 0);
-        travelPixels = Math.min(travelPixels, Math.max(vectorLength - contactDistance, 0));
-    }
-
-    if (travelPixels <= 0) return null;
-
-    const directionMultiplier = retreat ? -1 : 1;
-    const ratio = travelPixels / vectorLength;
-    const newCenterX = originCenter.x + (directionMultiplier * vectorX * ratio);
-    const newCenterY = originCenter.y + (directionMultiplier * vectorY * ratio);
-
-    const halfWidth = ((originToken?.document?.width ?? 1) * gridSize) / 2;
-    const halfHeight = ((originToken?.document?.height ?? 1) * gridSize) / 2;
-    const newX = newCenterX - halfWidth;
-    const newY = newCenterY - halfHeight;
-
-    if (!Number.isFinite(newX) || !Number.isFinite(newY)) return null;
-    return { x: newX, y: newY };
-}
-
-/**
- * Move a token toward a destination object.
- * @param {Token} token
- * @param {{x:number,y:number}} destination
- * @returns {Promise<boolean>}
- */
-async function moveTokenTo(token, destination) {
-    if (!token || !destination) return false;
-    try {
-        await token.document?.update(destination);
-        return true;
-    } catch(error) {
-        warnAutoNpc(`Failed to move ${token.name ?? token.actor?.name ?? "token"}: ${error?.message ?? error}`);
-        return false;
-    }
-}
-
-/**
- * Move a token away from a target token.
- * @param {Token} token
- * @param {Token} threat
- * @param {number} distanceUnits
- */
-async function retreatFromTarget(token, threat, distanceUnits) {
-    const destination = computeMovementDestination(token, threat, distanceUnits, { retreat: true });
-    if (destination) {
-        const moved = await moveTokenTo(token, destination);
-        if (moved) {
-            postAutoNpcSummary(`${token.name ?? token.actor?.name ?? "NPC"} retreats from ${describeTarget(threat)}.`, token.actor, token);
-        }
-    } else {
-        warnAutoNpc("Unable to determine retreat path.");
-    }
-}
-/**
  * Select a hostile token using the provided targeting mode and filters.
  * @param {Token} originToken
  * @param {object} [options]
  * @param {string} [options.mode]
  * @param {string} [options.filter]
- * @param {boolean} [options.includeFriendlies=false]
- * @param {boolean} [options.logWarnings=true]
  * @returns {Token|null}
  */
-export function selectHostileTarget(originToken, {
-    mode = TARGETING_MODES.CLOSEST,
-    filter = TARGET_FILTERS.ANY,
-    includeFriendlies = false,
-    logWarnings = true
-} = {}) {
+export function selectHostileTarget(originToken, { mode = TARGETING_MODES.CLOSEST, filter = TARGET_FILTERS.ANY } = {}) {
     const canvasTokens = canvas?.tokens?.placeables ?? [];
     const sceneId = originToken ? getTokenSceneId(originToken) : null;
     const hostileDisposition = CONST?.TOKEN_DISPOSITIONS?.HOSTILE ?? -1;
 
-    const normalizedMode = (mode ?? TARGETING_MODES.CLOSEST).toString().toLowerCase();
-    let effectiveFilter = (filter ?? TARGET_FILTERS.ANY).toString().toLowerCase();
-
-    if (normalizedMode === TARGETING_MODES.NPC_ONLY) {
-        effectiveFilter = TARGET_FILTERS.NPC_ONLY;
-    } else if (normalizedMode === TARGETING_MODES.ACOLYTE_ONLY) {
-        effectiveFilter = TARGET_FILTERS.ACOLYTE_ONLY;
-    }
-
-    const available = canvasTokens.filter(token => {
+    const hostiles = canvasTokens.filter(token => {
         if (!token?.actor) return false;
-        const tokenSceneId = getTokenSceneId(token);
-        if (sceneId && tokenSceneId !== sceneId) return false;
-        const tokenId = token.id ?? token.document?.id;
-        const originId = originToken ? originToken.id ?? originToken.document?.id : null;
-        if (originId && tokenId === originId) return false;
-        if (!passesFilter(token, effectiveFilter)) return false;
-        if (includeFriendlies) return true;
-        return token.document?.disposition === hostileDisposition;
+        if (token.document?.disposition !== hostileDisposition) return false;
+        if (sceneId && getTokenSceneId(token) !== sceneId) return false;
+        return passesFilter(token, filter);
     });
 
-    if (!available.length) {
-        if (logWarnings) warnAutoNpc(`No valid ${mode} targets available.`);
-        return null;
-    }
+    if (!hostiles.length) return null;
 
-    let selectionMode = normalizedMode;
-    if (selectionMode === TARGETING_MODES.NPC_ONLY || selectionMode === TARGETING_MODES.ACOLYTE_ONLY) {
-        selectionMode = TARGETING_MODES.CLOSEST;
-    }
-
-    switch (selectionMode) {
+    const normalizedMode = (mode ?? TARGETING_MODES.CLOSEST).toString().toLowerCase();
+    switch (normalizedMode) {
         case TARGETING_MODES.TARGETED: {
             const targets = Array.from(game.user?.targets ?? []);
-            const availableIds = new Set(available.map(t => t.id ?? t.document?.id));
-            const match = targets.find(t => availableIds.has(t.id ?? t.document?.id));
-            if (!match && logWarnings) warnAutoNpc(`No valid ${mode} targets available.`);
-            return match ?? null;
+            const hostileIds = new Set(hostiles.map(t => t.id ?? t.document?.id));
+            return targets.find(t => hostileIds.has(t.id ?? t.document?.id)) ?? null;
         }
         case TARGETING_MODES.RANDOM: {
-            const index = Math.floor(Math.random() * available.length);
-            return available[index] ?? null;
+            const index = Math.floor(Math.random() * hostiles.length);
+            return hostiles[index] ?? null;
         }
         case TARGETING_MODES.WEAKEST: {
-            return available.slice().sort((a, b) => getHealthRatio(a) - getHealthRatio(b))[0] ?? null;
+            const ordered = hostiles
+                .slice()
+                .sort((a, b) => getHealthRatio(a) - getHealthRatio(b));
+            return ordered[0] ?? null;
         }
         case TARGETING_MODES.STRONGEST: {
-            return available.slice().sort((a, b) => getHealthRatio(b) - getHealthRatio(a))[0] ?? null;
+            const ordered = hostiles
+                .slice()
+                .sort((a, b) => getHealthRatio(b) - getHealthRatio(a));
+            return ordered[0] ?? null;
         }
         case TARGETING_MODES.CLOSEST:
         default: {
-            if (!originToken) return available[0] ?? null;
+            if (!originToken) return hostiles[0] ?? null;
             let closestToken = null;
             let closestDistance = Number.POSITIVE_INFINITY;
-            for (const token of available) {
+            for (const token of hostiles) {
                 const distance = measureDistance(originToken, token);
                 if (distance < closestDistance) {
                     closestDistance = distance;
                     closestToken = token;
                 }
             }
-            return closestToken ?? available[0] ?? null;
+            return closestToken ?? hostiles[0] ?? null;
         }
     }
 }
 
 /**
  * Identify the token that should perform the automated action.
- * @param {object} [options]
- * @param {boolean} [options.fallbackToCombatant=true]
  * @returns {Token|null}
  */
-function resolveActingToken({ fallbackToCombatant = true } = {}) {
+function resolveActingToken() {
     const controlled = canvas.tokens?.controlled ?? [];
     if (controlled.length === 1) return controlled[0];
     if (controlled.length > 1) return controlled[0];
     const targets = Array.from(game.user?.targets ?? []);
     if (targets.length) return targets[0];
-    if (fallbackToCombatant) {
-        const combatant = game.combat?.combatant;
-        if (combatant) {
-            const tokenId = combatant.tokenId ?? combatant.token?.id;
-            const token = canvas.tokens?.get(tokenId) ?? combatant.token?.object ?? null;
-            if (token) return token;
-        }
-    }
     return null;
 }
 
@@ -592,43 +289,21 @@ async function executeCombatRoll(actor, weapon, targetToken, configureRoll) {
     rollData.flags = rollData.flags ?? {};
     rollData.flags.isCombatRoll = true;
     rollData.flags.autoNpc = true;
-    rollData.target = rollData.target ?? {};
     rollData.target.modifier = rollData.target.modifier ?? 0;
 
-    const preWounds = Number(targetToken.actor?.system?.wounds?.value);
-
     if (typeof configureRoll === "function") {
-        const result = await configureRoll(rollData, targetToken);
-        if (result && typeof result === "object" && result.abort) {
-            return { rollData, success: false, aborted: true, reason: result.reason };
-        }
+        const result = configureRoll(rollData, targetToken);
+        if (result instanceof Promise) await result;
     }
 
     await combatRoll(rollData);
 
     const shouldApplyDamage = rollData.flags?.isDamageRoll || rollData.flags?.isSuccess;
-    let appliedActors = [];
     if (shouldApplyDamage) {
-        appliedActors = await applyDamage(rollData, [targetToken]);
+        await applyDamage(rollData, [targetToken]);
     }
 
-    const updatedActor = appliedActors?.[0] ?? targetToken.actor;
-    const postWounds = Number(updatedActor?.system?.wounds?.value ?? targetToken.actor?.system?.wounds?.value);
-    let inflictedDamage = 0;
-    if (Number.isFinite(preWounds) && Number.isFinite(postWounds)) {
-        inflictedDamage = Math.max(postWounds - preWounds, 0);
-    }
-
-    return { rollData, success: rollData.flags?.isSuccess !== false, target: targetToken, inflictedDamage };
-}
-
-/**
- * Describe a token for chat summaries.
- * @param {Token} token
- * @returns {string}
- */
-function describeTarget(token) {
-    return token?.name ?? token?.actor?.name ?? token?.document?.name ?? game.i18n?.localize?.("CHAT.CONTEXT.APPLY_DAMAGE") ?? "target";
+    return rollData;
 }
 
 /**
@@ -638,15 +313,13 @@ function describeTarget(token) {
  * @param {string} [options.weaponName]
  * @param {string} [options.targetMode]
  * @param {string} [options.targetFilter]
- * @param {boolean} [options.includeFriendlies]
  * @returns {Promise<object|null>}
  */
 export async function autoChargeMelee({
     weaponId,
     weaponName,
     targetMode = TARGETING_MODES.CLOSEST,
-    targetFilter = TARGET_FILTERS.ANY,
-    includeFriendlies = false
+    targetFilter = TARGET_FILTERS.ANY
 } = {}) {
     const actingToken = resolveActingToken();
     if (!actingToken) return warnAutoNpc("Select a token before running Auto Charge + Melee.");
@@ -657,69 +330,36 @@ export async function autoChargeMelee({
     const weapon = findWeapon(
         actor,
         weaponId ?? weaponName,
-        item => (item.class ?? item.system?.class) === "melee"
+        item => {
+            const weaponClass = item.class ?? item.system?.class;
+            return weaponClass === "melee";
+        }
     );
-    if (!weapon) return warnAutoNpc(`${actor.name} has no melee weapon.`);
+    if (!weapon) return warnAutoNpc("No melee weapon found on the actor.");
 
-    const targetToken = selectHostileTarget(actingToken, {
-        mode: targetMode,
-        filter: targetFilter,
-        includeFriendlies,
-        logWarnings: false
-    });
-    if (!targetToken) return warnAutoNpc("No valid targets found for charge.");
-
-    const movement = actor.system?.movement ?? {};
-    const chargeRange = Number(movement.charge ?? movement.full ?? 0);
-    if (!Number.isFinite(chargeRange) || chargeRange <= 0) {
-        return warnAutoNpc(`${actor.name} cannot determine a charge distance.`);
-    }
+    const targetToken = selectHostileTarget(actingToken, { mode: targetMode, filter: targetFilter });
+    if (!targetToken) return warnAutoNpc("No hostile target available for Auto Charge.");
 
     const meleeDistance = measureDistance(actingToken, targetToken);
-    if (!Number.isFinite(meleeDistance)) return warnAutoNpc("Unable to measure distance to target for charge.");
+    if (!Number.isFinite(meleeDistance) || meleeDistance > 3) {
+        return warnAutoNpc("Target is out of melee range for Auto Charge.");
+    }
 
-    if (meleeDistance <= chargeRange) {
-        const destination = computeMovementDestination(actingToken, targetToken, chargeRange, { stopAtContact: true });
-        if (destination) await moveTokenTo(actingToken, destination);
-
-        let result = null;
-        try {
-            result = await executeCombatRoll(
-                actor,
-                weapon,
-                targetToken,
-                rollData => {
-                    rollData.attackType = {
-                        name: "charge",
-                        text: game.i18n?.localize?.("ATTACK_TYPE.CHARGE") ?? "ATTACK_TYPE.CHARGE"
-                    };
-                    rollData.aim = { val: 0, isAiming: false };
-                    rollData.rangeMod = 0;
-                }
-            );
-        } catch(error) {
-            return warnAutoNpc(`Charge attack failed: ${error?.message ?? error}`);
+    return executeCombatRoll(
+        actor,
+        weapon,
+        targetToken,
+        rollData => {
+            rollData.attackType = {
+                name: "charge",
+                text: game.i18n?.localize?.("ATTACK_TYPE.CHARGE") ?? "ATTACK_TYPE.CHARGE"
+            };
+            rollData.aim = { val: 0, isAiming: false };
+            rollData.rangeMod = 0;
         }
-
-        const summary = `${actor.name} charges ${describeTarget(targetToken)} with ${weapon.name}!`;
-        postAutoNpcSummary(summary, actor, actingToken);
-        return result;
-    }
-
-    const fullMove = Number(movement.full ?? 0);
-    if (!Number.isFinite(fullMove) || fullMove <= 0) {
-        return warnAutoNpc(`${actor.name} cannot move toward the target.`);
-    }
-
-    const destination = computeMovementDestination(actingToken, targetToken, fullMove);
-    if (destination) {
-        await moveTokenTo(actingToken, destination);
-        postAutoNpcSummary(`${actor.name} advances toward ${describeTarget(targetToken)} (Full Move).`, actor, actingToken);
-    } else {
-        warnAutoNpc("Unable to determine movement path toward target.");
-    }
-    return null;
+    );
 }
+
 /**
  * Perform a ranged attack using the configured targeting strategy.
  * @param {object} [options]
@@ -727,15 +367,13 @@ export async function autoChargeMelee({
  * @param {string} [options.weaponName]
  * @param {string} [options.targetMode]
  * @param {string} [options.targetFilter]
- * @param {boolean} [options.includeFriendlies]
  * @returns {Promise<object|null>}
  */
 export async function autoShoot({
     weaponId,
     weaponName,
     targetMode = TARGETING_MODES.CLOSEST,
-    targetFilter = TARGET_FILTERS.ANY,
-    includeFriendlies = false
+    targetFilter = TARGET_FILTERS.ANY
 } = {}) {
     const actingToken = resolveActingToken();
     if (!actingToken) return warnAutoNpc("Select a token before running Auto Shoot.");
@@ -747,199 +385,53 @@ export async function autoShoot({
         const weaponClass = item.class ?? item.system?.class;
         return weaponClass && weaponClass !== "melee";
     });
-    if (!weapon) return warnAutoNpc(`${actor.name} has no ranged weapon.`);
+    if (!weapon) return warnAutoNpc("No ranged weapon found on the actor.");
 
-    if (actor.type === "acolyte") {
-        const rollData = DarkHeresyUtil.createWeaponRollData(actor, weapon);
-        await prepareCombatRoll(rollData, actor);
-        return { outcome: "acolyte-ui" };
-    }
+    const targetToken = selectHostileTarget(actingToken, { mode: targetMode, filter: targetFilter });
+    if (!targetToken) return warnAutoNpc("No hostile target available for Auto Shoot.");
 
-    const targetToken = selectHostileTarget(actingToken, {
-        mode: targetMode,
-        filter: targetFilter,
-        includeFriendlies,
-        logWarnings: false
-    });
-    if (!targetToken) return warnAutoNpc("No valid targets found for shooting.");
-
-    try {
-        const result = await executeCombatRoll(
-            actor,
-            weapon,
-            targetToken,
-            async rollData => {
-                if (rollData.weapon?.isRange && rollData.weapon.clip?.value <= 0) {
-                    await reportEmptyClip(rollData);
-                    throw new Error("EMPTY_CLIP");
-                }
-
-                const rangeSelection = resolveRangeSelection(actingToken, targetToken, rollData.weapon?.range);
-                if (!rangeSelection) {
-                    throw new Error("OUT_OF_RANGE");
-                }
-
-                rollData.rangeMod = rangeSelection.modifier;
-                if (rangeSelection.label) rollData.rangeModText = rangeSelection.label;
-                rollData.attackType = {
-                    name: "standard",
-                    text: game.i18n?.localize?.("ATTACK_TYPE.STANDARD") ?? "ATTACK_TYPE.STANDARD"
-                };
-                rollData.aim = { val: 0, isAiming: false };
+    return executeCombatRoll(
+        actor,
+        weapon,
+        targetToken,
+        async rollData => {
+            if (rollData.weapon?.isRange && rollData.weapon.clip?.value <= 0) {
+                await reportEmptyClip(rollData);
+                throw new Error("EMPTY_CLIP");
             }
-        );
 
-        if (result?.aborted) return { outcome: "aborted" };
+            const rangeSelection = resolveRangeSelection(actingToken, targetToken, rollData.weapon?.range);
+            if (!rangeSelection) {
+                throw new Error("OUT_OF_RANGE");
+            }
 
-        if (result) {
-            const damageText = Number.isFinite(result.inflictedDamage) ? result.inflictedDamage : 0;
-            const summary = `${actor.name} shoots ${describeTarget(targetToken)} for ${damageText} damage!`;
-            postAutoNpcSummary(summary, actor, actingToken);
-            return { outcome: "npc-fired", result };
+            rollData.rangeMod = rangeSelection.modifier;
+            if (rangeSelection.label) rollData.rangeModText = rangeSelection.label;
+            rollData.attackType = {
+                name: "standard",
+                text: game.i18n?.localize?.("ATTACK_TYPE.STANDARD") ?? "ATTACK_TYPE.STANDARD"
+            };
+            rollData.aim = { val: 0, isAiming: false };
         }
-
-        return { outcome: "npc-fired" };
-    } catch(error) {
+    ).catch(error => {
         if (error?.message === "EMPTY_CLIP") {
-            warnAutoNpc(`${actor.name} attempted to fire ${weapon.name} but is out of ammo.`);
-            return { outcome: "no-ammo" };
+            return warnAutoNpc("Cannot fire: clip is empty.");
         }
         if (error?.message === "OUT_OF_RANGE") {
-            return warnAutoNpc(`${weapon.name} is out of range for ${actor.name}.`);
+            return warnAutoNpc("Target is beyond weapon range.");
         }
         throw error;
-    }
+    });
 }
-
-/**
- * Execute behaviour for an actor's configured personality.
- * @param {object} [options]
- * @param {string} [options.personalityOverride]
- * @returns {Promise<void>}
- */
-export async function autoTurn({ personalityOverride } = {}) {
-    const actingToken = resolveActingToken({ fallbackToCombatant: true });
-    if (!actingToken) return warnAutoNpc("Select a token before running Auto Turn.");
-
-    const actor = actingToken.actor;
-    if (!actor) return warnAutoNpc("The controlled token has no linked actor.");
-
-    const personalityId = personalityOverride ?? actor.system?.personality;
-    if (!personalityId) return warnAutoNpc(`${actor.name} has no personality assigned.`);
-
-    const definition = PERSONALITY_DEFINITIONS[personalityId];
-    if (!definition) return warnAutoNpc(`${actor.name} has an unknown personality (${personalityId}).`);
-
-    const context = { actor, token: actingToken };
-
-    try {
-        await definition.execute(context);
-    } catch(error) {
-        warnAutoNpc(`Personality execution failed: ${error?.message ?? error}`);
-    }
-
-    const combatantTokenId = game.combat?.combatant?.tokenId ?? game.combat?.combatant?.token?.id;
-    if (game.combat && combatantTokenId === (actingToken.id ?? actingToken.document?.id)) {
-        try {
-            await game.combat.nextTurn();
-        } catch(error) {
-            warnAutoNpc(`Failed to advance turn: ${error?.message ?? error}`);
-        }
-    }
-}
-
-/**
- * Obtain the actor's reaction state.
- * @param {Actor} actor
- * @returns {{max:number,current:number}}
- */
-function getReactionState(actor) {
-    const reactions = actor?.system?.reactions ?? {};
-    const max = Number(reactions.max ?? reactions.maximum ?? 0);
-    const current = Number(reactions.current ?? reactions.value ?? 0);
-    return {
-        max: Number.isFinite(max) ? max : 0,
-        current: Number.isFinite(current) ? current : 0
-    };
-}
-
-/**
- * Spend one reaction if available.
- * @param {object} [options]
- * @param {Actor} [options.actor]
- * @param {string} [options.label]
- * @returns {Promise<number|null>}
- */
-export async function useReaction({ actor, label = "use a reaction" } = {}) {
-    if (!actor) return warnAutoNpc("No actor provided to spend a reaction.");
-    if (!actor.isOwner) return null;
-
-    const state = getReactionState(actor);
-    if (state.current <= 0) {
-        return warnAutoNpc(`${actor.name} attempted to ${label} but has 0 reactions remaining.`);
-    }
-
-    const newValue = state.current - 1;
-    await actor.update({ "system.reactions.current": newValue });
-    return newValue;
-}
-
-/**
- * Reset the actor's reactions to its maximum.
- * @param {Actor} actor
- * @returns {Promise<number|null>}
- */
-export async function resetReactions(actor) {
-    if (!actor || !actor.isOwner) return null;
-    const state = getReactionState(actor);
-    await actor.update({ "system.reactions.current": state.max });
-    return state.max;
-}
-
-/**
- * Emit a warning when the system fails to refresh reactions.
- * @param {Error} error
- */
-function describeCombatantResetFailure(error) {
-    warnAutoNpc(`Failed to reset reactions: ${error?.message ?? error}`);
-}
-
-/**
- * Reset the reaction counter for the active combatant, if allowed.
- * @param {Combatant} combatant
- */
-function resetCombatantReactions(combatant) {
-    const actor = combatant?.actor;
-    if (!actor) return;
-    resetReactions(actor).catch(describeCombatantResetFailure);
-}
-
-Hooks.on("combatStart", combat => {
-    if (!game.user?.isGM) return;
-    resetCombatantReactions(combat?.combatant);
-});
-
-Hooks.on("updateCombat", (combat, changed) => {
-    if (!game.user?.isGM) return;
-    if (typeof changed.turn === "number" || typeof changed.round === "number") {
-        resetCombatantReactions(combat?.combatant);
-    }
-});
 
 Hooks.once("init", () => {
     const macroApi = {
         autoChargeMelee,
         autoShoot,
-        autoTurn,
         selectHostileTarget,
-        useReaction,
-        resetReactions,
         TARGETING_MODES,
         TARGET_FILTERS,
-        TARGETING_DOCUMENTATION,
-        PERSONALITY_ARCHETYPES,
-        PERSONALITY_OPTIONS,
-        getPersonalityDefinition: id => PERSONALITY_DEFINITIONS[id] ?? null
+        TARGETING_DOCUMENTATION
     };
 
     if (!game.darkHeresy) game.darkHeresy = {};
@@ -949,3 +441,4 @@ Hooks.once("init", () => {
     if (!game.macro) game.macro = {};
     game.macro.autoNpc = macroApi;
 });
+

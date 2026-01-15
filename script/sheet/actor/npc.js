@@ -29,20 +29,6 @@ export class NpcSheet extends DarkHeresySheet {
 
     getData() {
         const data = super.getData();
-        const autoNpc = game.darkHeresy?.macros?.autoNpc ?? {};
-        const options = Array.isArray(autoNpc.PERSONALITY_OPTIONS)
-            ? autoNpc.PERSONALITY_OPTIONS.map(option => ({
-                id: option.id,
-                label: option.label,
-                description: option.description,
-                isSelected: data.actor?.system?.personality === option.id
-            }))
-            : [];
-
-        data.personalityOptions = options;
-        const selected = options.find(option => option.isSelected);
-        data.personalityDescription = selected?.description ?? "";
-        data.autoNpcTargetingDocs = autoNpc.TARGETING_DOCUMENTATION ?? "";
         return data;
     }
 
