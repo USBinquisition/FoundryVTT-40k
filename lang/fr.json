@@ -84,6 +84,13 @@
     "BIO.FACTION": "Faction",
     "BIO.SUBFACTION": "S/s faction",
     "BIO.THREAT_LEVEL": "Menace",
+    "BIO.DISPOSITION": "Disposition",
+    "DISPOSITION.FRIENDLY": "Allié",
+    "DISPOSITION.NEUTRAL": "Neutre",
+    "DISPOSITION.ENEMY": "Ennemi",
+    "TOKEN_HIGHLIGHT.FRIENDLY": "Surligner alliés",
+    "TOKEN_HIGHLIGHT.NEUTRAL": "Surligner neutres",
+    "TOKEN_HIGHLIGHT.ENEMY": "Surligner ennemis",
   
     "BUTTON.POST_ITEM": "Ajouter objet",
     "BUTTON.ROLL": "Lancer",

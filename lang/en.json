@@ -96,6 +96,13 @@
   "BIO.FACTION": "Faction",
   "BIO.SUBFACTION": "Subfaction",
   "BIO.THREAT_LEVEL": "Threat Level",
+  "BIO.DISPOSITION": "Disposition",
+  "DISPOSITION.FRIENDLY": "Friendly",
+  "DISPOSITION.NEUTRAL": "Neutral",
+  "DISPOSITION.ENEMY": "Enemy",
+  "TOKEN_HIGHLIGHT.FRIENDLY": "Highlight friendly",
+  "TOKEN_HIGHLIGHT.NEUTRAL": "Highlight neutral",
+  "TOKEN_HIGHLIGHT.ENEMY": "Highlight enemy",
 
   "BUTTON.POST_ITEM": "Post Item",
   "BUTTON.ROLL": "Roll",

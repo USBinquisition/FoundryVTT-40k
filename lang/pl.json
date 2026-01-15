@@ -109,6 +109,13 @@
   "BIO.FACTION": "Frakcja",
   "BIO.SUBFACTION": "Podfrakcja",
   "BIO.THREAT_LEVEL": "Poziom Zagrożenia",
+  "BIO.DISPOSITION": "Nastawienie",
+  "DISPOSITION.FRIENDLY": "Przyjazny",
+  "DISPOSITION.NEUTRAL": "Neutralny",
+  "DISPOSITION.ENEMY": "Wrogi",
+  "TOKEN_HIGHLIGHT.FRIENDLY": "Wyróżnij przyjaznych",
+  "TOKEN_HIGHLIGHT.NEUTRAL": "Wyróżnij neutralnych",
+  "TOKEN_HIGHLIGHT.ENEMY": "Wyróżnij wrogów",
 
   "BUTTON.POST_ITEM": "Pokaż Przedmiot",
   "BUTTON.ROLL": "Rzucaj",
