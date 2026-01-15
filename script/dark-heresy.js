@@ -27,6 +27,7 @@ import { commonRoll, combatRoll } from "./common/roll.js";
 import { chatListeners } from "./common/chat.js";
 import DhMacroUtil from "./common/macro.js";
 import Dh from "./common/config.js";
+import { registerFactionTokenHud } from "./common/token-hud.js";
 import "./macro/auto-npc.js";
 
 // Import Helpers
@@ -98,6 +99,8 @@ Hooks.once("init", function() {
         default: true,
         type: Boolean
     });
+
+    registerFactionTokenHud();
 
 });
 

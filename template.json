@@ -1048,6 +1048,7 @@
       "experience": {
         "value": 0
       },
+      "faction": "",
       "insanity": 0,
       "corruption": 0,
       "aptitudes": {},

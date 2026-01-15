@@ -84,6 +84,9 @@
     "BIO.FACTION": "Faction",
     "BIO.SUBFACTION": "S/s faction",
     "BIO.THREAT_LEVEL": "Menace",
+    "FACTION.FRIENDLY": "Amical",
+    "FACTION.ENEMY": "Ennemi",
+    "FACTION.NEUTRAL": "Neutre",
   
     "BUTTON.POST_ITEM": "Ajouter objet",
     "BUTTON.ROLL": "Lancer",
