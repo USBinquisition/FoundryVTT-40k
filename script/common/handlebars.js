@@ -58,8 +58,7 @@ function preloadHandlebarsTemplates() {
 
         "systems/dark-heresy/template/dialog/common-roll.hbs",
         "systems/dark-heresy/template/dialog/combat-roll.hbs",
-        "systems/dark-heresy/template/dialog/psychic-power-roll.hbs",
-        "systems/dark-heresy/template/dialog/auto-npc-attack.hbs"
+        "systems/dark-heresy/template/dialog/psychic-power-roll.hbs"
     ];
     return loadTemplates(templatePaths);
 }
@@ -114,3 +113,4 @@ function registerHandlebarsHelpers() {
     });
 
 }
+

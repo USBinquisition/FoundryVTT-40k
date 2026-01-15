@@ -35,13 +35,7 @@
                     <div class="header-row">
                         <div class="faction">
                             <label>{{localize "BIO.FACTION"}}</label>
-                            <select name="system.faction" style="margin-left: 10px">
-                                {{#select system.faction}}
-                                    <option value="friendly">{{localize "FACTION.FRIENDLY"}}</option>
-                                    <option value="neutral">{{localize "FACTION.NEUTRAL"}}</option>
-                                    <option value="enemy">{{localize "FACTION.ENEMY"}}</option>
-                                {{/select}}
-                            </select>
+                            <input style="margin-left: 10px" name="system.faction" type="text" value="{{system.faction}}" />
                         </div>
                         <div class="subfaction">
                             <label>{{localize "BIO.SUBFACTION"}}</label>
