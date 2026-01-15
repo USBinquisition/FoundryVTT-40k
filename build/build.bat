@@ -15,56 +15,42 @@ if not exist "node_modules\gulp" (
   if errorlevel 1 exit /b 1
 )
 
+set "BUILD_DIR=%ROOT%\build"
+set "RELEASE_DIR=%BUILD_DIR%\release"
+set "ZIP_NAME=%RELEASE_VERSION%USB.zip"
+
+if exist "%RELEASE_DIR%" rmdir /s /q "%RELEASE_DIR%"
+mkdir "%RELEASE_DIR%"
+
 echo Building assets with gulp...
 call npx gulp buildAll
 if errorlevel 1 exit /b 1
 
-set "BUILD_DIR=%ROOT%\build"
-set "STAGING_DIR=%BUILD_DIR%\staging"
-set "ZIP_NAME=%RELEASE_VERSION%USB.zip"
+mkdir "%RELEASE_DIR%\template"
+mkdir "%RELEASE_DIR%\logo"
+mkdir "%RELEASE_DIR%\lang"
+mkdir "%RELEASE_DIR%\asset"
+mkdir "%RELEASE_DIR%\script"
+mkdir "%RELEASE_DIR%\packs"
 
-if exist "%STAGING_DIR%" rmdir /s /q "%STAGING_DIR%"
-mkdir "%STAGING_DIR%"
+xcopy /E /I /Y "%ROOT%\template" "%RELEASE_DIR%\template"
+xcopy /E /I /Y "%ROOT%\logo" "%RELEASE_DIR%\logo"
+xcopy /E /I /Y "%ROOT%\lang" "%RELEASE_DIR%\lang"
+xcopy /E /I /Y "%ROOT%\asset" "%RELEASE_DIR%\asset"
+robocopy "%ROOT%\script" "%RELEASE_DIR%\script" /E /XF dark-heresy.js >nul
+xcopy /E /I /Y "%ROOT%\packs" "%RELEASE_DIR%\packs"
 
-mkdir "%STAGING_DIR%\template"
-mkdir "%STAGING_DIR%\logo"
-mkdir "%STAGING_DIR%\lang"
-mkdir "%STAGING_DIR%\css"
-mkdir "%STAGING_DIR%\script"
-mkdir "%STAGING_DIR%\sript"
-mkdir "%STAGING_DIR%\sheet"
-mkdir "%STAGING_DIR%\common"
-mkdir "%STAGING_DIR%\asset"
-mkdir "%STAGING_DIR%\assset"
-
-xcopy /E /I /Y "%ROOT%\template" "%STAGING_DIR%\template"
-xcopy /E /I /Y "%ROOT%\logo" "%STAGING_DIR%\logo"
-xcopy /E /I /Y "%ROOT%\lang" "%STAGING_DIR%\lang"
-xcopy /E /I /Y "%ROOT%\asset" "%STAGING_DIR%\asset"
-xcopy /E /I /Y "%ROOT%\asset" "%STAGING_DIR%\assset"
-xcopy /E /I /Y "%ROOT%\script" "%STAGING_DIR%\script"
-xcopy /E /I /Y "%ROOT%\script\sheet" "%STAGING_DIR%\sheet"
-xcopy /E /I /Y "%ROOT%\script\common" "%STAGING_DIR%\common"
-xcopy /E /I /Y "%ROOT%\release\css" "%STAGING_DIR%\css"
-
-copy /Y "%ROOT%\release\script\dark-heresy.js" "%STAGING_DIR%\script\dark-heresy.js"
-copy /Y "%ROOT%\script\jquery-3.7.1.min.js" "%STAGING_DIR%\script\jquery-3.7.1.min.js"
-
-xcopy /E /I /Y "%STAGING_DIR%\script" "%STAGING_DIR%\sript"
-
-copy /Y "%ROOT%\template.json" "%STAGING_DIR%\template.json"
-copy /Y "%ROOT%\system.json" "%STAGING_DIR%\system.json"
-copy /Y "%ROOT%\README.md" "%STAGING_DIR%\readme.md"
-copy /Y "%ROOT%\LICENSE" "%STAGING_DIR%\License"
-copy /Y "%ROOT%\CONTRIBUTING.md" "%STAGING_DIR%\contributing.md"
+copy /Y "%ROOT%\template.json" "%RELEASE_DIR%\template.json"
+copy /Y "%ROOT%\system.json" "%RELEASE_DIR%\system.json"
+copy /Y "%ROOT%\README.md" "%RELEASE_DIR%\readme.md"
+copy /Y "%ROOT%\LICENSE" "%RELEASE_DIR%\License"
+copy /Y "%ROOT%\CONTRIBUTING.md" "%RELEASE_DIR%\contributing.md"
 
 if exist "%BUILD_DIR%\%ZIP_NAME%" del /f /q "%BUILD_DIR%\%ZIP_NAME%"
 
-powershell -Command "Compress-Archive -Path '%STAGING_DIR%\\*' -DestinationPath '%BUILD_DIR%\\%ZIP_NAME%' -Force"
+powershell -Command "Compress-Archive -Path '%RELEASE_DIR%\\*' -DestinationPath '%BUILD_DIR%\\%ZIP_NAME%' -Force"
 
 copy /Y "%ROOT%\system.json" "%BUILD_DIR%\system.json"
-
-rmdir /s /q "%STAGING_DIR%"
 
 popd
 

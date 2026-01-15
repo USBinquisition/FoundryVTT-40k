@@ -1,11 +1,13 @@
 /** Modified copy of file found in dnd5e (https://github.com/foundryvtt/dnd5e/blob/master/LICENSE.txt) */
 
 import eslint from "gulp-eslint-new";
+import fs from "fs";
 import gulp from "gulp";
 import gulpIf from "gulp-if";
 import mergeStream from "merge-stream";
+import path from "path";
 import yargs from "yargs";
-import { rollup } from 'rollup';
+import { rollup } from "rollup";
 
 
 /**
@@ -43,13 +45,15 @@ function lintJavascript() {
 export const lint = lintJavascript;
 
 function bundleJavascript() {
-	return rollup({
-			input: './script/dark-heresy.js',
-		})
-		.then(bundle => {
-			return bundle.write({
-				file: './release/script/dark-heresy.js'
-			});
-		});
+  const outputPath = "./build/release/script/dark-heresy.js";
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  return rollup({
+      input: "./script/dark-heresy.js",
+    })
+    .then(bundle => {
+      return bundle.write({
+        file: outputPath
+      });
+    });
 }
 export const bundle = bundleJavascript; 
