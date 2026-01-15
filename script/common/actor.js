@@ -19,6 +19,9 @@ export class DarkHeresyActor extends Actor {
 
     prepareData() {
         super.prepareData();
+        if (!this.system.faction) {
+            this.system.faction = "neutral";
+        }
         this._computeCharacteristics();
         this._computeSkills();
         this._computeItems();
