@@ -14,7 +14,11 @@
                         <div class="type">
                             <label>{{localize "BIO.TYPE"}}</label>
                             <select name="system.type" style="margin-left: 14px">
-                                {{selectOptions (config "npcTypes") selected=system.type localize=true}}
+                                {{#select system.type}}
+                                    <option value="troop">{{localize "NPC_TYPE.TROOP"}}</option>
+                                    <option value="master">{{localize "NPC_TYPE.MASTER"}}</option>
+                                    <option value="elite">{{localize "NPC_TYPE.ELITE"}}</option>
+                                {{/select}}
                             </select>
                         </div>
                         <div class="threat-level">
@@ -32,7 +36,11 @@
                         <div class="faction">
                             <label>{{localize "BIO.FACTION"}}</label>
                             <select name="system.faction" style="margin-left: 10px">
-                                {{selectOptions (config "factions") selected=system.faction localize=true}}
+                                {{#select system.faction}}
+                                    <option value="friendly">{{localize "FACTION.FRIENDLY"}}</option>
+                                    <option value="neutral">{{localize "FACTION.NEUTRAL"}}</option>
+                                    <option value="enemy">{{localize "FACTION.ENEMY"}}</option>
+                                {{/select}}
                             </select>
                         </div>
                         <div class="subfaction">

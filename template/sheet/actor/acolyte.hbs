@@ -34,7 +34,11 @@
                         <div class="elite">
                             <label>{{localize "BIO.FACTION"}}</label>
                             <select name="system.faction" style="margin-left: 8px">
-                                {{selectOptions (config "factions") selected=system.faction localize=true}}
+                                {{#select system.faction}}
+                                    <option value="friendly">{{localize "FACTION.FRIENDLY"}}</option>
+                                    <option value="neutral">{{localize "FACTION.NEUTRAL"}}</option>
+                                    <option value="enemy">{{localize "FACTION.ENEMY"}}</option>
+                                {{/select}}
                             </select>
                         </div>
                         <div class="fatigue">

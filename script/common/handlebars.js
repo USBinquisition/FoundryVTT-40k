@@ -19,7 +19,6 @@ function preloadHandlebarsTemplates() {
         "systems/dark-heresy/template/sheet/actor/tab/gear.hbs",
         "systems/dark-heresy/template/sheet/actor/tab/notes.hbs",
         "systems/dark-heresy/template/sheet/actor/tab/npc-notes.hbs",
-        "systems/dark-heresy/template/sheet/actor/tab/npc-automation.hbs",
         "systems/dark-heresy/template/sheet/actor/tab/npc-stats.hbs",
         "systems/dark-heresy/template/sheet/actor/tab/progression.hbs",
         "systems/dark-heresy/template/sheet/actor/tab/psychic-powers.hbs",
