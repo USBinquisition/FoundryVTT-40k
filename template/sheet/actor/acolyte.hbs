@@ -35,16 +35,6 @@
                             <label>{{localize "BIO.ELITE"}}</label>
                             <input name="system.bio.elite" type="text" value="{{system.bio.elite}}" />
                         </div>
-                        <div class="disposition">
-                            <label>{{localize "BIO.DISPOSITION"}}</label>
-                            <select name="system.disposition">
-                                {{#select system.disposition}}
-                                    <option value="neutral">{{localize "DISPOSITION.NEUTRAL"}}</option>
-                                    <option value="friendly">{{localize "DISPOSITION.FRIENDLY"}}</option>
-                                    <option value="enemy">{{localize "DISPOSITION.ENEMY"}}</option>
-                                {{/select}}
-                            </select>
-                        </div>
                         <div class="fatigue">
                             <label>{{localize "FATIGUE"}}</label>
                             <input name="system.fatigue.value" type="number" value="{{system.fatigue.value}}" data-dtype="Number" />

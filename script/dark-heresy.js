@@ -22,7 +22,6 @@ import { TraitSheet } from "./sheet/trait.js";
 import { AptitudeSheet } from "./sheet/aptitude.js";
 import { initializeHandlebars } from "./common/handlebars.js";
 import { migrateWorld } from "./common/migration.js";
-import { registerDispositionControls } from "./common/disposition.js";
 import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll } from "./common/dialog.js";
 import { commonRoll, combatRoll } from "./common/roll.js";
 import { chatListeners } from "./common/chat.js";
@@ -74,7 +73,6 @@ Hooks.once("init", function() {
     Items.registerSheet("dark-heresy", AptitudeSheet, { types: ["aptitude"], makeDefault: true });
 
     initializeHandlebars();
-    registerDispositionControls();
 
     game.settings.register("dark-heresy", "worldSchemaVersion", {
         name: "World Version",

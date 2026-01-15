@@ -76,13 +76,6 @@
   "BIO.FACTION": "facción",
   "BIO.SUBFACTION": "Subfacción",
   "BIO.THREAT_LEVEL": "Nivel de Amenaza",
-  "BIO.DISPOSITION": "Disposición",
-  "DISPOSITION.FRIENDLY": "Aliado",
-  "DISPOSITION.NEUTRAL": "Neutral",
-  "DISPOSITION.ENEMY": "Enemigo",
-  "TOKEN_HIGHLIGHT.FRIENDLY": "Resaltar aliados",
-  "TOKEN_HIGHLIGHT.NEUTRAL": "Resaltar neutrales",
-  "TOKEN_HIGHLIGHT.ENEMY": "Resaltar enemigos",
 
   "BUTTON.POST_ITEM": "Post Item",
   "BUTTON.ROLL": "Tirar",
