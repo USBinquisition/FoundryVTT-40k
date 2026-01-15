@@ -1,0 +1,6 @@
+{
+  "name": "Example Macro",
+  "type": "script",
+  "scope": "global",
+  "command": "ui.notifications.info(\"Example macro executed.\");"
+}

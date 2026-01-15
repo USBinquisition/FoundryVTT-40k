@@ -1,7 +1,7 @@
-$target = '.\release'
-$targetFile = ".\dark-heresy.zip"
+$target = '.\build\release'
+$targetFile = ".\build\dark-heresy.zip"
 
-New-Item -Path '.\release' -ItemType Directory
+New-Item -Path $target -ItemType Directory -Force
 
 gulp buildAll
 
@@ -21,7 +21,7 @@ if(Test-Path -Path $targetFile -PathType Leaf) {
 }
 
 $compress = @{
-	Path = ".\release\*"
+	Path = "$target\*"
 	CompressionLevel = "Optimal"
 	DestinationPath = $targetFile
 }

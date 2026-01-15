@@ -1,0 +1,30 @@
+{
+  "name": "Example NPC",
+  "type": "npc",
+  "img": "icons/svg/hostile.svg",
+  "system": {
+    "characteristics": {
+      "weaponSkill": { "base": 25, "advance": 0, "unnatural": 0, "damage": 0 },
+      "ballisticSkill": { "base": 25, "advance": 0, "unnatural": 0, "damage": 0 },
+      "strength": { "base": 30, "advance": 0, "unnatural": 0, "damage": 0 },
+      "toughness": { "base": 30, "advance": 0, "unnatural": 0, "damage": 0 },
+      "agility": { "base": 30, "advance": 0, "unnatural": 0, "damage": 0 },
+      "intelligence": { "base": 25, "advance": 0, "unnatural": 0, "damage": 0 },
+      "perception": { "base": 30, "advance": 0, "unnatural": 0, "damage": 0 },
+      "willpower": { "base": 25, "advance": 0, "unnatural": 0, "damage": 0 },
+      "fellowship": { "base": 20, "advance": 0, "unnatural": 0, "damage": 0 },
+      "influence": { "base": 0, "advance": 0, "unnatural": 0, "damage": 0 }
+    },
+    "wounds": { "max": 8, "value": 8, "critical": 0 },
+    "fatigue": { "max": 8, "value": 0 },
+    "fate": { "max": 0, "value": 0 },
+    "psy": { "rating": 0, "sustained": 0, "class": "bound", "cost": 0 },
+    "experience": { "value": 0 },
+    "faction": "",
+    "subfaction": "",
+    "type": "troop",
+    "threatLevel": 0,
+    "size": 4,
+    "notes": ""
+  }
+}
