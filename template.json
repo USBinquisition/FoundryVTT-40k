@@ -1075,7 +1075,7 @@
       "experience": {
         "value": 0
       },
-      "faction": "neutral",
+      "faction": "",
       "subfaction": "",
       "type": "troop",
       "threatLevel": 0,

@@ -119,18 +119,6 @@ Dh.psykerClass = {
     daemonic: "PSYCHIC_POWER.DAEMONIC"
 };
 
-Dh.npcTypes = {
-    troop: "NPC_TYPE.TROOP",
-    master: "NPC_TYPE.MASTER",
-    elite: "NPC_TYPE.ELITE"
-};
-
-Dh.factions = {
-    friendly: "FACTION.FRIENDLY",
-    neutral: "FACTION.NEUTRAL",
-    enemy: "FACTION.ENEMY"
-};
-
 Dh.advanceStagesCharacteristics = {
     0: "ADVANCE.NONE",
     5: "ADVANCE.SIMPLE",
