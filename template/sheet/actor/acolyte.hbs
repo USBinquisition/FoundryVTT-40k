@@ -42,6 +42,18 @@
                             <input name="system.fatigue.max" type="number" value="{{system.fatigue.max}}" data-dtype="Number" />
                         </div>
                     </div>
+                    <div class="header-row">
+                        <div class="faction">
+                            <label>{{localize "BIO.FACTION"}}</label>
+                            <select name="system.faction" style="margin-left: 10px">
+                                {{#select system.faction}}
+                                    <option value="">{{localize "FACTION.NEUTRAL"}}</option>
+                                    <option value="friendly">{{localize "FACTION.FRIENDLY"}}</option>
+                                    <option value="enemy">{{localize "FACTION.ENEMY"}}</option>
+                                {{/select}}
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
