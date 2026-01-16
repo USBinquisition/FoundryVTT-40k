@@ -1,0 +1,26 @@
+{
+  "name": "Navigator Power: The Lidless Eye",
+  "type": "psychicPower",
+  "img": "icons/magic/perception/eye-ringed-green.webp",
+  "system": {
+    "prerequisite": "Navigator",
+    "action": "Full Action",
+    "subtype": "Navigator",
+    "focusPower": {
+      "difficulty": 0,
+      "test": "Willpower"
+    },
+    "range": "15m",
+    "sustained": "-",
+    "damage": {
+      "formula": "1d10+WPB",
+      "type": "energy",
+      "penetration": "0",
+      "zone": "bolt",
+      "special": "See macro for full effect."
+    },
+    "shortDescription": "Opposed WP vs all in 15m cone. See macro for effects.",
+    "effect": "Use the 'The Lidless Eye' macro to resolve the full effects, deny options, and visual AOE.",
+    "description": "Navigator power entry used for equipping/slotting and quick reference. The full rules are implemented in the macro."
+  }
+}
