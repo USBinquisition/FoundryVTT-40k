@@ -2,7 +2,7 @@
   "id": "dark-heresy",
   "title": "Dark Heresy 2E",
   "description": "Unofficial Foundry VTT System for Dark Heresy 2nd Edition. Forked by Necaladun to address Foundry V13 jQuery changes; vibe-coded with limited skills.",
-  "version": "0.5",
+  "version": "0.5.5",
   "minimumCoreVersion" : 11,
   "compatibility" : {
     "minimum" : 11,
@@ -87,7 +87,7 @@
   "secondaryTokenAttribute": null,
   "url": "https://github.com/USBinquisition/FoundryVTT-40k",
   "socket": true,
-  "manifest": "https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.5/system.json",
-  "download": "https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.5/0.5USB.zip",
+  "manifest": "https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.5.5/system.json",
+  "download": "https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.5.5/0.5.5USB.zip",
   "license": "LICENSE.txt"
 }

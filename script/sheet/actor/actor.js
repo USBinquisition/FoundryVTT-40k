@@ -1,5 +1,6 @@
 import {prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll} from "../../common/dialog.js";
 import DarkHeresyUtil from "../../common/util.js";
+import { HordeFightManager } from "../../common/horde-fight.js";
 
 export class DarkHeresySheet extends ActorSheet {
     activateListeners(html) {
@@ -15,6 +16,7 @@ export class DarkHeresySheet extends ActorSheet {
         html.find(".roll-corruption").click(async ev => await this._prepareRollCorruption(ev));
         html.find(".roll-weapon").click(async ev => await this._prepareRollWeapon(ev));
         html.find(".roll-psychic-power").click(async ev => await this._prepareRollPsychicPower(ev));
+        html.find(".horde-fight").click(async () => await this._onHordeFight());
     }
 
     /** @override */
@@ -151,6 +153,19 @@ export class DarkHeresySheet extends ActorSheet {
         await preparePsychicPowerRoll(
             DarkHeresyUtil.createPsychicRollData(this.actor, psychicPower)
         );
+    }
+
+    async _onHordeFight() {
+        if (game.user.isGM) {
+            await HordeFightManager.startFight();
+            return;
+        }
+        const state = HordeFightManager.state;
+        if (state?.active) {
+            HordeFightManager.open();
+            return;
+        }
+        ui.notifications.info(game.i18n.localize("HORDE_FIGHT.AWAITING_GM"));
     }
 
     constructItemLists() {
