@@ -1,0 +1,71 @@
+<section class="taccog-sheet">
+  <header class="sheet-header">
+    <div class="header-main">
+      <h1>{{actor.name}}</h1>
+      <div class="xp-summary">
+        <span>Total XP: {{xp.total}}</span>
+        <span>Spent: {{xp.spent}}</span>
+        <span>Available: {{xp.available}}</span>
+      </div>
+    </div>
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="summary">Summary</a>
+      <a class="item" data-tab="combat">Combat</a>
+      <a class="item" data-tab="skills">Skills</a>
+      <a class="item" data-tab="gear">Gear</a>
+      <a class="item" data-tab="notes">Notes</a>
+    </nav>
+  </header>
+
+  <section class="sheet-body">
+    <div class="tab" data-group="primary" data-tab="summary">
+      <h2>Summary</h2>
+      <p>Core stats, wounds, and fate overview. Customize in the combat tab for quick actions.</p>
+    </div>
+    <div class="tab" data-group="primary" data-tab="combat">
+      <h2>Combat</h2>
+      <p>Quick actions, attack buttons, and summary of tactics.</p>
+      <div class="combat-summary">
+        <p>Attack Overview: Weapon, Range, Hit Chance, Effects.</p>
+        <button type="button" class="taccog-action">Standard Attack</button>
+        <button type="button" class="taccog-action">Auto-Shoot Nearest</button>
+        <button type="button" class="taccog-action">Charge Nearest</button>
+      </div>
+    </div>
+    <div class="tab" data-group="primary" data-tab="skills">
+      <h2>Skills</h2>
+      <div class="skills-group">
+        <h3>Basic</h3>
+        <ul>
+          {{#each skills.basic as |entry|}}
+            <li>{{entry.item.name}} (Rank {{entry.rank}}) {{#if entry.polymath}}- Polymath (Basic Int){{/if}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="skills-group">
+        <h3>Trained</h3>
+        <ul>
+          {{#each skills.trained as |entry|}}
+            <li>{{entry.item.name}} (Rank {{entry.rank}})</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="skills-group">
+        <h3>Specialist</h3>
+        <ul>
+          {{#each skills.specialist as |entry|}}
+            <li>{{entry.item.name}} (Rank {{entry.rank}})</li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+    <div class="tab" data-group="primary" data-tab="gear">
+      <h2>Gear</h2>
+      <p>Weapons, armour, and equipment lists.</p>
+    </div>
+    <div class="tab" data-group="primary" data-tab="notes">
+      <h2>Notes</h2>
+      <textarea rows="8" placeholder="Narrative notes, mission logs, and faction intel."></textarea>
+    </div>
+  </section>
+</section>
