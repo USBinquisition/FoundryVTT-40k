@@ -1,5 +1,7 @@
 # TacCog (Tactical Cognition)
 
+Version: **0.01a**
+
 TacCog is a lightweight, no-build Foundry VTT V12 system skeleton for tactical 40k-style play. It focuses on fast automation hooks, clean UI themes, and CSV-driven content import.
 
 ## Goals
@@ -24,6 +26,29 @@ TacCog is a lightweight, no-build Foundry VTT V12 system skeleton for tactical 4
 1. Copy the `taccog` folder into your Foundry `systems/` directory.
 2. Enable the system and select the **TacCog Theme** in system settings.
 3. Use the CSV importer helpers (see `modules/importer.mjs`) to seed skills and talents.
+4. Open a TacCog actor sheet, edit characteristics, and click **Roll** to roll a test from that stat.
+
+## Foundry Manifest Placeholders (Update These Before Release)
+
+The system manifest lives at `taccog/system.json`. The following fields are currently placeholders and should be updated to match your real module identity and hosting:
+
+- `id` (system id)
+- `title`
+- `description`
+- `authors[].name` / `authors[].email`
+- `url`
+- `manifest`
+- `download`
+- `license`
+
+These fields are required or referenced by Foundry for listing, updates, and licensing. Edit them directly in `taccog/system.json` before publishing.
+
+## Versioning & Changelog Workflow
+
+1. Update the version in `taccog/system.json` for every release.
+2. Add a new section at the top of `taccog/CHANGELOG.md` with the same version number and date.
+3. Keep the version format consistent with the current release tag (this release is **0.01a**).
+4. Note user-facing changes in the changelog first, then update docs if needed.
 
 ## Extending
 
