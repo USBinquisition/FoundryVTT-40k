@@ -1,3 +1,5 @@
+import { calculateDegrees } from "./dice.mjs";
+
 const RANGE_BANDS = [
   { label: "Point Blank", max: 3, mod: 30 },
   { label: "Short", max: 10, mod: 10 },
@@ -143,14 +145,14 @@ function executeAttack(attacker, weapon, target, html) {
   const targetNumber = baseValue + totalMod;
 
   const roll = new Roll("1d100").roll({ async: false });
-  const degrees = Math.floor((targetNumber - roll.total) / 10);
+  const degrees = calculateDegrees(targetNumber, roll.total);
 
   const hits = getHitsFromFireMode(fireMode, degrees);
 
   roll.toMessage({
     speaker: ChatMessage.getSpeaker({ actor: attacker }),
     flavor: `Attack (${weapon.name}) vs ${target.name}`,
-    content: `Target: ${targetNumber} | Roll: ${roll.total} | DoS: ${degrees} | Hits: ${hits} | Called: ${calledLocation}`
+    content: `Target: ${targetNumber} | Roll: ${roll.total} | DoS: ${Math.abs(degrees)} | Hits: ${hits} | Called: ${calledLocation}`
   });
 }
 
