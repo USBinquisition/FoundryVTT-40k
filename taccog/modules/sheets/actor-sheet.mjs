@@ -1,7 +1,4 @@
-import { rollTest } from "../dice.mjs";
 import { calculateCost } from "../progression.mjs";
-
-const STAT_ORDER = ["ws", "bs", "s", "t", "ag", "int", "per", "wp", "fel"];
 
 export class TacCogActorSheet extends ActorSheet {
   static get defaultOptions() {
@@ -22,7 +19,6 @@ export class TacCogActorSheet extends ActorSheet {
     const data = super.getData();
     const skills = this._prepareSkills(data.actor.items);
     data.system = data.actor.system;
-    data.stats = this._prepareStats(data.system?.stats ?? {});
     data.skills = skills;
     data.xp = data.system?.xp ?? { total: 0, spent: 0, available: 0 };
     return data;
@@ -30,32 +26,9 @@ export class TacCogActorSheet extends ActorSheet {
 
   activateListeners(html) {
     super.activateListeners(html);
-    html.find(".taccog-stat-roll").on("click", (event) => {
-      event.preventDefault();
-      const statKey = event.currentTarget.dataset.stat;
-      const stat = this.actor.system?.stats?.[statKey];
-      if (!stat) return;
-      const target = (stat.base ?? 0) + (stat.advance ?? 0);
-      rollTest({ label: stat.label ?? statKey.toUpperCase(), target });
-    });
-  }
-
-  _prepareStats(stats) {
-    const orderedKeys = STAT_ORDER.filter((key) => stats[key]).concat(
-      Object.keys(stats).filter((key) => !STAT_ORDER.includes(key))
-    );
-    return orderedKeys.map((key) => {
-      const entry = stats[key] ?? {};
-      const base = entry.base ?? 0;
-      const advance = entry.advance ?? 0;
-      return {
-        key,
-        label: entry.label ?? key.toUpperCase(),
-        short: entry.short ?? key.toUpperCase(),
-        base,
-        advance,
-        total: base + advance
-      };
+    html.find("select[name='attackType']").on("change", (event) => {
+      const calledDropdown = html.find("select[name='calledLocation']");
+      calledDropdown.prop("disabled", event.target.value !== "called");
     });
   }
 

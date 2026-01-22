@@ -1,7 +1,7 @@
-<form class="taccog-sheet" autocomplete="off">
+<section class="taccog-sheet">
   <header class="sheet-header">
     <div class="header-main">
-      <input class="taccog-name" type="text" name="name" value="{{actor.name}}" />
+      <h1>{{actor.name}}</h1>
       <div class="xp-summary">
         <span>Total XP: {{xp.total}}</span>
         <span>Spent: {{xp.spent}}</span>
@@ -21,32 +21,6 @@
     <div class="tab" data-group="primary" data-tab="summary">
       <h2>Summary</h2>
       <p>Core stats, wounds, and fate overview. Customize in the combat tab for quick actions.</p>
-      <section class="taccog-stats">
-        <header class="taccog-stats-header">
-          <h3>Characteristics</h3>
-          <p>Click a roll button to test against the total (Base + Advance).</p>
-        </header>
-        <div class="taccog-stat-grid">
-          <div class="taccog-stat-row taccog-stat-row--header">
-            <span>Stat</span>
-            <span>Base</span>
-            <span>Advance</span>
-            <span>Total</span>
-            <span>Roll</span>
-          </div>
-          {{#each stats as |stat|}}
-            <div class="taccog-stat-row">
-              <span class="taccog-stat-label">{{stat.label}}</span>
-              <input type="number" name="system.stats.{{stat.key}}.base" value="{{stat.base}}" data-dtype="Number" />
-              <input type="number" name="system.stats.{{stat.key}}.advance" value="{{stat.advance}}" data-dtype="Number" />
-              <span class="taccog-stat-total">{{stat.total}}</span>
-              <button type="button" class="taccog-stat-roll" data-stat="{{stat.key}}">
-                Roll
-              </button>
-            </div>
-          {{/each}}
-        </div>
-      </section>
     </div>
     <div class="tab" data-group="primary" data-tab="combat">
       <h2>Combat</h2>
@@ -94,4 +68,4 @@
       <textarea rows="8" placeholder="Narrative notes, mission logs, and faction intel."></textarea>
     </div>
   </section>
-</form>
+</section>
