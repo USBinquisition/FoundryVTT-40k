@@ -38,60 +38,6 @@ body[data-taccog-theme="nightops"] {
   border-radius: var(--taccog-radius);
 }
 
-.taccog .taccog-name {
-  width: 100%;
-  font-size: 1.6rem;
-  font-weight: 600;
-  background: transparent;
-  border: none;
-  color: var(--taccog-text);
-}
-
-.taccog .taccog-stats {
-  margin-top: 16px;
-}
-
-.taccog .taccog-stats-header {
-  margin-bottom: 8px;
-}
-
-.taccog .taccog-stat-grid {
-  display: grid;
-  gap: 6px;
-}
-
-.taccog .taccog-stat-row {
-  display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr) auto;
-  gap: 8px;
-  align-items: center;
-  padding: 6px 8px;
-  background: var(--taccog-surface);
-  border-radius: var(--taccog-radius);
-}
-
-.taccog .taccog-stat-row--header {
-  background: transparent;
-  font-weight: 600;
-}
-
-.taccog .taccog-stat-row input {
-  width: 100%;
-  background: transparent;
-  border: 1px solid var(--taccog-accent);
-  color: var(--taccog-text);
-  padding: 4px 6px;
-  border-radius: var(--taccog-radius);
-}
-
-.taccog .taccog-stat-roll {
-  padding: 4px 10px;
-  border-radius: var(--taccog-radius);
-  border: 1px solid var(--taccog-accent);
-  background: transparent;
-  color: var(--taccog-text);
-}
-
 .taccog .sheet-header {
   background: var(--taccog-surface);
   padding: 12px 16px;

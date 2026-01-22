@@ -2,7 +2,7 @@
   "id": "taccog",
   "title": "TacCog (Tactical Cognition)",
   "description": "TacCog: a clean, automation-first Foundry VTT V12 framework for tactical 40k-style play.",
-  "version": "0.01a",
+  "version": "0.4.0",
   "minimumCoreVersion": 12,
   "compatibility": {
     "minimum": 12,
@@ -11,8 +11,8 @@
   "templateVersion": 2,
   "authors": [
     {
-      "name": "TacCog Team (Placeholder)",
-      "email": "taccog@example.com"
+      "name": "TacCog Team",
+      "email": "devnull@example.com"
     }
   ],
   "esmodules": [
@@ -30,9 +30,5 @@
   "gridDistance": 1,
   "gridUnits": "m",
   "primaryTokenAttribute": null,
-  "secondaryTokenAttribute": null,
-  "url": "https://example.com/taccog",
-  "manifest": "https://example.com/taccog/system.json",
-  "download": "https://example.com/taccog/taccog.zip",
-  "license": "LICENSE"
+  "secondaryTokenAttribute": null
 }
