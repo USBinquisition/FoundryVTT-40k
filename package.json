@@ -5,13 +5,15 @@
     "build:watch": "gulp",
     "lint": "gulp lint",
     "lint:fix": "gulp lint --fix",
-    "test": "npm run lint:fix"
+    "test": "npm run lint:fix",
+    "release": "python scripts/release_builder.py --gui",
+    "release:cli": "python scripts/release_builder.py"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.5",
     "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
     "@rollup/plugin-node-resolve": "^15.2.2",
-	"rollup":"^4.22.4",
+    "rollup": "^4.22.4",
     "eslint-plugin-jsdoc": "^46.2.6",
     "gulp": "^4.0.2",
     "gulp-eslint-new": "^1.8.0",

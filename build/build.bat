@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 set "ROOT=%~dp0.."
-set "DEFAULT_VERSION=0.5"
+set "DEFAULT_VERSION=0.6a"
 
 set /p "RELEASE_VERSION=Enter release version (default %DEFAULT_VERSION%): "
 if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=%DEFAULT_VERSION%"
