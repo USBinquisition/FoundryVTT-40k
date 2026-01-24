@@ -30,6 +30,7 @@ import Dh from "./common/config.js";
 import { registerFactionTokenHud } from "./common/token-hud.js";
 import { HordeFightManager } from "./common/horde-fight.js";
 import "./macro/auto-npc.js";
+import { registerAttackWindows } from "./macro/attack-windows/index.js";
 
 // Import Helpers
 
@@ -51,6 +52,7 @@ Hooks.once("init", function() {
         }
     };
     game.macro = DhMacroUtil;
+    registerAttackWindows();
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("dark-heresy", AcolyteSheet, { types: ["acolyte"], makeDefault: true });
     Actors.registerSheet("dark-heresy", NpcSheet, { types: ["npc"], makeDefault: true });
