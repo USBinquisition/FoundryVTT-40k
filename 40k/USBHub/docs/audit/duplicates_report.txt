@@ -1,0 +1,21 @@
+Duplicates Report (Stage 1.5 first pass)
+========================================
+
+Method
+------
+- Performed targeted discovery with ripgrep for USBHub-related assets.
+- Seeded new hub structure; duplicate detection focuses on newly canonicalized paths.
+
+Findings
+--------
+1) No pre-existing USBHub program duplicates were detected because the hub tree was not present.
+2) Potential future duplication risk:
+   - /40k/data/manifest.json (authority seed)
+   - /systems/taccog/USBHub/data/usb-hub-manifest.json (hub manifest)
+   These are complementary but should be kept synchronized.
+3) Intake scripts may surface duplicated text documents once the scan is run.
+
+Recommended next command
+------------------------
+Run the intake scan to produce machine-readable duplication signals:
+  python systems/taccog/USBHub/usbhub-library/tools/library_intake_scan.py

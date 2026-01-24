@@ -1,0 +1,31 @@
+Target Move Map (Planning Only)
+==============================
+
+This move map is a planning artifact for Stage 2. No moves are executed here.
+
+Canonical mapping rules
+-----------------------
+1) Hub programs:
+   /systems/taccog/USBHub/** -> /40k/USBHub/**
+
+2) Hub data roots:
+   /systems/taccog/USBHub/data/** -> /40k/data/hub/**
+
+3) Dataloom authority:
+   /40k/data/changelog/** remains in place and is authoritative.
+
+4) Legacy catchall:
+   Any other repo-relative path -> /40k/legacy/<original-path>
+
+Immutable blockers
+------------------
+- /worlds/** (if present) must not move via automation.
+- /.git/** must not move.
+- /node_modules/** must not move.
+- /releases/** may be regenerated locally but not restructured by intake tooling.
+
+Tools
+-----
+Use:
+  python systems/taccog/USBHub/tools/stage2_move_plan.py
+  python systems/taccog/USBHub/tools/stage2_dry_run_verify.py

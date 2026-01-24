@@ -1,0 +1,45 @@
+{
+  "version": "0.01a",
+  "canonical_path": "/systems/taccog/USBHub/data/oclara/profiles.json",
+  "profiles": [
+    {
+      "user": "Zeheve",
+      "access_level": "viewer",
+      "characters": ["Umlaut (Heretic)", "Laufey (Rogue Trader)"]
+    },
+    {
+      "user": "Jem",
+      "access_level": "viewer",
+      "characters": ["Himeraos (Heretic)", "Lupaster (Rogue Trader)"]
+    },
+    {
+      "user": "Bost",
+      "access_level": "viewer",
+      "characters": ["Vlad (Rogue Trader)"]
+    },
+    {
+      "user": "Sela",
+      "access_level": "viewer",
+      "characters": ["Teja (Rogue Trader)", "Rob (Rogue Trader)", "AXM-13", "Qetesh", "Herran Eta-8 (Inquisition)", "Necaladun (Game Master)"]
+    },
+    {
+      "user": "None",
+      "access_level": "viewer",
+      "characters": ["Malcador (Redacted Profile)"]
+    },
+    {
+      "user": "Jules",
+      "access_level": "viewer",
+      "characters": ["Sola (Inquisition)"]
+    },
+    {
+      "user": "Dryden",
+      "access_level": "viewer",
+      "characters": ["Wolfgang (Inquisition)"]
+    }
+  ],
+  "notes": [
+    "Unknown legacy registry paths; this file is the Stage 1.5 canonical profile registry under Oculara.",
+    "Access levels follow the viewer/operator/admin/root model."
+  ]
+}

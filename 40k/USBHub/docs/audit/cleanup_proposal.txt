@@ -1,0 +1,37 @@
+Cleanup Proposal (No Deletions Performed)
+=========================================
+
+Objective
+---------
+Provide safe commands and tooling usage to review candidates before any move
+or cleanup. This proposal does NOT delete or move anything by itself.
+
+Recommended workflow
+--------------------
+1) Generate an intake scan report (default excludes /reference and /imports):
+
+   python systems/taccog/USBHub/usbhub-library/tools/library_intake_scan.py
+
+2) Review the report outputs:
+
+   systems/taccog/USBHub/data/library/intake_reports/intake_scan_report.json
+   systems/taccog/USBHub/data/library/intake_reports/intake_scan_report.txt
+
+3) Prepare a curated allowlist of text files safe to move:
+
+   # allowlist.txt (repo-relative paths; one per line)
+   docs/notes/session-01.txt
+   docs/notes/session-02.md
+
+4) Run the move script in dry-run mode first:
+
+   python systems/taccog/USBHub/usbhub-library/tools/library_intake_move.py \
+     --allowlist allowlist.txt \
+     --dry-run
+
+5) If the dry run looks correct, run the move script without --dry-run.
+
+Stage 2 planning tools (still no moves)
+---------------------------------------
+  python systems/taccog/USBHub/tools/stage2_move_plan.py
+  python systems/taccog/USBHub/tools/stage2_dry_run_verify.py

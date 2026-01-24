@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>USBL Library</title>
+    <link rel="stylesheet" href="./library.css" />
+  </head>
+  <body>
+    <main class="library" data-state="booting">
+      <header class="library__header">
+        <h1>Archivum Library</h1>
+        <p class="library__subtitle">Bootstrap checks must pass before the archive opens.</p>
+        <div class="library__status" id="libraryStatus" role="status" aria-live="polite"></div>
+      </header>
+
+      <section class="library__splash" id="splashPanel">
+        <h2>Integrity Checks</h2>
+        <ul id="checkList" class="checks"></ul>
+        <div class="splash__actions">
+          <button id="retryBootstrap" class="btn">Retry Bootstrap</button>
+        </div>
+      </section>
+
+      <section class="library__tabs" id="tabsPanel" hidden>
+        <nav class="tabs" role="tablist" aria-label="Library subprograms">
+          <button class="tab" data-tab="txt" role="tab">TXT Editor</button>
+          <button class="tab" data-tab="archive" role="tab">Archive Viewer</button>
+          <button class="tab" data-tab="transcription" role="tab">Transcription</button>
+          <button class="tab" data-tab="manager" role="tab">Archive Manager</button>
+          <button class="tab" data-tab="pdf" role="tab">PDF Reader</button>
+        </nav>
+        <section class="tabpanels">
+          <article class="tabpanel" data-panel="txt" role="tabpanel"></article>
+          <article class="tabpanel" data-panel="archive" role="tabpanel" hidden></article>
+          <article class="tabpanel" data-panel="transcription" role="tabpanel" hidden></article>
+          <article class="tabpanel" data-panel="manager" role="tabpanel" hidden></article>
+          <article class="tabpanel" data-panel="pdf" role="tabpanel" hidden></article>
+        </section>
+      </section>
+    </main>
+
+    <script src="./library.js" type="module"></script>
+  </body>
+</html>
