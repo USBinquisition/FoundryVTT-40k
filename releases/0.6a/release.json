@@ -1,0 +1,10 @@
+{
+  "version": "0.6a",
+  "tag": "0.6a",
+  "releaseType": "release",
+  "date": "2026-01-24",
+  "manifest": "https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.6a/system.json",
+  "download": "https://github.com/USBinquisition/FoundryVTT-40k/releases/download/0.6a/0.6aUSB.zip",
+  "zip": null,
+  "notes": ""
+}
