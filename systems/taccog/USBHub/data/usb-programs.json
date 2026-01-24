@@ -1,0 +1,13 @@
+{
+  "version": "0.01a",
+  "programs": [
+    {
+      "id": "usbhub-library",
+      "title": "USBL Library",
+      "path": "./usbhub-library/index.html",
+      "min_access": "viewer",
+      "description": "Archivum intake, cataloging, and reading tools for text and PDF references.",
+      "tags": ["library", "intake", "documents", "pdf"]
+    }
+  ]
+}

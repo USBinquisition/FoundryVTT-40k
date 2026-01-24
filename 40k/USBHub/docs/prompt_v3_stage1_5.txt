@@ -1,0 +1,98 @@
+USB40k 0.01a Consolidation — Prompt v3 (Post Stage 1.5)
+=======================================================
+
+Stage marker
+------------
+Stage 1.5 complete in scope: library program, Oculara auth consolidation,
+hub registration, intake tooling, and Stage 2 planning scripts were created
+without executing the full restructure.
+
+Confirmed boundaries
+--------------------
+Public routes:
+  / and /releases/ only
+
+Localhost-only routes:
+  /40k/, /imports/, /reference/**
+
+Root /index.html:
+  Must remain unchanged and must not link to /40k yet.
+
+Binary artifact policy:
+  Never commit binaries in PRs. Generate locally via scripts.
+
+Implemented in Stage 1.5
+------------------------
+1) Canonical data roots seeded:
+   - /40k/data/paths.json
+   - /40k/data/manifest.json (append-only posture)
+   - /40k/data/changelog/CHANGELOG_ingested.md
+
+2) Localhost hub seeded with iframe contract preserved:
+   - /systems/taccog/USBHub/index.html
+   - /systems/taccog/USBHub/hub.css
+   - /systems/taccog/USBHub/hub.js
+   - /systems/taccog/USBHub/data/usb-programs.json
+   - /systems/taccog/USBHub/data/usb-hub-manifest.json
+   - /systems/taccog/USBHub/data/usb-manager-state.json
+   - /systems/taccog/USBHub/data/thoughts.txt
+
+3) Oculara auth consolidation (canonical Stage 1.5 registry root):
+   - /systems/taccog/USBHub/data/oclara/users.json (salted PBKDF2 hashes)
+   - /systems/taccog/USBHub/data/oclara/profiles.json
+   LocalStorage keys:
+     USB_ACTIVE_USER
+     USB_ACTIVE_PROFILE
+     USB_ACCESS_LEVEL
+
+4) Library program implemented and registered:
+   - /systems/taccog/USBHub/usbhub-library/index.html
+   - /systems/taccog/USBHub/usbhub-library/library.css
+   - /systems/taccog/USBHub/usbhub-library/library.js
+   - /systems/taccog/USBHub/usbhub-library/docs/library_usage.txt
+   - /systems/taccog/USBHub/data/library/metadata.json
+
+   Library categories include required defaults plus five additions:
+     reports, intel, books, transcriptions, other,
+     dossiers, doctrine, schematics, communiques, xenology
+
+5) Intake tooling implemented (no destructive automation):
+   - /systems/taccog/USBHub/usbhub-library/tools/library_intake_scan.py
+   - /systems/taccog/USBHub/usbhub-library/tools/library_intake_move.py
+   Default scans exclude /reference and /imports unless explicitly included.
+
+6) Stage 2 planning-only tooling implemented:
+   - /systems/taccog/USBHub/tools/stage2_move_plan.py
+   - /systems/taccog/USBHub/tools/stage2_dry_run_verify.py
+   - /40k/USBHub/docs/stage2_operator_directions.txt
+
+What remains for Stage 2+
+-------------------------
+1) Execute the restructure into /40k with move-map approval.
+2) Migrate TacCog into usb-taccog layout:
+   - /40k/USBHub/usb-taccog/systems/taccog/
+   - /40k/USBHub/usb-taccog/systems/modules/
+   - /40k/USBHub/usb-taccog/builder/
+3) Implement Dataloom as authoritative bootstrap validator and manager.
+4) Enforce public denial string for gaming 40k section in an approved stage.
+5) Ensure launcher auto-selects a free port and opens /40k/USBHub/index.html only.
+
+Release rule (non-negotiable)
+-----------------------------
+Builder outputs must be exactly:
+- system.zip + system.json
+- module.zip + module.json
+No combined bundles.
+
+Operator commands (run manually)
+--------------------------------
+Library intake scan:
+  python systems/taccog/USBHub/usbhub-library/tools/library_intake_scan.py
+
+Library intake move (dry run first):
+  python systems/taccog/USBHub/usbhub-library/tools/library_intake_move.py --allowlist allowlist.txt --dry-run
+  python systems/taccog/USBHub/usbhub-library/tools/library_intake_move.py --allowlist allowlist.txt
+
+Stage 2 move planning and verification:
+  python systems/taccog/USBHub/tools/stage2_move_plan.py
+  python systems/taccog/USBHub/tools/stage2_dry_run_verify.py

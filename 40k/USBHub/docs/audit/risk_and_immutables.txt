@@ -1,0 +1,19 @@
+Risk and Immutables Register (Stage 1.5)
+========================================
+
+Hard immutables
+---------------
+- Root /index.html must remain unchanged and must not link to /40k.
+- /worlds/** is immutable in automation (LevelDB sentinels, locks, logs).
+- Binary artifacts (zips, PDFs) must not be committed.
+
+Audit-informed risks in this repo
+---------------------------------
+1) manifest.txt expected by policy was not present; intake tooling reports this explicitly.
+2) The requested USBHub tree did not exist; new canonical files were seeded.
+3) This repository already has a mature Foundry system layout; aggressive intake moves could disrupt documentation.
+
+Stage 1.5 protections implemented
+---------------------------------
+- Intake tooling excludes worlds, releases, node_modules, .git, and the library program itself.
+- /reference and /imports remain excluded by default with explicit opt-in flags.

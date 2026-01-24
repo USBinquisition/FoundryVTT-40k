@@ -1,0 +1,15 @@
+{
+  "version": "0.01a",
+  "last_bootstrap": "2026-01-24T17:21:49Z",
+  "last_intake_scan": "2026-01-24T17:21:49Z",
+  "last_intake_move": null,
+  "stage_markers": {
+    "stage1_complete": true,
+    "stage1_5_complete": true,
+    "stage2_ready": false
+  },
+  "notes": [
+    "Update this file via scripts rather than manual edits when possible.",
+    "World data and LevelDB sentinels remain immutable."
+  ]
+}

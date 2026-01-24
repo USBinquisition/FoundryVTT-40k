@@ -1,0 +1,138 @@
+{
+  "generated_at": "2026-01-24T17:21:44.799138+00:00",
+  "root": "systems/taccog/USBHub",
+  "include_reference": false,
+  "include_imports": false,
+  "immutables": [
+    ".git",
+    "node_modules",
+    "releases",
+    "worlds"
+  ],
+  "plans": [
+    {
+      "source": "systems/taccog/USBHub/index.html",
+      "destination": "40k/USBHub/index.html",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/hub.css",
+      "destination": "40k/USBHub/hub.css",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/hub.js",
+      "destination": "40k/USBHub/hub.js",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/tools/stage2_dry_run_verify.py",
+      "destination": "40k/USBHub/tools/stage2_dry_run_verify.py",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/tools/stage2_move_plan.py",
+      "destination": "40k/USBHub/tools/stage2_move_plan.py",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/usbhub-library/index.html",
+      "destination": "40k/USBHub/usbhub-library/index.html",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/usbhub-library/library.js",
+      "destination": "40k/USBHub/usbhub-library/library.js",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/usbhub-library/library.css",
+      "destination": "40k/USBHub/usbhub-library/library.css",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/usbhub-library/tools/library_intake_scan.py",
+      "destination": "40k/USBHub/usbhub-library/tools/library_intake_scan.py",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/usbhub-library/tools/library_intake_move.py",
+      "destination": "40k/USBHub/usbhub-library/tools/library_intake_move.py",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/usbhub-library/docs/library_usage.txt",
+      "destination": "40k/USBHub/usbhub-library/docs/library_usage.txt",
+      "rule": "hub-programs-to-40k",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/usb-programs.json",
+      "destination": "40k/data/hub/usb-programs.json",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/usb-hub-manifest.json",
+      "destination": "40k/data/hub/usb-hub-manifest.json",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/thoughts.txt",
+      "destination": "40k/data/hub/thoughts.txt",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/usb-manager-state.json",
+      "destination": "40k/data/hub/usb-manager-state.json",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/library/metadata.json",
+      "destination": "40k/data/hub/library/metadata.json",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/library/intake_reports/intake_scan_report.txt",
+      "destination": "40k/data/hub/library/intake_reports/intake_scan_report.txt",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/library/intake_reports/intake_scan_report.json",
+      "destination": "40k/data/hub/library/intake_reports/intake_scan_report.json",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/oclara/users.json",
+      "destination": "40k/data/hub/oclara/users.json",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    },
+    {
+      "source": "systems/taccog/USBHub/data/oclara/profiles.json",
+      "destination": "40k/data/hub/oclara/profiles.json",
+      "rule": "hub-data-to-40k-data",
+      "immutable": false
+    }
+  ],
+  "notes": [
+    "This file is planning-only. No moves are performed.",
+    "Review immutable entries (worlds, releases, node_modules) before Stage 2."
+  ]
+}
