@@ -31,8 +31,8 @@ RELEASES_DIR = REPO_ROOT / "releases"
 BUILD_DIR = REPO_ROOT / "build"
 RELEASE_BUILD_DIR = BUILD_DIR / "release"
 
-GITHUB_REPO = "USBinquisition/FoundryVTT-40k"
-ZIP_SUFFIX = "USB.zip"
+GITHUB_REPO = "FoundryVTT-40k/FoundryVTT-40k"
+ZIP_SUFFIX = ".zip"
 VERSION_PATTERN = re.compile(r"^\d+\.\d+(?:\.\d+)?[a-zA-Z]?$", re.ASCII)
 
 

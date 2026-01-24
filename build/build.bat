@@ -9,7 +9,7 @@ if "%RELEASE_VERSION%"=="" set "RELEASE_VERSION=%DEFAULT_VERSION%"
 
 set "BUILD_DIR=%ROOT%\build"
 set "RELEASE_DIR=%BUILD_DIR%\release"
-set "ZIP_NAME=%RELEASE_VERSION%USB.zip"
+set "ZIP_NAME=%RELEASE_VERSION%.zip"
 
 if exist "%RELEASE_DIR%" rmdir /s /q "%RELEASE_DIR%"
 mkdir "%RELEASE_DIR%"

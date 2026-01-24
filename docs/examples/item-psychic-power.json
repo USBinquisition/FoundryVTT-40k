@@ -1,0 +1,24 @@
+{
+  "name": "Example Psychic Power: Smite",
+  "type": "psychicPower",
+  "img": "icons/magic/light/projectile-bolt-blue.webp",
+  "system": {
+    "shortDescription": "Direct damage bolt with scalable PR.",
+    "cost": 200,
+    "prerequisite": "Psy Rating 2",
+    "action": "Half Action",
+    "focusPower": { "difficulty": 0, "test": "Willpower" },
+    "range": "20m",
+    "sustained": "No",
+    "subtype": "Psychic Bolt",
+    "effect": "Deals energy damage to a single target.",
+    "damage": {
+      "zone": "bolt",
+      "type": "energy",
+      "formula": "1d10+PR",
+      "penetration": "PR",
+      "special": "Sanctified"
+    },
+    "description": "Psychic power template covering focus test and damage payload."
+  }
+}

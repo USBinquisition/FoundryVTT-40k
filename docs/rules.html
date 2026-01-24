@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rules & Mechanics — Dark Heresy 2E System Guide</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+        --panel: #111924;
+        --text: #e6edf3;
+        --muted: #9aa7b3;
+        --accent: #4db6ff;
+        --border: #1f2a36;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+      header,
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem clamp(1.5rem, 4vw, 4rem);
+      }
+      header {
+        padding-top: 2.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      a {
+        color: var(--accent);
+      }
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: clamp(1.25rem, 3vw, 1.75rem);
+        margin-top: 1.75rem;
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.2;
+        margin-top: 0;
+      }
+      h1 {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+      }
+      h2 {
+        font-size: clamp(1.4rem, 3vw, 1.9rem);
+        margin-bottom: 0.6rem;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+        color: var(--accent);
+      }
+      ul {
+        margin-top: 0.4rem;
+      }
+      .back {
+        display: inline-block;
+        margin-top: 0.5rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      code {
+        background: rgba(77, 182, 255, 0.15);
+        border: 1px solid rgba(77, 182, 255, 0.25);
+        padding: 0.1rem 0.35rem;
+        border-radius: 0.35rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Rules &amp; Mechanics</h1>
+      <p>
+        This page summarises the most important mechanics as they are currently
+        implemented by the automation layer.
+      </p>
+      <a class="back" href="index.html">← Back to guide index</a>
+    </header>
+    <main>
+      <section>
+        <h2>Target Numbers &amp; Modifier Caps</h2>
+        <ul>
+          <li>Total roll modifiers are clamped to <strong>+60 / -60</strong> before being applied.</li>
+          <li>The effective target is <code>baseTarget + clamp(totalMods, -60, +60)</code>.</li>
+          <li>Combat modifiers combine aim, range, attack type, psychic rating deltas, and manual edits.</li>
+        </ul>
+        <p>
+          See the deeper notes in <a href="../RULES_REFERENCE.md">RULES_REFERENCE.md</a> for the
+          precise breakdown.
+        </p>
+      </section>
+
+      <section>
+        <h2>Attack Types &amp; Rate of Fire</h2>
+        <p>
+          Attack types drive three important values: the to-hit modifier, the degrees-of-success
+          margin required for extra hits, and the maximum number of hits.
+        </p>
+        <ul>
+          <li><strong>Standard:</strong> +10 to hit, one hit maximum.</li>
+          <li><strong>Semi-auto / Swift / Barrage:</strong> 0 modifier, extra hits every 2 DoS, capped by burst RoF.</li>
+          <li><strong>Full-auto / Lightning:</strong> -10 modifier, extra hits every 1 DoS, capped by full RoF.</li>
+          <li><strong>Called shot:</strong> -20 modifier, one hit maximum.</li>
+          <li><strong>Charge / All-out:</strong> +20 / +30, one hit maximum.</li>
+          <li><strong>Bolt / Blast:</strong> handled as single-hit attacks with custom downstream effects.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Degrees of Success &amp; Failure</h2>
+        <ul>
+          <li>A test succeeds when <code>d100 ≤ target.final</code>.</li>
+          <li>On success: <code>DoS = 1 + (floor(target/10) - floor(result/10))</code>.</li>
+          <li>On failure: <code>DoF = 1 + (floor(result/10) - floor(target/10))</code>.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Multi-hit Resolution</h2>
+        <ul>
+          <li>Base hits scale with DoS and the attack type margin.</li>
+          <li><strong>Storm</strong> doubles the hit count after the base calculation.</li>
+          <li><strong>Twin-linked</strong> can add hit potential and shots fired when you score enough DoS.</li>
+          <li>Evasion DoS subtract directly from hits.</li>
+          <li>Hits never drop below zero and are capped by RoF and remaining shots.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Hit Location Behaviour</h2>
+        <ul>
+          <li>The first hit location is based on the reversed roll (e.g. 05 → 50).</li>
+          <li>Additional hits follow a fixed lookup table that repeats the last entry when exhausted.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Damage Construction Overview</h2>
+        <ol>
+          <li>Start from the weapon's damage formula.</li>
+          <li>Apply trait mutations (such as Tearing, Proven, Primitive, Accurate).</li>
+          <li>Append flat bonuses (for example, <code>+ SB</code> or numeric modifiers).</li>
+          <li>Resolve actor bonuses and PR substitutions.</li>
+        </ol>
+        <p>
+          The dedicated <a href="qualities.html">Item Qualities &amp; Modifiers</a> page breaks down
+          how those traits are currently handled.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

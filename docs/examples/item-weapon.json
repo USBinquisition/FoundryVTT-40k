@@ -1,0 +1,23 @@
+{
+  "name": "Example Autogun",
+  "type": "weapon",
+  "img": "icons/weapons/guns/rifle-wood.webp",
+  "system": {
+    "class": "basic",
+    "type": "solid",
+    "range": 100,
+    "rateOfFire": { "single": 1, "burst": 3, "full": 6 },
+    "damage": "1d10+3",
+    "damageType": "impact",
+    "penetration": "2",
+    "clip": { "max": 30, "value": 30 },
+    "reload": "Full",
+    "special": "Reliable",
+    "attack": 0,
+    "ammo": "Autogun Magazine",
+    "availability": "common",
+    "craftsmanship": "common",
+    "weight": 4,
+    "description": "Baseline ranged weapon template with RoF and clip fields."
+  }
+}

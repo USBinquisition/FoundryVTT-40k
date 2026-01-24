@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Item Qualities & Modifiers — Dark Heresy 2E System Guide</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+        --panel: #111924;
+        --text: #e6edf3;
+        --muted: #9aa7b3;
+        --accent: #4db6ff;
+        --border: #1f2a36;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+      header,
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem clamp(1.5rem, 4vw, 4rem);
+      }
+      header {
+        padding-top: 2.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      a {
+        color: var(--accent);
+      }
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: clamp(1.25rem, 3vw, 1.75rem);
+        margin-top: 1.75rem;
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.2;
+        margin-top: 0;
+      }
+      h1 {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+      }
+      h2 {
+        font-size: clamp(1.4rem, 3vw, 1.9rem);
+        margin-bottom: 0.6rem;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.35rem;
+        color: var(--accent);
+      }
+      ul {
+        margin-top: 0.4rem;
+      }
+      .back {
+        display: inline-block;
+        margin-top: 0.5rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      code {
+        background: rgba(77, 182, 255, 0.15);
+        border: 1px solid rgba(77, 182, 255, 0.25);
+        padding: 0.1rem 0.35rem;
+        border-radius: 0.35rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Item Qualities &amp; Modifiers</h1>
+      <p>
+        Weapon qualities are the fastest way to change outcomes. This page documents
+        the traits that currently mutate formulas or hit counts.
+      </p>
+      <a class="back" href="index.html">← Back to guide index</a>
+    </header>
+    <main>
+      <section>
+        <h2>Damage-altering Qualities</h2>
+        <h3>Tearing</h3>
+        <ul>
+          <li>Adds one extra die to the damage roll.</li>
+          <li>The lowest die is dropped (implemented via <code>dl</code>).</li>
+          <li>Only applied if the formula does not already include drop/keep syntax.</li>
+        </ul>
+
+        <h3>Proven (X)</h3>
+        <ul>
+          <li>Adds <code>minX</code> to the damage dice expression.</li>
+          <li>Dice results below X are raised to X by the dice engine.</li>
+        </ul>
+
+        <h3>Primitive (X)</h3>
+        <ul>
+          <li>Adds <code>maxX</code> to the damage dice expression.</li>
+          <li>Dice results above X are lowered to X by the dice engine.</li>
+        </ul>
+
+        <h3>Accurate</h3>
+        <ul>
+          <li>Requires aiming to activate.</li>
+          <li>Adds extra damage dice based on DoS beyond the first.</li>
+          <li>Extra dice: <code>floor((DoS - 1) / 2)</code>, capped at 2 additional dice.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Hit-count &amp; Targeting Qualities</h2>
+        <h3>Storm</h3>
+        <ul>
+          <li>Doubles the number of hits after the base multi-hit calculation.</li>
+        </ul>
+
+        <h3>Twin-linked</h3>
+        <ul>
+          <li>Applies a +20 bonus to hit.</li>
+          <li>When you score enough DoS, it increases hit potential and shots fired.</li>
+        </ul>
+
+        <h3>Inaccurate</h3>
+        <ul>
+          <li>Forces aim bonuses to 0 even when aiming is selected.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Psychic &amp; Miscellaneous Modifiers</h2>
+        <ul>
+          <li>Psychic modifiers are driven by <code>(rating - value) × 10</code>.</li>
+          <li>Attack type modifiers stack alongside manual modifiers, aim, range, and trait bonuses.</li>
+          <li>Total modifiers remain subject to the global ±60 clamp.</li>
+        </ul>
+        <p>
+          For deeper detail and code-derived notes, refer to the
+          <a href="../RULES_REFERENCE.md">Rules Reference</a> document.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

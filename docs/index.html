@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dark Heresy 2E for Foundry VTT — Module Guide</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+        --panel: #111924;
+        --text: #e6edf3;
+        --muted: #9aa7b3;
+        --accent: #4db6ff;
+        --accent-strong: #7dd3ff;
+        --border: #1f2a36;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+      header {
+        padding: 2.5rem clamp(1.5rem, 4vw, 4rem) 1.5rem;
+        border-bottom: 1px solid var(--border);
+        background: radial-gradient(circle at top left, rgba(77, 182, 255, 0.18), transparent 55%),
+          var(--bg);
+      }
+      main {
+        padding: 2rem clamp(1.5rem, 4vw, 4rem) 3rem;
+        display: grid;
+        gap: 2rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.2;
+        margin-top: 0;
+      }
+      h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        margin-bottom: 0.5rem;
+      }
+      h2 {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        margin-bottom: 0.75rem;
+      }
+      p.lead {
+        color: var(--muted);
+        max-width: 70ch;
+      }
+      nav.guide {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+      nav.guide a {
+        display: block;
+        padding: 1rem 1.1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        text-decoration: none;
+        color: var(--text);
+        background: var(--panel);
+        transition: border-color 150ms ease, transform 150ms ease;
+      }
+      nav.guide a:hover,
+      nav.guide a:focus-visible {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+        outline: none;
+      }
+      nav.guide strong {
+        color: var(--accent-strong);
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: clamp(1.25rem, 3vw, 1.75rem);
+      }
+      ul {
+        margin: 0.5rem 0 0;
+        padding-left: 1.25rem;
+      }
+      code {
+        background: rgba(125, 211, 255, 0.12);
+        padding: 0.1rem 0.35rem;
+        border-radius: 0.35rem;
+        border: 1px solid rgba(125, 211, 255, 0.25);
+      }
+      footer {
+        max-width: 1100px;
+        margin: 0 auto 3rem;
+        padding: 0 clamp(1.5rem, 4vw, 4rem);
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Dark Heresy 2E System Guide</h1>
+      <p class="lead">
+        This documentation hub collects the core rules implemented by the automation,
+        highlights what parts of the module are stable versus in-flight, and provides
+        copy-paste templates you can adapt when creating new content.
+      </p>
+    </header>
+    <main>
+      <section>
+        <h2>Start Here</h2>
+        <nav class="guide" aria-label="Documentation sections">
+          <a href="rules.html">
+            <strong>Rules &amp; Mechanics</strong>
+            Attack rolls, target numbers, and multi-hit behaviour as implemented.
+          </a>
+          <a href="qualities.html">
+            <strong>Item Qualities &amp; Modifiers</strong>
+            Tearing, Proven, Primitive, Accurate, and other weapon traits.
+          </a>
+          <a href="module-status.html">
+            <strong>Module Parts &amp; Status</strong>
+            A map of major subsystems with their current implementation status.
+          </a>
+          <a href="examples/index.html">
+            <strong>Examples Library</strong>
+            Templates for actors, weapons, armour, ammunition, and more.
+          </a>
+        </nav>
+      </section>
+
+      <section>
+        <h2>Related References</h2>
+        <ul>
+          <li>
+            <a href="../RULES_REFERENCE.md">Rules Reference (source-informed)</a> —
+            the deeper reference document derived from the current automation code.
+          </li>
+          <li>
+            <a href="../FEATURE_STATUS.md">Feature Status Tracker</a> —
+            longer-form notes about implementation gaps and follow-up work.
+          </li>
+          <li>
+            <a href="../system-guide.html">Legacy System Guide</a> —
+            the original system guide retained for continuity.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Packaging Note</h2>
+        <p>
+          Release archives are expected to follow the format <code>&lt;version&gt;.zip</code>
+          (for example, <code>0.6a.zip</code>). The builder scripts and manifest metadata have
+          been aligned to that naming convention.
+        </p>
+      </section>
+    </main>
+    <footer>
+      Maintained for the 0.4 automation push: NPC combat workflows, auto-attacks,
+      and GM-friendly tooling.
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "name": "Example Acolyte",
+  "type": "acolyte",
+  "img": "icons/svg/mystery-man.svg",
+  "system": {
+    "characteristics": {
+      "weaponSkill": { "base": 35, "advance": 5, "unnatural": 0, "damage": 0 },
+      "ballisticSkill": { "base": 38, "advance": 2, "unnatural": 0, "damage": 0 },
+      "strength": { "base": 32, "advance": 0, "unnatural": 0, "damage": 0 },
+      "toughness": { "base": 34, "advance": 0, "unnatural": 0, "damage": 0 },
+      "agility": { "base": 36, "advance": 0, "unnatural": 0, "damage": 0 },
+      "intelligence": { "base": 40, "advance": 5, "unnatural": 0, "damage": 0 },
+      "perception": { "base": 37, "advance": 0, "unnatural": 0, "damage": 0 },
+      "willpower": { "base": 39, "advance": 0, "unnatural": 0, "damage": 0 },
+      "fellowship": { "base": 33, "advance": 0, "unnatural": 0, "damage": 0 },
+      "influence": { "base": 25, "advance": 0, "unnatural": 0, "damage": 0 }
+    },
+    "skills": {
+      "awareness": { "advance": 0, "modifier": 0 },
+      "athletics": { "advance": 0, "modifier": 0 },
+      "commonLore": { "advance": 10, "modifier": 0, "specialities": { "imperium": { "advance": 10, "modifier": 0 } } },
+      "dodge": { "advance": 0, "modifier": 0 },
+      "inquiry": { "advance": 0, "modifier": 0 }
+    },
+    "experience": { "value": 1200 },
+    "faction": "Ordo Hereticus",
+    "insanity": 3,
+    "corruption": 1,
+    "size": 4,
+    "wounds": { "max": 12, "value": 12 },
+    "fatigue": { "max": 9, "value": 0 },
+    "fate": { "max": 3, "value": 2 },
+    "psy": { "rating": 0, "sustained": 0, "class": "bound", "cost": 0 },
+    "bio": {
+      "homeWorld": "Hive World",
+      "background": "Adeptus Administratum",
+      "role": "Seeker",
+      "divination": "Knowledge is power",
+      "notes": "Template actor showing typical acolyte structure."
+    }
+  }
+}
