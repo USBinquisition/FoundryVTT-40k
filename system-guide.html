@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dark Heresy System Guide</title>
+  <style>
+    :root {
+      --bg: #050b05;
+      --panel: #0b160b;
+      --panel-2: #0f1f0f;
+      --text: #d7f7d7;
+      --muted: #8fbf8f;
+      --accent: #3cff6b;
+      --accent-2: #1faa4a;
+      --border: #1d3b1d;
+      --warning: #ffcc66;
+      --bad: #ff6b6b;
+      --shadow: rgba(0, 255, 128, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(60, 255, 107, 0.08), transparent 60%),
+        radial-gradient(900px 500px at 120% 10%, rgba(60, 255, 107, 0.05), transparent 65%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a { color: var(--accent); }
+    a:hover { color: #7dff9a; }
+
+    header {
+      padding: 3.25rem 1.5rem 2.25rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(15, 35, 15, 0.85), rgba(5, 11, 5, 0.92));
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(6px);
+      z-index: 10;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+      color: var(--accent);
+      text-shadow: 0 0 24px var(--shadow);
+    }
+
+    .subtitle {
+      margin: 0.25rem 0 0;
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    nav {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.75rem;
+      border-radius: 0.6rem;
+      background: var(--panel);
+      color: var(--text);
+      font-weight: 600;
+      transition: all 120ms ease;
+    }
+
+    nav a:hover {
+      border-color: var(--accent-2);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px -18px var(--shadow);
+    }
+
+    main {
+      padding: 2.2rem 1.5rem 4rem;
+    }
+
+    section {
+      margin: 0 0 2rem;
+      padding: 1.4rem 1.4rem 1.6rem;
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      box-shadow: 0 24px 40px -36px var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 0.75rem;
+      color: var(--accent);
+      font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+    }
+
+    h3 {
+      margin: 1.1rem 0 0.4rem;
+      color: #b6ffbf;
+      font-size: 1.05rem;
+    }
+
+    p { margin: 0.5rem 0; }
+
+    ul {
+      margin: 0.6rem 0 0.2rem 1.1rem;
+      padding: 0;
+    }
+
+    li { margin: 0.35rem 0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 1rem 1rem 1.1rem;
+      background: rgba(12, 26, 12, 0.85);
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .card h3 {
+      margin: 0 0 0.25rem;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      width: fit-content;
+    }
+
+    .status.working {
+      color: #b9ffbf;
+      border-color: rgba(60, 255, 107, 0.4);
+      background: rgba(60, 255, 107, 0.12);
+    }
+
+    .status.bugged {
+      color: #ffe0a3;
+      border-color: rgba(255, 204, 102, 0.5);
+      background: rgba(255, 204, 102, 0.12);
+    }
+
+    .status.missing {
+      color: #ffb3b3;
+      border-color: rgba(255, 107, 107, 0.5);
+      background: rgba(255, 107, 107, 0.12);
+    }
+
+    code, pre {
+      font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: rgba(18, 40, 18, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+    }
+
+    code {
+      padding: 0.1rem 0.35rem;
+      font-size: 0.95em;
+    }
+
+    pre {
+      padding: 0.8rem 0.9rem;
+      overflow-x: auto;
+      margin: 0.6rem 0 0.9rem;
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent);
+      padding: 0.75rem 0.9rem;
+      background: rgba(60, 255, 107, 0.08);
+      border-radius: 0.6rem;
+      margin: 0.9rem 0 0.6rem;
+    }
+
+    footer {
+      color: var(--muted);
+      padding: 2rem 1.5rem 3rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="kicker">Foundry VTT • Dark Heresy 2E</div>
+      <h1>System Guide &amp; Status Board</h1>
+      <p class="subtitle">
+        A single entry point for the current automation rules, feature status, and release notes.
+        This viewer is designed to be readable in the classic 40k green-on-black aesthetic.
+      </p>
+      <nav>
+        <a href="#release">Release Focus</a>
+        <a href="#docs">Documentation Map</a>
+        <a href="#combat">Combat Rules Snapshot</a>
+        <a href="#status">Feature Status Highlights</a>
+        <a href="#workflow">Suggested Workflow</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section id="release">
+        <h2>Release Focus</h2>
+        <p>
+          The current documentation set is organized around the 0.4 release focus:
+          auto-attack tooling and NPC/minion automation scripting for combat workflows.
+        </p>
+        <div class="callout">
+          The legacy <code>mookAI-12-master</code> folder is intentionally preserved as a reference while new
+          Dark Heresy-specific automation is documented and extended.
+        </div>
+      </section>
+
+      <section id="docs">
+        <h2>Documentation Map</h2>
+        <p>Start here, then branch out to the detailed references.</p>
+        <div class="grid">
+          <article class="card">
+            <h3>Changelog</h3>
+            <p>Release-scoped notes for the documentation pass and 0.4 tracking.</p>
+            <p><a href="./CHANGELOG.md">Open CHANGELOG.md</a></p>
+          </article>
+          <article class="card">
+            <h3>Feature Status</h3>
+            <p>A working/bugged/not implemented ledger for core system capabilities.</p>
+            <p><a href="./FEATURE_STATUS.md">Open FEATURE_STATUS.md</a></p>
+          </article>
+          <article class="card">
+            <h3>Rules Reference</h3>
+            <p>Behavior inferred from the automation code, with emphasis on attack and damage rules.</p>
+            <p><a href="./RULES_REFERENCE.md">Open RULES_REFERENCE.md</a></p>
+          </article>
+        </div>
+      </section>
+
+      <section id="combat">
+        <h2>Combat Rules Snapshot</h2>
+        <p>
+          These highlights mirror the currently implemented logic in <code>script/common/roll.js</code>
+          and related files. Use the rules reference for the complete detail.
+        </p>
+
+        <h3>Target number assembly</h3>
+        <ul>
+          <li>Combat modifiers are capped to <strong>±60</strong> before applying to the base target.</li>
+          <li>Attack type, aim, range, twin-linked, and psychic modifiers all stack into the final target.</li>
+        </ul>
+
+        <h3>Multi-hit behavior</h3>
+        <ul>
+          <li>Semi-auto uses a hit margin of 2; full-auto uses a hit margin of 1.</li>
+          <li>Storm doubles hits; twin-linked adds accuracy and can add extra hits at 2+ DoS.</li>
+          <li>Evasion degrees of success reduce total hits directly.</li>
+        </ul>
+
+        <h3>Damage traits</h3>
+        <ul>
+          <li><strong>Tearing</strong>: adds a die and drops the lowest.</li>
+          <li><strong>Proven / Primitive</strong>: enforced through dice modifiers.</li>
+          <li><strong>Accurate</strong>: adds up to 2d10 extra damage when aiming with sufficient DoS.</li>
+          <li><strong>Razor Sharp</strong>: can double penetration at 3+ DoS.</li>
+        </ul>
+      </section>
+
+      <section id="status">
+        <h2>Feature Status Highlights</h2>
+        <p>For the full table, open the feature status document.</p>
+        <div class="grid">
+          <article class="card">
+            <div class="status working">● Working</div>
+            <h3>Core attack &amp; damage flow</h3>
+            <p>Combat targets, multi-hit resolution, location rolls, and trait-aware damage rolls are in place.</p>
+          </article>
+          <article class="card">
+            <div class="status working">● Working</div>
+            <h3>NPC targeting automation</h3>
+            <p>Auto-target selection and range band modifiers are implemented for hostile tokens.</p>
+          </article>
+          <article class="card">
+            <div class="status bugged">▲ Bugged</div>
+            <h3>Programmatic damage application</h3>
+            <p>The roll-data damage payload uses <code>total</code> while actor damage expects <code>amount</code>.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="workflow">
+        <h2>Suggested Workflow</h2>
+        <ol>
+          <li>Open <a href="./FEATURE_STATUS.md">FEATURE_STATUS.md</a> to see what is safe to rely on.</li>
+          <li>Use <a href="./RULES_REFERENCE.md">RULES_REFERENCE.md</a> as the behavior contract for automation work.</li>
+          <li>Track any rule changes in <a href="./CHANGELOG.md">CHANGELOG.md</a> to keep future debugging focused.</li>
+        </ol>
+        <pre><code># Quick local preview
+python -m http.server 4173
+# Then open http://localhost:4173/system-guide.html</code></pre>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    Dark Heresy 2E system documentation viewer • root file: <code>system-guide.html</code>
+  </footer>
+</body>
+</html>
