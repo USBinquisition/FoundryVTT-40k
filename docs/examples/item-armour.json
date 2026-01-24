@@ -1,0 +1,22 @@
+{
+  "name": "Example Flak Armour",
+  "type": "armour",
+  "img": "icons/equipment/chest/breastplate-banded-steel.webp",
+  "system": {
+    "type": "basic",
+    "isAdditive": false,
+    "part": {
+      "head": 2,
+      "leftArm": 4,
+      "rightArm": 4,
+      "body": 4,
+      "leftLeg": 3,
+      "rightLeg": 3
+    },
+    "maxAgility": 45,
+    "availability": "scarce",
+    "craftsmanship": "common",
+    "weight": 11,
+    "description": "Standard armour template covering all hit locations."
+  }
+}

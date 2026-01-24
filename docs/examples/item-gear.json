@@ -1,0 +1,12 @@
+{
+  "name": "Example Auspex",
+  "type": "gear",
+  "img": "icons/technology/eye-monocle-visor.webp",
+  "system": {
+    "shortDescription": "Sensor suite granting bonuses to detection tasks.",
+    "availability": "rare",
+    "craftsmanship": "good",
+    "weight": 2,
+    "description": "Gear template showing the equipment fields and short description."
+  }
+}

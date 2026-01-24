@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Module Parts & Status — Dark Heresy 2E System Guide</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+        --panel: #111924;
+        --text: #e6edf3;
+        --muted: #9aa7b3;
+        --accent: #4db6ff;
+        --border: #1f2a36;
+        --ok: #34d399;
+        --bug: #f87171;
+        --tweak: #fbbf24;
+        --incomplete: #60a5fa;
+        --planned: #c084fc;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+      header,
+      main {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 2rem clamp(1.5rem, 4vw, 4rem);
+      }
+      header {
+        padding-top: 2.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      a {
+        color: var(--accent);
+      }
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: clamp(1.25rem, 3vw, 1.75rem);
+        margin-top: 1.75rem;
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.2;
+        margin-top: 0;
+      }
+      h1 {
+        font-size: clamp(2rem, 4vw, 2.9rem);
+      }
+      h2 {
+        font-size: clamp(1.4rem, 3vw, 1.95rem);
+        margin-bottom: 0.6rem;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem 1rem;
+        margin-top: 0.75rem;
+      }
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .dot {
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 999px;
+        display: inline-block;
+      }
+      .ok { background: var(--ok); }
+      .bug { background: var(--bug); }
+      .tweak { background: var(--tweak); }
+      .incomplete { background: var(--incomplete); }
+      .planned { background: var(--planned); }
+      ul {
+        margin-top: 0.5rem;
+      }
+      li {
+        margin-bottom: 0.35rem;
+      }
+      strong.status {
+        font-weight: 600;
+      }
+      strong.ok { color: var(--ok); }
+      strong.bug { color: var(--bug); }
+      strong.tweak { color: var(--tweak); }
+      strong.incomplete { color: var(--incomplete); }
+      strong.planned { color: var(--planned); }
+      .back {
+        display: inline-block;
+        margin-top: 0.5rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Module Parts &amp; Status</h1>
+      <p>
+        A quick map of the system's major subsystems, plus the current confidence level
+        in each area.
+      </p>
+      <div class="legend" role="list" aria-label="Status legend">
+        <span role="listitem"><i class="dot ok"></i>Working As Intended</span>
+        <span role="listitem"><i class="dot bug"></i>Bugged</span>
+        <span role="listitem"><i class="dot tweak"></i>Needs Tweaking</span>
+        <span role="listitem"><i class="dot incomplete"></i>Incomplete</span>
+        <span role="listitem"><i class="dot planned"></i>Planned Feature</span>
+      </div>
+      <a class="back" href="index.html">← Back to guide index</a>
+    </header>
+    <main>
+      <section>
+        <h2>Combat Automation Core</h2>
+        <ul>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> Target number calculation with aim, range,
+            rate of fire, and the ±60 modifier clamp.
+          </li>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> Multi-hit resolution including Storm,
+            Twin-linked adjustments, and evasion reducing hits.
+          </li>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> Hit location resolution (reverse digits)
+            and chained additional locations.
+          </li>
+          <li>
+            <strong class="status tweak">Needs Tweaking:</strong> Presentation clarity in chat cards when
+            multiple modifiers stack from traits, psychic strength, and manual edits.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Damage &amp; Weapon Trait Handling</h2>
+        <ul>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> Trait mutation pipeline for Tearing,
+            Proven, Primitive, Accurate, and related damage adjustments.
+          </li>
+          <li>
+            <strong class="status tweak">Needs Tweaking:</strong> Visibility of intermediate damage formula
+            mutations for GMs diagnosing unexpected totals.
+          </li>
+          <li>
+            <strong class="status planned">Planned Feature:</strong> Expanded trait coverage for more niche
+            qualities and situational modifiers.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>NPC Workflow &amp; Minion Support</h2>
+        <ul>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> Auto-target selection helpers and range
+            modifier resolution for NPC attacks.
+          </li>
+          <li>
+            <strong class="status incomplete">Incomplete:</strong> Minion-first tooling for squads, mooks,
+            and rapid-fire GM combat flows.
+          </li>
+          <li>
+            <strong class="status planned">Planned Feature:</strong> Dark Heresy-specific automation that
+            supersedes the reference-only <code>mookAI-12-master</code> folder.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Sheets, Derived Stats, &amp; Data Integrity</h2>
+        <ul>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> Derived characteristics, skill totals,
+            armour aggregation, and critical overflow prompts.
+          </li>
+          <li>
+            <strong class="status bug">Bugged:</strong> Programmatic damage application from roll data can
+            mis-handle damage keys when piping directly into actor damage handlers.
+          </li>
+          <li>
+            <strong class="status tweak">Needs Tweaking:</strong> Guardrails and validation around manual
+            data edits that can desynchronise derived values.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Release Tooling &amp; Packaging</h2>
+        <ul>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> Release metadata generation under
+            <code>releases/&lt;tag&gt;/</code>.
+          </li>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> Zip archives now follow the
+            <code>&lt;version&gt;.zip</code> convention.
+          </li>
+          <li>
+            <strong class="status planned">Planned Feature:</strong> Additional automated checks around
+            manifest consistency and version tagging.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Documentation Surface</h2>
+        <ul>
+          <li>
+            <strong class="status ok">Working As Intended:</strong> This docs hub provides a navigable
+            index with focused pages.
+          </li>
+          <li>
+            <strong class="status incomplete">Incomplete:</strong> Examples coverage will expand alongside
+            new actor and item automation patterns.
+          </li>
+        </ul>
+        <p>
+          For the fuller status inventory, see the existing
+          <a href="../FEATURE_STATUS.md">FEATURE_STATUS.md</a> reference.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

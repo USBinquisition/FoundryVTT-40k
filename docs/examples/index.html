@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Examples Library — Dark Heresy 2E System Guide</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+        --panel: #111924;
+        --text: #e6edf3;
+        --muted: #9aa7b3;
+        --accent: #4db6ff;
+        --border: #1f2a36;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+      header,
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem clamp(1.5rem, 4vw, 4rem);
+      }
+      header {
+        padding-top: 2.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      a {
+        color: var(--accent);
+      }
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: clamp(1.25rem, 3vw, 1.75rem);
+        margin-top: 1.75rem;
+      }
+      ul {
+        margin-top: 0.5rem;
+      }
+      li {
+        margin-bottom: 0.35rem;
+      }
+      code {
+        background: rgba(77, 182, 255, 0.15);
+        border: 1px solid rgba(77, 182, 255, 0.25);
+        padding: 0.1rem 0.35rem;
+        border-radius: 0.35rem;
+      }
+      .back {
+        display: inline-block;
+        margin-top: 0.5rem;
+        color: var(--muted);
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Examples Library</h1>
+      <p>
+        Templates you can copy into JSON imports, macro scaffolding, or hand-built
+        content. These focus on the most common actor and item setups.
+      </p>
+      <a class="back" href="../index.html">← Back to guide index</a>
+    </header>
+    <main>
+      <section>
+        <h2>Actor Templates</h2>
+        <ul>
+          <li><a href="actor-acolyte.json">Acolyte actor template</a></li>
+          <li><a href="actor-npc.json">NPC actor template</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Item Templates</h2>
+        <ul>
+          <li><a href="item-weapon.json">Weapon template</a></li>
+          <li><a href="item-armour.json">Armour template</a></li>
+          <li><a href="item-ammunition.json">Ammunition template</a></li>
+          <li><a href="item-gear.json">Gear template</a></li>
+          <li><a href="item-talent.json">Talent template</a></li>
+          <li><a href="item-psychic-power.json">Psychic power template</a></li>
+        </ul>
+        <p>
+          Tip: keep the <code>system</code> block aligned to keys from <code>template.json</code>
+          when expanding these.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

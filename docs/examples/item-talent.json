@@ -1,0 +1,14 @@
+{
+  "name": "Example Talent: Rapid Reload",
+  "type": "talent",
+  "img": "icons/skills/trades/academics-book-study-purple.webp",
+  "system": {
+    "prerequisites": "Agility 30",
+    "aptitudes": "Finesse, Fieldcraft",
+    "benefit": "Reduce reload actions by one step for applicable weapons.",
+    "tier": 1,
+    "starter": false,
+    "cost": 200,
+    "description": "Talent template aligned to template.json talent fields."
+  }
+}

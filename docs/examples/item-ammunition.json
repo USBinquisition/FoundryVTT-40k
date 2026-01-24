@@ -1,0 +1,19 @@
+{
+  "name": "Example Man-Stopper Rounds",
+  "type": "ammunition",
+  "img": "icons/weapons/ammunition/bullets-cartridge-brown.webp",
+  "system": {
+    "quantity": 3,
+    "effect": {
+      "damage": { "modifier": 2, "type": "impact" },
+      "special": "Tearing",
+      "penetration": "3",
+      "attack": { "modifier": 0 }
+    },
+    "weapon": "Autogun",
+    "availability": "rare",
+    "craftsmanship": "common",
+    "weight": 0.5,
+    "description": "Ammunition template that modifies damage, pen, and qualities."
+  }
+}
